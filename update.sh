@@ -1,6 +1,6 @@
 yarn build
 mage -v
-target='C:\\Users\\muham\\Desktop\\Projeler\\influxdbexporter\\volumes\\grafana\\plugins\\riverbed-appresponse-datasource\\'
+target='{PluginsPath}\\plugins\\riverbed-appresponse-datasource\\'
 mkdir -p $target
 cp -r -f -v ./dist $target
 cp -r -f -v ./src $target
