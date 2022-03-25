@@ -1,0 +1,90 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "datasource",
+  "name": "destel-riverbed-appresponse-datasource",
+  "id": "destel-riverbed-appresponse-datasource",
+  "metrics": true,
+  "backend": true,
+  "executable": "gpx_riverbed-appresponse-datasource",
+  "alerting": true,
+  "routes": [
+    {
+      "path": "base",
+      "url": "{{ .JsonData.path }}",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "path": "auth",
+      "url": "{{ .JsonData.path }}/api/mgmt.aaa/1.0/token",
+      "body": {
+        "user_credentials": {
+          "username": "{{ .JsonData.username }}",
+          "password": "{{ .SecureJsonData.password }}"
+        },
+        "generate_refresh_token": false
+      }
+    },
+    {
+      "path": "hostgroups",
+      "url": "{{ .JsonData.path }}/api/npm.classification/2.0/hostgroups"
+    },
+    {
+      "path": "aggregates",
+      "url": "{{ .JsonData.path }}/api/npm.reports.sources/1.0/sources/items/aggregates"
+    },
+    {
+      "path": "applications",
+      "url": "{{ .JsonData.path }}/api/npm.classification/2.0/applications"
+    },
+    {
+      "path": "urls",
+      "url": "{{ .JsonData.path }}/api/npm.classification/2.0/urls"
+    },
+    {
+      "path": "webapps",
+      "url": "{{ .JsonData.path }}/api/npm.wta_config/1.0/wta_webapps"
+    },
+    {
+      "path": "instancecreationsync",
+      "url": "{{ .JsonData.path }}/api/npm.reports/1.0/instances/sync"
+    }
+  ],
+  "info": {
+    "description": "",
+    "author": {
+      "name": "madogan",
+      "url": "https://github.com/madogan"
+    },
+    "keywords": [
+      "riverbed",
+      "appresponse",
+      "apm"
+    ],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/grafana-starter-datasource-backend"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/grafana-starter-datasource-backend/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "1.0.0",
+    "updated": "2022-03-24"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=7.0.0",
+    "plugins": []
+  }
+}
