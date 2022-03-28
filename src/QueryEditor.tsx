@@ -142,7 +142,7 @@ export class QueryEditor extends PureComponent<Props> {
             />
           </SegmentSection>
 
-          {/* Host Group Line */}
+          
           <div
             className="gf-form-inline"
             style={query.sourceGroup === SourceGroup.hostGroup ? { display: 'block' } : { display: 'none' }}
@@ -162,7 +162,7 @@ export class QueryEditor extends PureComponent<Props> {
             </SegmentSection>
           </div>
 
-          {/* Application Line */}
+          
           <div
             className="gf-form-inline"
             style={query.sourceGroup === SourceGroup.application ? { display: 'block' } : { display: 'none' }}
@@ -182,7 +182,7 @@ export class QueryEditor extends PureComponent<Props> {
             </SegmentSection>
           </div>
 
-          {/* Web App Line */}
+          
           <div
             className="gf-form-inline"
             style={query.sourceGroup === SourceGroup.webApp ? { display: 'block' } : { display: 'none' }}
@@ -208,7 +208,7 @@ export class QueryEditor extends PureComponent<Props> {
             </SegmentSection>
           </div>
 
-          {/* IP Line */}
+          
           <div
             className="gf-form-inline"
             style={query.sourceGroup === SourceGroup.ip ? { display: 'block' } : { display: 'none' }}

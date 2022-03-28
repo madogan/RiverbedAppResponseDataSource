@@ -46,7 +46,6 @@ export class ConfigEditor extends PureComponent<Props, State> {
     onOptionsChange({ ...options, jsonData });
   };
 
-  // Secure field (only sent to the backend)
   onPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { onOptionsChange, options } = this.props;
     onOptionsChange({
@@ -125,7 +124,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
           <div className="gf-form">
             <InlineFieldRow>
               <InlineField label="Skip TLS Verify">
-              <InlineSwitch
+                <InlineSwitch
                   value={options.jsonData.tlsSkipVerify || options.jsonData.skipTlsVerify}
                   checked={options.jsonData.tlsSkipVerify || options.jsonData.skipTlsVerify}
                   onChange={this.onTlsSkipVerifyChange}
