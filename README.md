@@ -86,13 +86,13 @@ A data source backend plugin consists of both frontend and backend components.
 }
 </style>
 
-<div class="grid-container">
-<div class="grid-item-1" style="text-align: center;">
+<div style="fluid">
+<div style="text-align: center;">
    <img class="circular--square" align="center" width="100" height="100" src="https://media-exp1.licdn.com/dms/image/C4D03AQH_TCvtbY1tsg/profile-displayphoto-shrink_400_400/0/1516884661634?e=1654128000&v=beta&t=9ScpFD9OPFjVU_FX0ghb9fO0G4q0BUz7v9LA4WK1ZYg">
    <p style="padding: 10px;"> Can Cihan Hırçın </p>
 </div>
 
-<div class="grid-item-2" style="text-align: center;">
+<div style="text-align: center;">
    <img class="circular--square" align="center" width="100" height="100" src="https://media-exp1.licdn.com/dms/image/C4D03AQFfCmD3e-gnKQ/profile-displayphoto-shrink_400_400/0/1559579240964?e=1654128000&v=beta&t=oeq58CcbzMBaUqa8KWlgwb-yheBz03TIiKpynSEkSM0">
    <p style="padding: 10px;"> Muhammed Ali Doğan </p>
 </div>
