@@ -61,39 +61,14 @@ A data source backend plugin consists of both frontend and backend components.
 
 ### Authors
 
-<style>
-.circular--square { border-radius: 50%; }
-.item1 { grid-area: header; }
-.item2 { grid-area: menu; }
-.item3 { grid-area: main; }
-.item4 { grid-area: right; }
-.item5 { grid-area: footer; }
-
-.grid-container {
-  display: grid;
-  grid-template-areas:
-    'header header header header header header'
-    'menu main main main right right'
-    'menu footer footer footer footer footer';
-  gap: 10px;
-  padding: 10px;
-}
-
-.grid-container > div {
-  text-align: center;
-  padding: 20px 0px;
-  font-size: 15px;
-}
-</style>
-
 <div style="fluid">
 <div style="text-align: center;">
-   <img class="circular--square" align="center" width="100" height="100" src="https://media-exp1.licdn.com/dms/image/C4D03AQH_TCvtbY1tsg/profile-displayphoto-shrink_400_400/0/1516884661634?e=1654128000&v=beta&t=9ScpFD9OPFjVU_FX0ghb9fO0G4q0BUz7v9LA4WK1ZYg">
+   <img style="border-radius: 50%;" align="center" width="100" height="100" src="https://media-exp1.licdn.com/dms/image/C4D03AQH_TCvtbY1tsg/profile-displayphoto-shrink_400_400/0/1516884661634?e=1654128000&v=beta&t=9ScpFD9OPFjVU_FX0ghb9fO0G4q0BUz7v9LA4WK1ZYg">
    <p style="padding: 10px;"> Can Cihan Hırçın </p>
 </div>
 
 <div style="text-align: center;">
-   <img class="circular--square" align="center" width="100" height="100" src="https://media-exp1.licdn.com/dms/image/C4D03AQFfCmD3e-gnKQ/profile-displayphoto-shrink_400_400/0/1559579240964?e=1654128000&v=beta&t=oeq58CcbzMBaUqa8KWlgwb-yheBz03TIiKpynSEkSM0">
+   <img style="border-radius: 50%;" align="center" width="100" height="100" src="https://media-exp1.licdn.com/dms/image/C4D03AQFfCmD3e-gnKQ/profile-displayphoto-shrink_400_400/0/1559579240964?e=1654128000&v=beta&t=oeq58CcbzMBaUqa8KWlgwb-yheBz03TIiKpynSEkSM0">
    <p style="padding: 10px;"> Muhammed Ali Doğan </p>
 </div>
 </div>
