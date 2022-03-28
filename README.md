@@ -59,17 +59,15 @@ A data source backend plugin consists of both frontend and backend components.
    mage -l
    ```
 
-### Authors
-
-<div style="fluid">
-<div style="text-align: center;">
-   <img style="border-radius: 50%;" align="center" width="100" height="100" src="https://media-exp1.licdn.com/dms/image/C4D03AQH_TCvtbY1tsg/profile-displayphoto-shrink_400_400/0/1516884661634?e=1654128000&v=beta&t=9ScpFD9OPFjVU_FX0ghb9fO0G4q0BUz7v9LA4WK1ZYg">
-   <p style="padding: 10px;"> Can Cihan Hırçın </p>
-</div>
-
-<div style="text-align: center;">
-   <img style="border-radius: 50%;" align="center" width="100" height="100" src="https://media-exp1.licdn.com/dms/image/C4D03AQFfCmD3e-gnKQ/profile-displayphoto-shrink_400_400/0/1559579240964?e=1654128000&v=beta&t=oeq58CcbzMBaUqa8KWlgwb-yheBz03TIiKpynSEkSM0">
-   <p style="padding: 10px;"> Muhammed Ali Doğan </p>
-</div>
-</div>
-
+## Contributors
+<!-- prettier-ignore -->
+<table border="0">
+  <tr align="center">
+    <td align="center"><a href="https://www.linkedin.com/in/cancihanhircin"><img
+        src="https://media-exp1.licdn.com/dms/image/C4D03AQH_TCvtbY1tsg/profile-displayphoto-shrink_400_400/0/1516884661634?e=1654128000&v=beta&t=9ScpFD9OPFjVU_FX0ghb9fO0G4q0BUz7v9LA4WK1ZYg" width="100px;"
+        alt="https://www.linkedin.com/in/cancihanhircin"/><br><sub><b>Can Cihan Hırçın</b></sub></a><br></td>
+    <td align="center"><a href="https://www.linkedin.com/in/madogan/"><img
+        src="https://media-exp1.licdn.com/dms/image/C4D03AQFfCmD3e-gnKQ/profile-displayphoto-shrink_400_400/0/1559579240964?e=1654128000&v=beta&t=oeq58CcbzMBaUqa8KWlgwb-yheBz03TIiKpynSEkSM0" width="100px;"
+        alt="https://www.linkedin.com/in/madogan/"/><br><sub><b>Muhammed Ali Doğan</b></sub></a><br></td>
+  </tr>
+</table>
