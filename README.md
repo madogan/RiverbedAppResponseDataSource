@@ -59,7 +59,7 @@ A data source backend plugin consists of both frontend and backend components.
    mage -l
    ```
 
-## Contributors
+### Contributors
 <!-- prettier-ignore -->
 <table border="0">
   <tr>
