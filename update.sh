@@ -1,5 +1,12 @@
 #!/bin/bash
 
+: '
+This script is used to build plugin and sent to plugins directory of Grafana.
+We use after making some changes in plugin code and want to update it.
+
+It gets "-p" argument as plugins directory.
+'
+
 # Get arguments.
 while getopts ":p:" opt; do
   case $opt in
