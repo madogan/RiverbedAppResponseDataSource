@@ -1,12 +1,37 @@
+#!/bin/bash
+
+# Get arguments.
+while getopts ":p:" opt; do
+  case $opt in
+    p) pluginsDir="$OPTARG"
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+    exit 1
+    ;;
+  esac
+  case $OPTARG in
+    -*) echo "Option $opt needs a valid argument"
+    exit 1
+    ;;
+  esac
+done
+
+# Exact path to the directory where the plugins are stored.
+pluginsDir="${pluginsDir}/riverbed-appresponse-datasource/"
+
+# Build frontend.
 yarn build
+
+# Build backend.
 mage -v
-target='{PluginsPath}\\plugins\\riverbed-appresponse-datasource\\'
-mkdir -p $target
-cp -r -f -v ./dist $target
-cp -r -f -v ./src $target
-cp -r -f -v ./package* $target
-cp -r -f -v ./tsconfig.json $target
-cp -r -f -v ./Magefile.go $target
-cp -r -f -v ./go.sum $target
-cp -r -f -v ./go.mod $target
-docker restart influxdbexporter-grafana-1
+
+# Copy files into plugin directory.
+# ATTENTION: It overwrite current files.
+mkdir -p $pluginsDir
+cp -r -f -v ./dist $pluginsDir
+cp -r -f -v ./src $pluginsDir
+cp -r -f -v ./package* $pluginsDir
+cp -r -f -v ./tsconfig.json $pluginsDir
+cp -r -f -v ./Magefile.go $pluginsDir
+cp -r -f -v ./go.sum $pluginsDir
+cp -r -f -v ./go.mod $pluginsDir
