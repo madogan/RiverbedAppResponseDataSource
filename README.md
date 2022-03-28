@@ -61,8 +61,8 @@ A data source backend plugin consists of both frontend and backend components.
 
 ## Contributors
 <!-- prettier-ignore -->
-<table border="0">
-  <tr align="center">
+<table border="0" align="center">
+  <tr>
     <td align="center"><a href="https://www.linkedin.com/in/cancihanhircin"><img
         src="https://media-exp1.licdn.com/dms/image/C4D03AQH_TCvtbY1tsg/profile-displayphoto-shrink_400_400/0/1516884661634?e=1654128000&v=beta&t=9ScpFD9OPFjVU_FX0ghb9fO0G4q0BUz7v9LA4WK1ZYg" width="100px;"
         alt="https://www.linkedin.com/in/cancihanhircin"/><br><sub><b>Can Cihan Hırçın</b></sub></a><br></td>
