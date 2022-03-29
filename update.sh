@@ -24,10 +24,10 @@ while getopts ":p:" opt; do
 done
 
 # Exact path to the directory where the plugins are stored.
-pluginsDir="${pluginsDir}/riverbed-appresponse-datasource-2/"
+pluginsDir="${pluginsDir}/riverbed-appresponse-datasource/"
 
 # Build frontend.
-yarn build
+yarn dev
 
 # Build backend.
 mage -v

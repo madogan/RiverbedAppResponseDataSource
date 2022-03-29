@@ -15,12 +15,12 @@
   "devDependencies": {
     "@grafana/data": "latest",
     "@grafana/runtime": "latest",
-    "@grafana/toolkit": "^8.4.4",
+    "@grafana/toolkit": "latest",
     "@grafana/ui": "latest",
     "@types/lodash": "latest"
   },
   "resolutions": {
-    "rxjs": "7.3.0"
+    "rxjs": "7.5.1"
   },
   "engines": {
     "node": ">=14"

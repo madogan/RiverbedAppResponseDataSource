@@ -1,5 +1,5 @@
-import React, { ChangeEvent, PureComponent } from 'react';
-import { InlineField, InlineFieldRow, InlineFormLabel, InlineSwitch, Input } from '@grafana/ui';
+import React, { PureComponent, ChangeEvent } from 'react';
+import { InlineField, InlineFieldRow, InlineFormLabel, InlineSwitch } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps, DataSourceSettings } from '@grafana/data';
 import { AppResponseDataSourceOptions, AppResponseSecureJsonData } from './types';
 import { LegacyForms } from '@grafana/ui';
@@ -7,6 +7,7 @@ import { LegacyForms } from '@grafana/ui';
 interface Props extends DataSourcePluginOptionsEditorProps<AppResponseDataSourceOptions> { }
 
 interface State { }
+
 
 export class ConfigEditor extends PureComponent<Props, State> {
 
@@ -74,10 +75,11 @@ export class ConfigEditor extends PureComponent<Props, State> {
   render() {
     const { options } = this.props;
     const { secureJsonFields } = options;
+    const { Input, SecretFormField } = LegacyForms;
     const secureJsonData = (options.secureJsonData || {}) as AppResponseSecureJsonData;
 
     return (
-      <>
+      <div>
         <div className="gf-form-inline">
           <div className="gf-form">
             <InlineFormLabel className="width-10">
@@ -108,7 +110,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
         </div>
         <div className="gf-form-inline">
           <div className="gf-form">
-            <LegacyForms.SecretFormField
+            <SecretFormField
               isConfigured={(secureJsonFields && secureJsonFields.password) as boolean}
               value={secureJsonData.password || ''}
               label="Password"
@@ -133,7 +135,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
             </InlineFieldRow>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 }
