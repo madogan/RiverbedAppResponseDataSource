@@ -1,17 +1,16 @@
-import defaults from 'lodash/defaults';
 import {
-  DataQueryRequest,
-  DataQueryResponse,
-  DataSourceApi,
-  DataSourceInstanceSettings,
   FieldType,
-  MutableDataFrame,
+  DataSourceApi,
   SelectableValue,
+  DataQueryRequest,
+  MutableDataFrame,
+  DataQueryResponse,
+  DataSourceInstanceSettings,
 } from '@grafana/data';
-import { getBackendSrv, getTemplateSrv } from "@grafana/runtime";
-
-import { AppResponseDataSourceOptions, defaultQuery, AppResponseURLs, SourceGroup, AppResponseQuery } from './types';
 import _ from 'lodash';
+import defaults from 'lodash/defaults';
+import { getBackendSrv, getTemplateSrv } from "@grafana/runtime";
+import { AppResponseDataSourceOptions, defaultQuery, AppResponseURLs, SourceGroup, AppResponseQuery } from './types';
 
 export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataSourceOptions> {
   token: any;
@@ -69,36 +68,36 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     const to = range!.to.valueOf();
     const from = range!.from.valueOf();
 
-    let queryTimeTo;
-    let queryTimeFrom;
-    let deltaTimeshift = 0;
+    let queryTimeStop;
+    let queryTimeStart;
+    let queryTimeshift = 0;
     let dataDef_source = {};
-    let dateDef_groupBy = {};
+    let dataDef_groupBy = {};
+    let dataDef_topBy = {};
     let dataDef_columns: string[] = [];
     let dataDef_filters: { type: string; value: string; }[] = [];
 
     const promises = options.targets.map((target) => {
       const query = defaults(target, defaultQuery);
-      queryTimeTo = ((new Date(to)).getTime()) / 1000;
-      queryTimeFrom = ((new Date(from)).getTime()) / 1000;
+      queryTimeStart = ((new Date(to)).getTime()) / 1000;
+      queryTimeStop = ((new Date(from)).getTime()) / 1000;
 
       if (typeof query.timeshift === "undefined" || (typeof query.timeshift === "string" && query.timeshift === [])) {
         query.timeshift = 0;
       }
 
-      query.timeshift += query.timeshift * 86400 - (1 * query.timeshift);
-      deltaTimeshift = query.timeshift;
-      queryTimeFrom = queryTimeFrom - deltaTimeshift;
-      queryTimeTo = queryTimeTo - deltaTimeshift
-      if (typeof deltaTimeshift !== 'undefined') {
-        query.timeshift = deltaTimeshift;
+      queryTimeshift = query.timeshift + query.timeshift * 86400 - (1 * query.timeshift);
+      queryTimeStop = queryTimeStop - queryTimeshift;
+      queryTimeStart = queryTimeStart - queryTimeshift
+      if (typeof queryTimeshift !== 'undefined') {
+        query.timeshift = queryTimeshift;
       }
 
       if (query.sourceGroup == SourceGroup.hostGroup) {
         // This variable contains the type of source selected, it is the same for hostgroups and applications
         dataDef_source = { "name": "aggregates" };
         // For each datapoint, data are grouped by timestamp and id of hostgroup
-        dateDef_groupBy = ["start_time", "host_group.id"];
+        dataDef_groupBy = ["start_time", "host_group.id"];
         // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
         dataDef_columns = ["start_time", "host_group.id", "host_group.name"];
         // Metric request is filtered by hortgroup selected
@@ -110,7 +109,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         );
       } else if (query.sourceGroup === SourceGroup.application) {
         dataDef_source = { "name": "aggregates" };
-        dateDef_groupBy = ["start_time", "app.id"];
+        dataDef_groupBy = ["start_time", "app.id"];
         dataDef_columns = ["start_time", "app.id", "app.name"];
         dataDef_filters.push(
           {
@@ -120,7 +119,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         );
       } else if (query.sourceGroup === SourceGroup.ip) {
         dataDef_source = { "name": "aggregates" };
-        dateDef_groupBy = ["start_time", "app.id"];
+        dataDef_groupBy = ["start_time", "app.id"];
         dataDef_columns = ["start_time", "app.id", "app.name", "tcp.ip"];
         dataDef_filters.push(
           {
@@ -135,7 +134,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           "type": "",
           "name": "aggregates"
         };
-        dateDef_groupBy = ["start_time", "app.id"]
+        dataDef_groupBy = ["start_time", "app.id"]
         dataDef_columns = ["start_time", "app.id", "app.name"]
         dataDef_filters.push(
           {
@@ -157,16 +156,17 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         // The time property also includes a few properties that help refine time-series requests.
         "time": {
           // Epoch start time of the request, the start time is inclusive, the unit is seconds.
-          "start": queryTimeFrom.toString(),
+          "start": queryTimeStop.toString(),
           // Epoch end time of the request, the end time is exclusive, the unit is seconds.
-          "end": queryTimeTo.toString(),
+          "end": queryTimeStart.toString(),
           // This refers to the amount of time for which the data source computes a summary of the metrics it received
           // The data source examines all data and creates summaries for 1 minute, 5 minutes, 1 hour, 6 hours, and 1 day
           'granularity': query.granularity?.value.toString(),
         },
         // The group by property specifies the keys in the request. It is usually used to determine what kind of data is requested
         // If the start_time (or end_time) column is in the group_by, then the request is considered time series
-        "group_by": dateDef_groupBy,
+        "group_by": dataDef_groupBy,
+        "top_by": dataDef_topBy,
         // Request columns, the client can specify the requested key/metric columns, as well as their order
         "columns": dataDef_columns,
         // The filters property is an array with filter objects (STEELFILTER is default filter)
