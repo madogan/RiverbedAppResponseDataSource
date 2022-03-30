@@ -30,9 +30,10 @@ export interface AppResponseQuery extends DataQuery {
   unit?: string;
   rate?: string;
   alias?: string;
+  top?: boolean;
   sourceGroup?: SourceGroup;
   timeshift?: number;
- 
+  
   currentMetric?: string;
   currentMetricID?: string;
   currentWebApp?: string;
@@ -55,7 +56,8 @@ export const defaultQuery: Partial<AppResponseQuery> = {
   timeshift: 0,
   granularity: granularities[0],
   sourceGroup: SourceGroup.application,
-
+  
+  top: false,
   metrics: [],
   hostGroups: [],
   applications: [],

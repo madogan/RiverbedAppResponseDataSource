@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { SegmentSection, Segment, SegmentInput, Select } from '@grafana/ui';
+import { SegmentSection, Segment, SegmentInput, Select, InlineFieldRow, InlineField, InlineSwitch } from '@grafana/ui';
 import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from './datasource';
 
@@ -92,7 +92,7 @@ export class QueryEditor extends PureComponent<Props> {
 
   onIPChange = (v: any) => {
     const { onChange, query, onRunQuery } = this.props;
-    
+
     onChange({
       ...query,
       currentIP: v.value,
@@ -106,6 +106,15 @@ export class QueryEditor extends PureComponent<Props> {
       ...query,
       currentMetricID: v.id,
       currentMetric: v.name,
+    });
+    onRunQuery();
+  }
+
+  onTopChange = (v: any) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      top: v.value,
     });
     onRunQuery();
   }
@@ -142,7 +151,6 @@ export class QueryEditor extends PureComponent<Props> {
             />
           </SegmentSection>
 
-          
           <div
             className="gf-form-inline"
             style={query.sourceGroup === SourceGroup.hostGroup ? { display: 'block' } : { display: 'none' }}
@@ -162,7 +170,6 @@ export class QueryEditor extends PureComponent<Props> {
             </SegmentSection>
           </div>
 
-          
           <div
             className="gf-form-inline"
             style={query.sourceGroup === SourceGroup.application ? { display: 'block' } : { display: 'none' }}
@@ -182,7 +189,6 @@ export class QueryEditor extends PureComponent<Props> {
             </SegmentSection>
           </div>
 
-          
           <div
             className="gf-form-inline"
             style={query.sourceGroup === SourceGroup.webApp ? { display: 'block' } : { display: 'none' }}
@@ -208,22 +214,21 @@ export class QueryEditor extends PureComponent<Props> {
             </SegmentSection>
           </div>
 
-          
           <div
             className="gf-form-inline"
             style={query.sourceGroup === SourceGroup.ip ? { display: 'block' } : { display: 'none' }}
           >
             <SegmentSection label={SourceGroup.ip.toString()}>
-            <SegmentInput
-              value={query.currentIP || ''}
-              onChange={(v) => {
-                this.props.onChange({
-                  ...query,
-                  currentIP: v as string,
-                });
-              }}
-            />
-          </SegmentSection>
+              <SegmentInput
+                value={query.currentIP || ''}
+                onChange={(v) => {
+                  this.props.onChange({
+                    ...query,
+                    currentIP: v as string,
+                  });
+                }}
+              />
+            </SegmentSection>
 
           </div>
 
@@ -283,6 +288,14 @@ export class QueryEditor extends PureComponent<Props> {
               value={query.currentMetric}
               onChange={this.onMetricChange}
             />
+          </div>
+
+          <div className='gf-form-inline'>
+            <InlineFieldRow>
+              <InlineField label="My switch">
+                <InlineSwitch value={query.top} onChange={this.onTopChange} />
+              </InlineField>
+            </InlineFieldRow>
           </div>
         </div>
       </div>

@@ -2539,6 +2539,17 @@ function (_super) {
       onRunQuery();
     };
 
+    _this.onTopChange = function (v) {
+      var _a = _this.props,
+          onChange = _a.onChange,
+          query = _a.query,
+          onRunQuery = _a.onRunQuery;
+      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        top: v.value
+      }));
+      onRunQuery();
+    };
+
     _this.getOptions = function () {
       var sourceGroup = _this.props.query.sourceGroup;
 
@@ -2712,7 +2723,14 @@ function (_super) {
       }),
       value: query.currentMetric,
       onChange: this.onMetricChange
-    }))));
+    })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      className: 'gf-form-inline'
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], {
+      label: "My switch"
+    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineSwitch"], {
+      value: query.top,
+      onChange: this.onTopChange
+    }))))));
   };
 
   return QueryEditor;
@@ -2733,10 +2751,10 @@ function (_super) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DataSource", function() { return DataSource; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var lodash_defaults__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash/defaults */ "../node_modules/lodash/defaults.js");
-/* harmony import */ var lodash_defaults__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash_defaults__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
-/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var lodash_defaults__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash/defaults */ "../node_modules/lodash/defaults.js");
+/* harmony import */ var lodash_defaults__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash_defaults__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/runtime */ "@grafana/runtime");
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./types */ "./types.ts");
@@ -2799,7 +2817,7 @@ function (_super) {
 
   DataSource.prototype.query = function (options) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
-      var range, to, from, queryTimeTo, queryTimeFrom, deltaTimeshift, dataDef_source, dateDef_groupBy, dataDef_columns, dataDef_filters, promises;
+      var range, to, from, queryTimeStop, queryTimeStart, queryTimeshift, dataDef_source, dataDef_groupBy, dataDef_topBy, dataDef_columns, dataDef_filters, promises;
 
       var _this = this;
 
@@ -2807,29 +2825,29 @@ function (_super) {
         range = options.range;
         to = range.to.valueOf();
         from = range.from.valueOf();
-        deltaTimeshift = 0;
+        queryTimeshift = 0;
         dataDef_source = {};
-        dateDef_groupBy = {};
+        dataDef_groupBy = {};
+        dataDef_topBy = {};
         dataDef_columns = [];
         dataDef_filters = [];
         promises = options.targets.map(function (target) {
           var _a;
 
-          var query = lodash_defaults__WEBPACK_IMPORTED_MODULE_1___default()(target, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
-          queryTimeTo = new Date(to).getTime() / 1000;
-          queryTimeFrom = new Date(from).getTime() / 1000;
+          var query = lodash_defaults__WEBPACK_IMPORTED_MODULE_2___default()(target, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
+          queryTimeStart = new Date(to).getTime() / 1000;
+          queryTimeStop = new Date(from).getTime() / 1000;
 
           if (typeof query.timeshift === "undefined" || typeof query.timeshift === "string" && query.timeshift === []) {
             query.timeshift = 0;
           }
 
-          query.timeshift += query.timeshift * 86400 - 1 * query.timeshift;
-          deltaTimeshift = query.timeshift;
-          queryTimeFrom = queryTimeFrom - deltaTimeshift;
-          queryTimeTo = queryTimeTo - deltaTimeshift;
+          queryTimeshift = query.timeshift + query.timeshift * 86400 - 1 * query.timeshift;
+          queryTimeStop = queryTimeStop - queryTimeshift;
+          queryTimeStart = queryTimeStart - queryTimeshift;
 
-          if (typeof deltaTimeshift !== 'undefined') {
-            query.timeshift = deltaTimeshift;
+          if (typeof queryTimeshift !== 'undefined') {
+            query.timeshift = queryTimeshift;
           }
 
           if (query.sourceGroup == _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
@@ -2838,7 +2856,7 @@ function (_super) {
               "name": "aggregates"
             }; // For each datapoint, data are grouped by timestamp and id of hostgroup
 
-            dateDef_groupBy = ["start_time", "host_group.id"]; // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
+            dataDef_groupBy = ["start_time", "host_group.id"]; // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
 
             dataDef_columns = ["start_time", "host_group.id", "host_group.name"]; // Metric request is filtered by hortgroup selected
 
@@ -2850,7 +2868,7 @@ function (_super) {
             dataDef_source = {
               "name": "aggregates"
             };
-            dateDef_groupBy = ["start_time", "app.id"];
+            dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name"];
             dataDef_filters.push({
               "type": "STEELFILTER",
@@ -2860,7 +2878,7 @@ function (_super) {
             dataDef_source = {
               "name": "aggregates"
             };
-            dateDef_groupBy = ["start_time", "app.id"];
+            dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name", "tcp.ip"];
             dataDef_filters.push({
               "type": "STEELFILTER",
@@ -2873,7 +2891,7 @@ function (_super) {
               "type": "",
               "name": "aggregates"
             };
-            dateDef_groupBy = ["start_time", "app.id"];
+            dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name"];
             dataDef_filters.push({
               "type": "STEELFILTER",
@@ -2893,16 +2911,17 @@ function (_super) {
             // The time property also includes a few properties that help refine time-series requests.
             "time": {
               // Epoch start time of the request, the start time is inclusive, the unit is seconds.
-              "start": queryTimeFrom.toString(),
+              "start": queryTimeStop.toString(),
               // Epoch end time of the request, the end time is exclusive, the unit is seconds.
-              "end": queryTimeTo.toString(),
+              "end": queryTimeStart.toString(),
               // This refers to the amount of time for which the data source computes a summary of the metrics it received
               // The data source examines all data and creates summaries for 1 minute, 5 minutes, 1 hour, 6 hours, and 1 day
               'granularity': (_a = query.granularity) === null || _a === void 0 ? void 0 : _a.value.toString()
             },
             // The group by property specifies the keys in the request. It is usually used to determine what kind of data is requested
             // If the start_time (or end_time) column is in the group_by, then the request is considered time series
-            "group_by": dateDef_groupBy,
+            "group_by": dataDef_groupBy,
+            "top_by": dataDef_topBy,
             // Request columns, the client can specify the requested key/metric columns, as well as their order
             "columns": dataDef_columns,
             // The filters property is an array with filter objects (STEELFILTER is default filter)
@@ -2924,15 +2943,15 @@ function (_super) {
               name = query.currentMetric;
             }
 
-            var frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_2__["MutableDataFrame"]({
+            var frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
               refId: query.refId,
               name: name,
               fields: [{
                 name: "Time",
-                type: _grafana_data__WEBPACK_IMPORTED_MODULE_2__["FieldType"].time
+                type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time
               }, {
                 name: "Value",
-                type: _grafana_data__WEBPACK_IMPORTED_MODULE_2__["FieldType"].number
+                type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number
               }]
             });
 
@@ -3255,7 +3274,7 @@ function (_super) {
   };
 
   return DataSource;
-}(_grafana_data__WEBPACK_IMPORTED_MODULE_2__["DataSourceApi"]);
+}(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["DataSourceApi"]);
 
 
 
@@ -3334,6 +3353,7 @@ var defaultQuery = {
   timeshift: 0,
   granularity: granularities[0],
   sourceGroup: SourceGroup.application,
+  top: false,
   metrics: [],
   hostGroups: [],
   applications: [],
