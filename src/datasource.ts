@@ -73,7 +73,6 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     let queryTimeshift = 0;
     let dataDef_source = {};
     let dataDef_groupBy = {};
-    let dataDef_topBy = {};
     let dataDef_columns: string[] = [];
     let dataDef_filters: { type: string; value: string; }[] = [];
 
@@ -148,7 +147,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         dataDef_columns.push(query.currentMetricID);
       }
 
-      let dataDef = {
+      let dataDef: any = {
         // Data source to handle the data request. The source property is an object
         // It has the following required sub-properties: name (required) and path (optional)
         'source': dataDef_source,
@@ -166,12 +165,18 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         // The group by property specifies the keys in the request. It is usually used to determine what kind of data is requested
         // If the start_time (or end_time) column is in the group_by, then the request is considered time series
         "group_by": dataDef_groupBy,
-        "top_by": dataDef_topBy,
         // Request columns, the client can specify the requested key/metric columns, as well as their order
         "columns": dataDef_columns,
-        // The filters property is an array with filter objects (STEELFILTER is default filter)
-        "filters": dataDef_filters,
       };
+
+      if (query.top) {
+        dataDef.limit = query.topN || 10;
+        dataDef.top_by = [{ "id": query.currentMetricID, "direction": query.topNDirection?.value || 'desc' }];
+        dataDef.group_by = dataDef.group_by.slice(1);  // Remove start time.
+        dataDef.columns = dataDef.columns.slice(1);  // Remove start time.
+      } else {
+        dataDef.filters = dataDef_filters;
+      }
 
       return this.doRequest({
         url: this.urls.instanceCreationSync,
@@ -189,18 +194,40 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             name = query.currentMetric;
           }
 
-          const frame = new MutableDataFrame({
-            refId: query.refId,
-            name: name,
-            fields: [
+          let fields: any = [];
+
+          let frame;
+
+          if (query.top) {
+            _dataDef.columns.forEach((c: string) => {
+              fields.push({ name: c, type: FieldType.other });
+            });
+
+            frame = new MutableDataFrame({
+              refId: query.refId,
+              name: name,
+              fields: fields,
+            });
+
+            for (let i = 0; i < _dataDef.data.length; i++) {
+              frame.appendRow(_dataDef.data[i]);
+            }
+          } else {
+            fields = [
               { name: "Time", type: FieldType.time },
               { name: "Value", type: FieldType.number },
-            ],
-          });
+            ]
 
-          for (let i = 0; i < _dataDef.data.length; i++) {
-            let row = _dataDef.data[i];
-            frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
+            frame = new MutableDataFrame({
+              refId: query.refId,
+              name: name,
+              fields: fields,
+            });
+
+            for (let i = 0; i < _dataDef.data.length; i++) {
+              let row = _dataDef.data[i];
+              frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
+            }
           }
 
           return frame;

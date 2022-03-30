@@ -1,5 +1,7 @@
 import { DataQuery, DataSourceJsonData, SelectableValue } from '@grafana/data';
 
+
+
 export enum SourceGroup {
   application = 'Application',
   hostGroup = 'Host Group',
@@ -7,11 +9,17 @@ export enum SourceGroup {
   ip = 'IP'
 };
 
+
 export const sourceGroups = [
   SourceGroup.application,
   SourceGroup.hostGroup,
   SourceGroup.webApp,
   SourceGroup.ip
+];
+
+export const topNDirections: SelectableValue[] = [
+  { value: 'asc', label: 'Ascending' },
+  { value: 'desc', label: 'Descending' },
 ];
 
 export const granularities = [
@@ -31,6 +39,8 @@ export interface AppResponseQuery extends DataQuery {
   rate?: string;
   alias?: string;
   top?: boolean;
+  topN?: number;
+  topNDirection?: SelectableValue<string>;
   sourceGroup?: SourceGroup;
   timeshift?: number;
   
@@ -56,8 +66,10 @@ export const defaultQuery: Partial<AppResponseQuery> = {
   timeshift: 0,
   granularity: granularities[0],
   sourceGroup: SourceGroup.application,
-  
+
   top: false,
+  topN: 10,
+  topNDirection: { value: 'desc', label: 'Descending' },
   metrics: [],
   hostGroups: [],
   applications: [],

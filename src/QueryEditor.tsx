@@ -1,10 +1,9 @@
-import React, { PureComponent } from 'react';
-import { SegmentSection, Segment, SegmentInput, Select, InlineFieldRow, InlineField, InlineSwitch } from '@grafana/ui';
-import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from './datasource';
-
-import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, granularities, findGranularity, defaultQuery } from './types';
-import { defaults } from 'lodash';
+import { defaults, toInteger } from 'lodash';
+import React, { PureComponent } from 'react';
+import { QueryEditorProps } from '@grafana/data';
+import { Select, InlineFieldRow, InlineField, Input, Switch } from '@grafana/ui';
+import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities, findGranularity, topNDirections } from './types';
 
 
 type Props = QueryEditorProps<DataSource, AppResponseQuery, AppResponseDataSourceOptions>;
@@ -112,9 +111,28 @@ export class QueryEditor extends PureComponent<Props> {
 
   onTopChange = (v: any) => {
     const { onChange, query, onRunQuery } = this.props;
+    console.log(v);
     onChange({
       ...query,
-      top: v.value,
+      top: v.target.checked,
+    });
+    onRunQuery();
+  }
+
+  onAliasChange = (v: any) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      alias: v.target.value,
+    });
+    onRunQuery();
+  }
+
+  onTimeshiftChange = (v: any) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      timeshift: v.target.value,
     });
     onRunQuery();
   }
@@ -137,26 +155,28 @@ export class QueryEditor extends PureComponent<Props> {
     this.getOptions();
 
     return (
-      <div className='gf-form-group'>
-        <div className="gf-form-inline">
-          <SegmentSection label='Source Group'>
-            <Segment
-              value={query.sourceGroup}
+      <div style={{ width: '100%' }}>
+        <InlineFieldRow>
+          <InlineField label="Source Group">
+            <Select
+              width='auto'
+              menuShouldPortal
               options={sourceGroups.map(sourceGroup => ({
                 value: sourceGroup,
                 label: sourceGroup,
               }))}
-              onLoad={this.getOptions}
-              onChange={this.onSourceGroupChange}
+              value={query.sourceGroup}
+              onChange={
+                (v: any) => {
+                  this.onSourceGroupChange(v);
+                  this.getOptions();
+                }
+              }
             />
-          </SegmentSection>
-
-          <div
-            className="gf-form-inline"
-            style={query.sourceGroup === SourceGroup.hostGroup ? { display: 'block' } : { display: 'none' }}
-          >
-            <SegmentSection label={SourceGroup.hostGroup.toString()}>
-              <Segment
+          </InlineField>
+          <div style={query.sourceGroup === SourceGroup.hostGroup ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label={query.sourceGroup}  >
+              <Select
                 id={query.currentHostGroupID}
                 value={query.currentHostGroup}
                 options={query.hostGroups.map(hostGroup => ({
@@ -167,15 +187,11 @@ export class QueryEditor extends PureComponent<Props> {
                 }))}
                 onChange={this.onHostGroupChange}
               />
-            </SegmentSection>
+            </InlineField>
           </div>
-
-          <div
-            className="gf-form-inline"
-            style={query.sourceGroup === SourceGroup.application ? { display: 'block' } : { display: 'none' }}
-          >
-            <SegmentSection label={SourceGroup.application.toString()}>
-              <Segment
+          <div style={query.sourceGroup === SourceGroup.application ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label={query.sourceGroup} >
+              <Select
                 id={query.currentApplicationID}
                 value={query.currentApplication}
                 options={query.applications.map(application => ({
@@ -186,15 +202,11 @@ export class QueryEditor extends PureComponent<Props> {
                 }))}
                 onChange={this.onApplicationChange}
               />
-            </SegmentSection>
+            </InlineField>
           </div>
-
-          <div
-            className="gf-form-inline"
-            style={query.sourceGroup === SourceGroup.webApp ? { display: 'block' } : { display: 'none' }}
-          >
-            <SegmentSection label={SourceGroup.webApp.toString()}>
-              <Segment
+          <div style={query.sourceGroup === SourceGroup.webApp ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label={query.sourceGroup} >
+              <Select
                 id={query.currentWebAppID}
                 value={query.currentWebApp}
                 options={query.webApps.map(webApp => ({
@@ -211,71 +223,28 @@ export class QueryEditor extends PureComponent<Props> {
                   });
                 }}
               />
-            </SegmentSection>
+            </InlineField>
           </div>
+          <div style={query.sourceGroup === SourceGroup.ip ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label={query.sourceGroup} >
 
-          <div
-            className="gf-form-inline"
-            style={query.sourceGroup === SourceGroup.ip ? { display: 'block' } : { display: 'none' }}
-          >
-            <SegmentSection label={SourceGroup.ip.toString()}>
-              <SegmentInput
+              <Input
                 value={query.currentIP || ''}
-                onChange={(v) => {
+                onChange={(e) => {
                   this.props.onChange({
                     ...query,
-                    currentIP: v as string,
+                    currentIP: e.currentTarget.value,
                   });
                 }}
               />
-            </SegmentSection>
 
+            </InlineField>
           </div>
-
-          <SegmentSection label='Granularity'>
-            <Segment
-              value={query.granularity?.text}
-              options={granularities.map(granularity => ({
-                value: granularity.text,
-                label: granularity.text,
-              }))}
-              onChange={(v) => {
-                this.props.onChange({
-                  ...query,
-                  granularity: findGranularity(v.value as string),
-                });
-              }}
-            />
-          </SegmentSection>
-
-          <SegmentSection label='Timeshift'>
-            <SegmentInput
-              value={query.timeshift?.toString() || '0'}
-              onChange={(v) => {
-                this.props.onChange({
-                  ...query,
-                  timeshift: parseInt(v as string),
-                });
-              }}
-            />
-          </SegmentSection>
-
-          <SegmentSection label='Alias'>
-            <SegmentInput
-              value={query.alias || ''}
-              onChange={(v) => {
-                this.props.onChange({
-                  ...query,
-                  alias: v as string,
-                });
-              }}
-            />
-          </SegmentSection>
-
-          <div className='gf-form-inline'>
+        </InlineFieldRow >
+        <InlineFieldRow>
+          <InlineField label="Metric">
             <Select
               width='auto'
-              prefix='Metrics'
               menuShouldPortal
               options={
                 query.metrics.map((metric) => ({
@@ -288,17 +257,84 @@ export class QueryEditor extends PureComponent<Props> {
               value={query.currentMetric}
               onChange={this.onMetricChange}
             />
-          </div>
+          </InlineField>
 
-          <div className='gf-form-inline'>
-            <InlineFieldRow>
-              <InlineField label="My switch">
-                <InlineSwitch value={query.top} onChange={this.onTopChange} />
-              </InlineField>
-            </InlineFieldRow>
+          <InlineField label="Top">
+            <div style={{ marginTop: '32px' }}>
+              <Switch
+                checked={query.top}
+                onChange={this.onTopChange}
+              />
+            </div>
+          </InlineField>
+
+          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label="N">
+              <Input
+                value={query.topN || 0}
+                onChange={(e) => {
+                  this.props.onChange({
+                    ...query,
+                    topN: toInteger(e.currentTarget.value) || 0,
+                  });
+                }}
+              />
+            </InlineField>
           </div>
-        </div>
-      </div>
+          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label="Direction">
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={topNDirections}
+                value={query.topNDirection}
+                onChange={
+                  (v: any) => {
+                    this.props.onChange({
+                      ...query,
+                      topNDirection: v.value,
+                    });
+                  }
+                }
+              />
+            </InlineField>
+          </div>
+        </InlineFieldRow>
+
+        <InlineFieldRow>
+          <InlineField label="Granularity">
+            <Select
+              value={query.granularity?.text}
+              options={granularities.map(granularity => ({
+                value: granularity.text,
+                label: granularity.text,
+              }))}
+              onChange={(v) => {
+                this.props.onChange({
+                  ...query,
+                  granularity: findGranularity(v.value as string),
+                });
+              }}
+            />
+          </InlineField>
+
+          <InlineField label="Timeshift">
+            <Input
+              value={query.timeshift?.toString() || '0'}
+              onChange={this.onTimeshiftChange}
+            ></Input>
+          </InlineField>
+
+          <div style={query.top ? { display: 'none' } : { display: 'block' }}>
+            <InlineField label="Alias">
+              <Input
+                value={query.alias || ''}
+                onChange={this.onAliasChange}
+              ></Input>
+            </InlineField>
+          </div>
+        </InlineFieldRow>
+      </div >
     );
   }
 }

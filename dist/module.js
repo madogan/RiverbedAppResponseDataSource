@@ -2313,13 +2313,13 @@ function (_super) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "QueryEditor", function() { return QueryEditor; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./types */ "./types.ts");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./types */ "./types.ts");
 
 
 
@@ -2476,11 +2476,11 @@ function (_super) {
           query = _a.query,
           onRunQuery = _a.onRunQuery;
 
-      if (v.value === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].hostGroup) {
+      if (v.value === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
         _this.getHostGroups();
-      } else if (v.value === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].application) {
+      } else if (v.value === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
         _this.getApplications();
-      } else if (v.value === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].webApp) {
+      } else if (v.value === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
         _this.getWebApps();
       }
 
@@ -2544,8 +2544,31 @@ function (_super) {
           onChange = _a.onChange,
           query = _a.query,
           onRunQuery = _a.onRunQuery;
+      console.log(v);
       onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-        top: v.value
+        top: v.target.checked
+      }));
+      onRunQuery();
+    };
+
+    _this.onAliasChange = function (v) {
+      var _a = _this.props,
+          onChange = _a.onChange,
+          query = _a.query,
+          onRunQuery = _a.onRunQuery;
+      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        alias: v.target.value
+      }));
+      onRunQuery();
+    };
+
+    _this.onTimeshiftChange = function (v) {
+      var _a = _this.props,
+          onChange = _a.onChange,
+          query = _a.query,
+          onRunQuery = _a.onRunQuery;
+      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        timeshift: v.target.value
       }));
       onRunQuery();
     };
@@ -2553,11 +2576,11 @@ function (_super) {
     _this.getOptions = function () {
       var sourceGroup = _this.props.query.sourceGroup;
 
-      if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].hostGroup) {
+      if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
         _this.getHostGroups();
-      } else if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].application) {
+      } else if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
         _this.getApplications();
-      } else if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].webApp) {
+      } else if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
         _this.getWebApps();
       }
 
@@ -2572,34 +2595,38 @@ function (_super) {
 
     var _a, _b;
 
-    var query = Object(lodash__WEBPACK_IMPORTED_MODULE_4__["defaults"])(this.props.query, _types__WEBPACK_IMPORTED_MODULE_3__["defaultQuery"]);
+    var query = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["defaults"])(this.props.query, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
     this.getOptions();
-    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: 'gf-form-group'
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentSection"], {
-      label: 'Source Group'
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Segment"], {
-      value: query.sourceGroup,
-      options: _types__WEBPACK_IMPORTED_MODULE_3__["sourceGroups"].map(function (sourceGroup) {
+    return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: {
+        width: '100%'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Source Group"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+      width: 'auto',
+      menuShouldPortal: true,
+      options: _types__WEBPACK_IMPORTED_MODULE_4__["sourceGroups"].map(function (sourceGroup) {
         return {
           value: sourceGroup,
           label: sourceGroup
         };
       }),
-      onLoad: this.getOptions,
-      onChange: this.onSourceGroupChange
-    })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline",
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].hostGroup ? {
+      value: query.sourceGroup,
+      onChange: function onChange(v) {
+        _this.onSourceGroupChange(v);
+
+        _this.getOptions();
+      }
+    })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup ? {
         display: 'block'
       } : {
         display: 'none'
       }
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentSection"], {
-      label: _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].hostGroup.toString()
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Segment"], {
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: query.sourceGroup
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
       id: query.currentHostGroupID,
       value: query.currentHostGroup,
       options: query.hostGroups.map(function (hostGroup) {
@@ -2611,16 +2638,15 @@ function (_super) {
         };
       }),
       onChange: this.onHostGroupChange
-    }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline",
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].application ? {
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application ? {
         display: 'block'
       } : {
         display: 'none'
       }
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentSection"], {
-      label: _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].application.toString()
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Segment"], {
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: query.sourceGroup
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
       id: query.currentApplicationID,
       value: query.currentApplication,
       options: query.applications.map(function (application) {
@@ -2632,16 +2658,15 @@ function (_super) {
         };
       }),
       onChange: this.onApplicationChange
-    }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline",
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].webApp ? {
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp ? {
         display: 'block'
       } : {
         display: 'none'
       }
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentSection"], {
-      label: _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].webApp.toString()
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Segment"], {
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: query.sourceGroup
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
       id: query.currentWebAppID,
       value: query.currentWebApp,
       options: query.webApps.map(function (webApp) {
@@ -2658,60 +2683,25 @@ function (_super) {
           currentWebApp: v.name
         }));
       }
-    }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline",
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].ip ? {
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip ? {
         display: 'block'
       } : {
         display: 'none'
       }
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentSection"], {
-      label: _types__WEBPACK_IMPORTED_MODULE_3__["SourceGroup"].ip.toString()
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentInput"], {
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: query.sourceGroup
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
       value: query.currentIP || '',
-      onChange: function onChange(v) {
+      onChange: function onChange(e) {
         _this.props.onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          currentIP: v
+          currentIP: e.currentTarget.value
         }));
       }
-    }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentSection"], {
-      label: 'Granularity'
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Segment"], {
-      value: (_a = query.granularity) === null || _a === void 0 ? void 0 : _a.text,
-      options: _types__WEBPACK_IMPORTED_MODULE_3__["granularities"].map(function (granularity) {
-        return {
-          value: granularity.text,
-          label: granularity.text
-        };
-      }),
-      onChange: function onChange(v) {
-        _this.props.onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          granularity: Object(_types__WEBPACK_IMPORTED_MODULE_3__["findGranularity"])(v.value)
-        }));
-      }
-    })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentSection"], {
-      label: 'Timeshift'
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentInput"], {
-      value: ((_b = query.timeshift) === null || _b === void 0 ? void 0 : _b.toString()) || '0',
-      onChange: function onChange(v) {
-        _this.props.onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          timeshift: parseInt(v)
-        }));
-      }
-    })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentSection"], {
-      label: 'Alias'
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["SegmentInput"], {
-      value: query.alias || '',
-      onChange: function onChange(v) {
-        _this.props.onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          alias: v
-        }));
-      }
-    })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: 'gf-form-inline'
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["Select"], {
+    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Metric"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
       width: 'auto',
-      prefix: 'Metrics',
       menuShouldPortal: true,
       options: query.metrics.map(function (metric) {
         return {
@@ -2723,18 +2713,84 @@ function (_super) {
       }),
       value: query.currentMetric,
       onChange: this.onMetricChange
-    })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: 'gf-form-inline'
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], {
-      label: "My switch"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineSwitch"], {
-      value: query.top,
+    })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Top"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: {
+        marginTop: '32px'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
+      checked: query.top,
       onChange: this.onTopChange
-    }))))));
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.top ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "N"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
+      value: query.topN || 0,
+      onChange: function onChange(e) {
+        _this.props.onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+          topN: Object(lodash__WEBPACK_IMPORTED_MODULE_1__["toInteger"])(e.currentTarget.value) || 0
+        }));
+      }
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.top ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Direction"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+      width: 'auto',
+      menuShouldPortal: true,
+      options: _types__WEBPACK_IMPORTED_MODULE_4__["topNDirections"],
+      value: query.topNDirection,
+      onChange: function onChange(v) {
+        _this.props.onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+          topNDirection: v.value
+        }));
+      }
+    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Granularity"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+      value: (_a = query.granularity) === null || _a === void 0 ? void 0 : _a.text,
+      options: _types__WEBPACK_IMPORTED_MODULE_4__["granularities"].map(function (granularity) {
+        return {
+          value: granularity.text,
+          label: granularity.text
+        };
+      }),
+      onChange: function onChange(v) {
+        _this.props.onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+          granularity: Object(_types__WEBPACK_IMPORTED_MODULE_4__["findGranularity"])(v.value)
+        }));
+      }
+    })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Timeshift"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
+      value: ((_b = query.timeshift) === null || _b === void 0 ? void 0 : _b.toString()) || '0',
+      onChange: this.onTimeshiftChange
+    })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.top ? {
+        display: 'none'
+      } : {
+        display: 'block'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Alias"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
+      value: query.alias || '',
+      onChange: this.onAliasChange
+    })))));
   };
 
   return QueryEditor;
-}(react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"]);
+}(react__WEBPACK_IMPORTED_MODULE_2__["PureComponent"]);
 
 
 
@@ -2817,7 +2873,7 @@ function (_super) {
 
   DataSource.prototype.query = function (options) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
-      var range, to, from, queryTimeStop, queryTimeStart, queryTimeshift, dataDef_source, dataDef_groupBy, dataDef_topBy, dataDef_columns, dataDef_filters, promises;
+      var range, to, from, queryTimeStop, queryTimeStart, queryTimeshift, dataDef_source, dataDef_groupBy, dataDef_columns, dataDef_filters, promises;
 
       var _this = this;
 
@@ -2828,11 +2884,10 @@ function (_super) {
         queryTimeshift = 0;
         dataDef_source = {};
         dataDef_groupBy = {};
-        dataDef_topBy = {};
         dataDef_columns = [];
         dataDef_filters = [];
         promises = options.targets.map(function (target) {
-          var _a;
+          var _a, _b;
 
           var query = lodash_defaults__WEBPACK_IMPORTED_MODULE_2___default()(target, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
           queryTimeStart = new Date(to).getTime() / 1000;
@@ -2921,12 +2976,23 @@ function (_super) {
             // The group by property specifies the keys in the request. It is usually used to determine what kind of data is requested
             // If the start_time (or end_time) column is in the group_by, then the request is considered time series
             "group_by": dataDef_groupBy,
-            "top_by": dataDef_topBy,
             // Request columns, the client can specify the requested key/metric columns, as well as their order
             "columns": dataDef_columns,
             // The filters property is an array with filter objects (STEELFILTER is default filter)
             "filters": dataDef_filters
           };
+
+          if (query.top) {
+            dataDef.limit = query.topN || 10;
+            dataDef.top_by = [{
+              "id": query.currentMetricID,
+              "direction": ((_b = query.topNDirection) === null || _b === void 0 ? void 0 : _b.value) || 'desc'
+            }];
+            dataDef.group_by = dataDef.group_by.slice(1); // Remove start time.
+
+            dataDef.columns = dataDef.columns.slice(1); // Remove start time.
+          }
+
           return _this.doRequest({
             url: _this.urls.instanceCreationSync,
             data: {
@@ -2943,21 +3009,44 @@ function (_super) {
               name = query.currentMetric;
             }
 
-            var frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
-              refId: query.refId,
-              name: name,
-              fields: [{
+            var fields = [];
+            var frame;
+
+            if (query.top) {
+              _dataDef.columns.forEach(function (c) {
+                fields.push({
+                  name: c,
+                  type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].other
+                });
+              });
+
+              frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
+                refId: query.refId,
+                name: name,
+                fields: fields
+              });
+
+              for (var i = 0; i < _dataDef.data.length; i++) {
+                frame.appendRow(_dataDef.data[i]);
+              }
+            } else {
+              fields = [{
                 name: "Time",
                 type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time
               }, {
                 name: "Value",
                 type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number
-              }]
-            });
+              }];
+              frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
+                refId: query.refId,
+                name: name,
+                fields: fields
+              });
 
-            for (var i = 0; i < _dataDef.data.length; i++) {
-              var row = _dataDef.data[i];
-              frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
+              for (var i = 0; i < _dataDef.data.length; i++) {
+                var row = _dataDef.data[i];
+                frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
+              }
             }
 
             return frame;
@@ -3307,13 +3396,14 @@ var plugin = new _grafana_data__WEBPACK_IMPORTED_MODULE_0__["DataSourcePlugin"](
 /*!******************!*\
   !*** ./types.ts ***!
   \******************/
-/*! exports provided: SourceGroup, sourceGroups, granularities, findGranularity, defaultQuery */
+/*! exports provided: SourceGroup, sourceGroups, topNDirections, granularities, findGranularity, defaultQuery */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SourceGroup", function() { return SourceGroup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sourceGroups", function() { return sourceGroups; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "topNDirections", function() { return topNDirections; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "granularities", function() { return granularities; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findGranularity", function() { return findGranularity; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultQuery", function() { return defaultQuery; });
@@ -3328,6 +3418,13 @@ var SourceGroup;
 
 ;
 var sourceGroups = [SourceGroup.application, SourceGroup.hostGroup, SourceGroup.webApp, SourceGroup.ip];
+var topNDirections = [{
+  value: 'asc',
+  label: 'Ascending'
+}, {
+  value: 'desc',
+  label: 'Descending'
+}];
 var granularities = [{
   "value": 60,
   "text": "60 seconds"
@@ -3354,6 +3451,11 @@ var defaultQuery = {
   granularity: granularities[0],
   sourceGroup: SourceGroup.application,
   top: false,
+  topN: 10,
+  topNDirection: {
+    value: 'desc',
+    label: 'Descending'
+  },
   metrics: [],
   hostGroups: [],
   applications: [],
