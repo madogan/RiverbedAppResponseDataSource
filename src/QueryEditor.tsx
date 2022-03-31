@@ -15,7 +15,6 @@ export class QueryEditor extends PureComponent<Props> {
     const diff = (Date.now() - query.lastFetchHostGroups.getTime()) / 1000 / 60;
   
     if (diff >= 15 || query.hostGroups.length < 1) {
-      // if (query.lastFetchHostGroups && (Date.now() - query.lastFetchHostGroups.getTime()) / 1000 > 5) {
       query.lastFetchHostGroups = new Date(Date.now());
       onChange({
         ...query,
@@ -30,7 +29,6 @@ export class QueryEditor extends PureComponent<Props> {
     const diff = (Date.now() - query.lastFetchApplications.getTime()) / 1000 / 60;
   
     if (diff >= 15 || query.applications.length < 1) {
-      // if (query.lastFetchApplications && (Date.now() - query.lastFetchApplications.getTime()) / 1000 > 5) {
       query.lastFetchApplications = new Date();
       onChange({
         ...query,
