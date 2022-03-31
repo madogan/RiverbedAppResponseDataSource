@@ -3,16 +3,20 @@ import { defaults, toInteger } from 'lodash';
 import React, { PureComponent } from 'react';
 import { QueryEditorProps } from '@grafana/data';
 import { Select, InlineFieldRow, InlineField, Input, Switch } from '@grafana/ui';
-import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities, findGranularity, topNDirections } from './types';
+import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities, topNDirections } from './types';
 
 
 type Props = QueryEditorProps<DataSource, AppResponseQuery, AppResponseDataSourceOptions>;
 
 export class QueryEditor extends PureComponent<Props> {
-
   getHostGroups = async () => {
     const { query, datasource, onChange } = this.props;
-    if (query.hostGroups.length < 1) {
+
+    const diff = (Date.now() - query.lastFetchHostGroups.getTime()) / 1000 / 60;
+  
+    if (diff >= 60 || query.hostGroups.length < 1) {
+      // if (query.lastFetchHostGroups && (Date.now() - query.lastFetchHostGroups.getTime()) / 1000 > 5) {
+      query.lastFetchHostGroups = new Date(Date.now());
       onChange({
         ...query,
         hostGroups: await datasource.getHostGroups(),
@@ -22,7 +26,12 @@ export class QueryEditor extends PureComponent<Props> {
 
   getApplications = async () => {
     const { query, datasource, onChange } = this.props;
-    if (query.applications.length < 1) {
+
+    const diff = (Date.now() - query.lastFetchApplications.getTime()) / 1000 / 60;
+  
+    if (diff >= 60 || query.applications.length < 1) {
+      // if (query.lastFetchApplications && (Date.now() - query.lastFetchApplications.getTime()) / 1000 > 5) {
+      query.lastFetchApplications = new Date();
       onChange({
         ...query,
         applications: await datasource.getApplications(),
@@ -32,7 +41,11 @@ export class QueryEditor extends PureComponent<Props> {
 
   getWebApps = async () => {
     const { query, datasource, onChange } = this.props;
-    if (query.webApps.length < 1) {
+
+    const diff = (Date.now() - query.lastFetchWebApps.getTime()) / 1000 / 60;
+  
+    if (diff >= 60 || query.webApps.length < 1) {
+      query.lastFetchWebApps = new Date(Date.now());
       onChange({
         ...query,
         webApps: await datasource.getWebApps(),
@@ -42,7 +55,11 @@ export class QueryEditor extends PureComponent<Props> {
 
   getMetrics = async (sourceGroup: SourceGroup | undefined) => {
     const { query, datasource, onChange } = this.props;
-    if (sourceGroup !== undefined && query.metrics.length < 1) {
+
+    const diff = (Date.now() - query.lastFetchMetrics.getTime()) / 1000 / 60;
+
+    if (sourceGroup !== undefined && (diff >= 60 || query.metrics.length < 1)) {
+      query.lastFetchMetrics = new Date(Date.now());
       onChange({
         ...query,
         metrics: await datasource.getMetrics(sourceGroup),
@@ -50,16 +67,22 @@ export class QueryEditor extends PureComponent<Props> {
     }
   }
 
-  onSourceGroupChange = (v: any) => {
-    const { onChange, query, onRunQuery } = this.props;
-    if (v.value === SourceGroup.hostGroup) {
+  getOptions = (sourceGroup: SourceGroup) => {
+    if (sourceGroup === SourceGroup.hostGroup) {
       this.getHostGroups();
-    } else if (v.value === SourceGroup.application) {
+    } else if (sourceGroup === SourceGroup.application) {
       this.getApplications();
-    } else if (v.value === SourceGroup.webApp) {
+    } else if (sourceGroup === SourceGroup.webApp) {
       this.getWebApps();
     }
-    this.getMetrics(v.value as SourceGroup);
+
+    this.getMetrics(sourceGroup as SourceGroup);
+  }
+
+  onSourceGroupChange = (v: any) => {
+    const { onChange, query, onRunQuery } = this.props;
+
+    this.getOptions(v.value as SourceGroup);
 
     onChange({
       ...query,
@@ -73,8 +96,8 @@ export class QueryEditor extends PureComponent<Props> {
     const { onChange, query, onRunQuery } = this.props;
     onChange({
       ...query,
-      currentHostGroupID: v.id,
-      currentHostGroup: v.name,
+      currentHostGroup: v.label,
+      currentHostGroupID: v.value,
     });
     onRunQuery();
   }
@@ -83,18 +106,28 @@ export class QueryEditor extends PureComponent<Props> {
     const { onChange, query, onRunQuery } = this.props;
     onChange({
       ...query,
-      currentApplicationID: v.id,
-      currentApplication: v.name,
+      currentApplication: v.label,
+      currentApplicationID: v.value,
     });
     onRunQuery();
   }
 
-  onIPChange = (v: any) => {
+  onIPChange = (e: any) => {
     const { onChange, query, onRunQuery } = this.props;
 
     onChange({
       ...query,
-      currentIP: v.value,
+      currentIP: e.currentTarget.value,
+    });
+    onRunQuery();
+  }
+
+  onWebAppChange = (v: any) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      currentWebApp: v.label,
+      currentWebAppID: v.value,
     });
     onRunQuery();
   }
@@ -103,18 +136,35 @@ export class QueryEditor extends PureComponent<Props> {
     const { onChange, query, onRunQuery } = this.props;
     onChange({
       ...query,
-      currentMetricID: v.id,
-      currentMetric: v.name,
+      currentMetricID: v.value,
+      currentMetric: v.label,
     });
     onRunQuery();
   }
 
-  onTopChange = (v: any) => {
+  onTopChange = (e: any) => {
     const { onChange, query, onRunQuery } = this.props;
-    console.log(v);
     onChange({
       ...query,
-      top: v.target.checked,
+      top: e.currentTarget.checked,
+    });
+    onRunQuery();
+  }
+
+  onTopNChange = (e: any) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      topN: toInteger(e.currentTarget.value),
+    });
+    onRunQuery();
+  }
+
+  onTopNDirectionChange = (e: any) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      topNDirection: e.value,
     });
     onRunQuery();
   }
@@ -137,131 +187,27 @@ export class QueryEditor extends PureComponent<Props> {
     onRunQuery();
   }
 
-  getOptions = () => {
-    const sourceGroup = this.props.query.sourceGroup;
-    if (sourceGroup === SourceGroup.hostGroup) {
-      this.getHostGroups();
-    } else if (sourceGroup === SourceGroup.application) {
-      this.getApplications();
-    } else if (sourceGroup === SourceGroup.webApp) {
-      this.getWebApps();
-    }
-    this.getMetrics(sourceGroup)
+  onGranularityChange = (v: any) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      granularity: v.value,
+    });
+    onRunQuery();
   }
 
   render() {
     const query = defaults(this.props.query, defaultQuery);
 
-    this.getOptions();
+    this.getOptions(query.sourceGroup);
 
     return (
       <div style={{ width: '100%' }}>
         <InlineFieldRow>
-          <InlineField label="Source Group">
-            <Select
-              width='auto'
-              menuShouldPortal
-              options={sourceGroups.map(sourceGroup => ({
-                value: sourceGroup,
-                label: sourceGroup,
-              }))}
-              value={query.sourceGroup}
-              onChange={
-                (v: any) => {
-                  this.onSourceGroupChange(v);
-                  this.getOptions();
-                }
-              }
-            />
-          </InlineField>
-          <div style={query.sourceGroup === SourceGroup.hostGroup ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label={query.sourceGroup}  >
-              <Select
-                id={query.currentHostGroupID}
-                value={query.currentHostGroup}
-                options={query.hostGroups.map(hostGroup => ({
-                  id: hostGroup.id,
-                  name: hostGroup.name,
-                  value: hostGroup.name,
-                  label: hostGroup.name,
-                }))}
-                onChange={this.onHostGroupChange}
-              />
-            </InlineField>
-          </div>
-          <div style={query.sourceGroup === SourceGroup.application ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label={query.sourceGroup} >
-              <Select
-                id={query.currentApplicationID}
-                value={query.currentApplication}
-                options={query.applications.map(application => ({
-                  id: application.id,
-                  name: application.name,
-                  value: application.name,
-                  label: application.name,
-                }))}
-                onChange={this.onApplicationChange}
-              />
-            </InlineField>
-          </div>
-          <div style={query.sourceGroup === SourceGroup.webApp ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label={query.sourceGroup} >
-              <Select
-                id={query.currentWebAppID}
-                value={query.currentWebApp}
-                options={query.webApps.map(webApp => ({
-                  id: webApp.id,
-                  name: webApp.name,
-                  value: webApp.name,
-                  label: webApp.name,
-                }))}
-                onChange={(v) => {
-                  this.props.onChange({
-                    ...query,
-                    currentWebAppID: v.id,
-                    currentWebApp: v.name,
-                  });
-                }}
-              />
-            </InlineField>
-          </div>
-          <div style={query.sourceGroup === SourceGroup.ip ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label={query.sourceGroup} >
-
-              <Input
-                value={query.currentIP || ''}
-                onChange={(e) => {
-                  this.props.onChange({
-                    ...query,
-                    currentIP: e.currentTarget.value,
-                  });
-                }}
-              />
-
-            </InlineField>
-          </div>
-        </InlineFieldRow >
-        <InlineFieldRow>
-          <InlineField label="Metric">
-            <Select
-              width='auto'
-              menuShouldPortal
-              options={
-                query.metrics.map((metric) => ({
-                  id: metric.id,
-                  name: metric.name,
-                  value: metric.name,
-                  label: metric.name,
-                }))
-              }
-              value={query.currentMetric}
-              onChange={this.onMetricChange}
-            />
-          </InlineField>
-
           <InlineField label="Top">
-            <div style={{ marginTop: '32px' }}>
+            <div style={{ marginTop: '8px' }}>
               <Switch
+                value={query.top}
                 checked={query.top}
                 onChange={this.onTopChange}
               />
@@ -271,50 +217,102 @@ export class QueryEditor extends PureComponent<Props> {
           <div style={query.top ? { display: 'block' } : { display: 'none' }}>
             <InlineField label="N">
               <Input
+                width={16}
                 value={query.topN || 0}
-                onChange={(e) => {
-                  this.props.onChange({
-                    ...query,
-                    topN: toInteger(e.currentTarget.value) || 0,
-                  });
-                }}
+                onChange={this.onTopNChange}
               />
             </InlineField>
           </div>
+
           <div style={query.top ? { display: 'block' } : { display: 'none' }}>
             <InlineField label="Direction">
               <Select
                 width='auto'
                 menuShouldPortal
                 options={topNDirections}
-                value={query.topNDirection}
-                onChange={
-                  (v: any) => {
-                    this.props.onChange({
-                      ...query,
-                      topNDirection: v.value,
-                    });
-                  }
-                }
+                value={query.topNDirection?.value}
+                onChange={this.onTopNDirectionChange}
               />
             </InlineField>
           </div>
-        </InlineFieldRow>
+
+          <InlineField label="Source Group">
+            <Select
+              width='auto'
+              menuShouldPortal
+              options={sourceGroups}
+              value={query.sourceGroup}
+              onChange={this.onSourceGroupChange}
+            />
+          </InlineField>
+
+          <div style={query.sourceGroup === SourceGroup.hostGroup && !query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label={query.sourceGroup} onLoadStart={this.getHostGroups}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                id={query.currentHostGroupID}
+                value={query.currentHostGroup}
+                options={query.hostGroups}
+                onChange={this.onHostGroupChange}
+              />
+            </InlineField>
+          </div>
+
+          <div style={query.sourceGroup === SourceGroup.application && !query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label={query.sourceGroup} onLoadStart={this.getApplications}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                id={query.currentApplicationID}
+                value={query.currentApplication}
+                options={query.applications}
+                onChange={this.onApplicationChange}
+              />
+            </InlineField>
+          </div>
+
+          <div style={query.sourceGroup === SourceGroup.webApp && !query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label={query.sourceGroup} onLoadStart={this.getWebApps}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                id={query.currentWebAppID}
+                value={query.currentWebApp}
+                options={query.webApps}
+                onChange={this.onWebAppChange}
+              />
+            </InlineField>
+          </div>
+
+          <div style={query.sourceGroup === SourceGroup.ip && !query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label={query.sourceGroup}>
+              <Input
+                value={query.currentIP || ''}
+                onChange={this.onIPChange}
+              />
+            </InlineField>
+          </div>
+
+          <InlineField label="Metric" onLoadStart={() => this.getMetrics(query.sourceGroup)}>
+            <Select
+              width='auto'
+              menuShouldPortal
+              options={query.metrics}
+              value={query.currentMetric}
+              onChange={this.onMetricChange}
+
+            />
+          </InlineField>
+        </InlineFieldRow >
 
         <InlineFieldRow>
           <InlineField label="Granularity">
             <Select
-              value={query.granularity?.text}
-              options={granularities.map(granularity => ({
-                value: granularity.text,
-                label: granularity.text,
-              }))}
-              onChange={(v) => {
-                this.props.onChange({
-                  ...query,
-                  granularity: findGranularity(v.value as string),
-                });
-              }}
+              menuShouldPortal
+              value={query.granularity?.value}
+              options={granularities}
+              onChange={this.onGranularityChange}
             />
           </InlineField>
 
