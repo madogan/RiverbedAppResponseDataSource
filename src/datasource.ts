@@ -9,7 +9,7 @@ import {
 } from '@grafana/data';
 import _ from 'lodash';
 import defaults from 'lodash/defaults';
-import { getBackendSrv, getTemplateSrv } from "@grafana/runtime";
+import { getBackendSrv } from "@grafana/runtime";
 import { AppResponseDataSourceOptions, defaultQuery, AppResponseURLs, SourceGroup, AppResponseQuery } from './types';
 
 export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataSourceOptions> {
@@ -38,29 +38,6 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     };
 
     this.headers = { 'Content-Type': 'application/json' };
-  }
-
-  annotationQuery(options: any) {
-    var query = getTemplateSrv().replace(options.annotation.query, {}, 'glob');
-    var annotationQuery = {
-      range: options.range,
-      annotation: {
-        name: options.annotation.name,
-        datasource: options.annotation.datasource,
-        enable: options.annotation.enable,
-        iconColor: options.annotation.iconColor,
-        query: query
-      },
-      rangeRaw: options.rangeRaw
-    };
-
-    return this.doRequest({
-      url: this.url + '/annotations',
-      method: 'POST',
-      data: annotationQuery
-    }).then(result => {
-      return result.data;
-    });
   }
 
   async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
@@ -118,8 +95,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         );
       } else if (query.sourceGroup === SourceGroup.ip) {
         dataDef_source = { "name": "aggregates" };
-        dataDef_groupBy = ["start_time", "app.id"];
-        dataDef_columns = ["start_time", "app.id", "app.name", "tcp.ip"];
+        dataDef_groupBy = ["start_time"];
+        dataDef_columns = ["start_time", "tcp.ip", "tcp.dns"];
         dataDef_filters.push(
           {
             "type": "STEELFILTER",
@@ -186,6 +163,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         (response) => {
           let name;
           let _dataDef = response.data.data_defs[0];
+          
+          if (_dataDef.data === undefined) {
+            _dataDef.data = [];
+          }
 
           if (query.alias !== undefined && query.alias.trim() !== '') {
             name = query.alias;
@@ -199,9 +180,15 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           let frame;
 
           if (query.top) {
-            _dataDef.columns.forEach((c: string) => {
-              fields.push({ name: c, type: FieldType.other });
-            });
+            let removeIndices = [];
+            for (let index = 0; index < _dataDef.columns.length; index++) {
+              const column = _dataDef.columns[index];
+              if (column.search('id') === -1) {
+                fields.push({ name: column.replace(/\.|_/g, " ").toUpperCase(), type: FieldType.other });
+              } else {
+                removeIndices.push(index);
+              }
+            }
 
             frame = new MutableDataFrame({
               refId: query.refId,
@@ -210,6 +197,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             });
 
             for (let i = 0; i < _dataDef.data.length; i++) {
+              removeIndices.forEach((j) => { _dataDef.data[i].splice(j, 1); });
               frame.appendRow(_dataDef.data[i]);
             }
           } else {
@@ -287,185 +275,177 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getHostGroups() {
-    let result: SelectableValue<any>[] = [];
-    await this.doRequest({
-      method: 'GET',
-      url: this.urls.hostGroup,
-    }).then(
-      (response) => {
-        if (typeof response !== 'undefined') {
-          for (let k in response.data.items) {
-            if (response.data.items[k]["enabled"]) {
-              result.push(
-                {
-                  name: response.data.items[k]["name"],
-                  id: response.data.items[k]["id"]
-                } as SelectableValue
-              );
+    let result: SelectableValue[] = [];
+    try {
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.hostGroup,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            for (let k in response.data.items) {
+              if (response.data.items[k]["enabled"]) {
+                result.push(
+                  {
+                    'label': response.data.items[k]["name"],
+                    'value': response.data.items[k]["id"]
+                  } as SelectableValue
+                );
+              }
             }
           }
         }
-      }
-    )
+      )
+    } catch (error) {
+      console.error(error);
+    }
     return result;
   }
 
   async getApplications() {
     let result: SelectableValue<any>[] = [];
-    await this.doRequest({
-      method: 'GET',
-      url: this.urls.application,
-    }).then(
-      (response) => {
-        if (typeof response !== 'undefined') {
-          for (let k in response.data.items) {
-            if (response.data.items[k]["enabled"]) {
-              result.push(
-                {
-                  name: response.data.items[k]["name"],
-                  id: response.data.items[k]["id"]
-                } as SelectableValue
-              );
+    try {
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.application,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            for (let k in response.data.items) {
+              if (response.data.items[k]["enabled"]) {
+                result.push(
+                  {
+                    'label': response.data.items[k]["name"],
+                    'value': response.data.items[k]["id"]
+                  } as SelectableValue
+                );
+              }
             }
           }
         }
-      }
-    )
-    return result;
-  }
-
-  async getIPs() {
-    let result: SelectableValue<any>[] = [];
-    await this.doRequest({
-      method: 'GET',
-      url: this.urls.url,
-    }).then(
-      (response) => {
-        if (typeof response !== 'undefined') {
-          for (let k in response.data.items) {
-            if (response.data.items[k]["enabled"]) {
-              result.push(
-                {
-                  name: response.data.items[k]["name"],
-                  id: response.data.items[k]["id"]
-                } as SelectableValue
-              );
-            }
-          }
-        }
-      }
-    )
+      )
+    } catch (error) {
+      console.error(error);
+    }
     return result;
   }
 
   async getWebApps() {
     let result: SelectableValue<any>[] = [];
-    await this.doRequest({
-      method: 'GET',
-      url: this.urls.webApp,
-    }).then(
-      (response) => {
-        if (typeof response !== 'undefined') {
-          for (let k in response.data.items) {
-            if (response.data.items[k]["enabled"]) {
-              result.push(
-                {
-                  'name': response.data.items[k].name,
-                  'id': response.data.items[k].id
-                } as SelectableValue
-              );
+    try {
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.webApp,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            for (let k in response.data.items) {
+              if (response.data.items[k]["enabled"]) {
+                result.push(
+                  {
+                    'label': response.data.items[k].name,
+                    'value': response.data.items[k].id
+                  } as SelectableValue
+                );
+              }
             }
           }
         }
-      }
-    )
+      )
+    } catch (error) {
+      console.error(error);
+    }
     return result;
   }
 
   async getMetrics(sourceGroup: SourceGroup) {
     let result: SelectableValue<any>[] = [];
-    await this.doRequest({
-      method: 'GET',
-      url: this.urls.metric
-    }).then(
-      (response) => {
-        for (let k in response.data.columns) {
-          const id = response.data.columns[k].id;
-          let unit = response.data.columns[k].unit;
-          const rate = response.data.columns[k].rate;
-          const label = response.data.columns[k].label;
-          if (
-            !id.endsWith('.id') && !id.endsWith('_id')
-            && !id.endsWith('.id') && !id.endsWith('.name')
-            && !id.endsWith('_name') && !id.endsWith('.ip')
-            && !id.endsWith('_ip') && !id.endsWith('.url')
-            && !id.endsWith('_url') && !id.endsWith('.type')
-            && !id.endsWith('_type') && !id.endsWith('.dns')
-            && !id.endsWith('_dns') && !id.endsWith('start_time')
-            && !id.endsWith('end_time') && !id.includes('rtp')
-          ) {
+    try {
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.metric
+      }).then(
+        (response) => {
+          for (let k in response.data.columns) {
+            const id = response.data.columns[k].id;
+            let unit = response.data.columns[k].unit;
+            const rate = response.data.columns[k].rate;
+            const label = response.data.columns[k].label;
             if (
-              sourceGroup === SourceGroup.application
-              && !id.includes('p2m') && !id.includes('m2p')
-              && !id.includes('web')
+              !id.endsWith('.id') && !id.endsWith('_id')
+              && !id.endsWith('.id') && !id.endsWith('.name')
+              && !id.endsWith('_name') && !id.endsWith('.ip')
+              && !id.endsWith('_ip') && !id.endsWith('.url')
+              && !id.endsWith('_url') && !id.endsWith('.type')
+              && !id.endsWith('_type') && !id.endsWith('.dns')
+              && !id.endsWith('_dns') && !id.endsWith('start_time')
+              && !id.endsWith('end_time') && !id.includes('rtp')
             ) {
-              if (unit === 'none') {
-                unit = 'occurence'
-              }
+              if (
+                sourceGroup === SourceGroup.application
+                && !id.includes('p2m') && !id.includes('m2p')
+                && !id.includes('web')
+              ) {
+                if (unit === 'none') {
+                  unit = 'occurence'
+                }
 
-              if (typeof rate !== 'undefined') {
-                result.push({
-                  'name': label + "  (" + unit + "/" + rate + ")",
-                  'id': id
-                } as SelectableValue);
-              }
-              else {
-                result.push({
-                  'name': label + "  (" + unit + ")",
-                  'id': id
-                } as SelectableValue);
-              }
-            } else if (
-              sourceGroup === SourceGroup.webApp && id.includes('web')
-            ) {
-              if (unit === 'none') {
-                unit = 'occurence'
-              }
+                if (typeof rate !== 'undefined') {
+                  result.push({
+                    'label': label + "  (" + unit + "/" + rate + ")",
+                    'value': id
+                  } as SelectableValue);
+                }
+                else {
+                  result.push({
+                    'label': label + "  (" + unit + ")",
+                    'value': id
+                  } as SelectableValue);
+                }
+              } else if (
+                sourceGroup === SourceGroup.webApp && id.includes('web')
+              ) {
+                if (unit === 'none') {
+                  unit = 'occurence'
+                }
 
-              if (typeof rate !== 'undefined') {
-                result.push({
-                  'name': label + "  (" + unit + "/" + rate + ")",
-                  'id': id
-                } as SelectableValue);
-              }
-              else {
-                result.push({
-                  'name': label + "  (" + unit + ")",
-                  'id': id
-                } as SelectableValue);
-              }
-            } else if (sourceGroup === SourceGroup.hostGroup) {
-              if (unit === 'none') {
-                unit = 'occurence'
-              }
+                if (typeof rate !== 'undefined') {
+                  result.push({
+                    'label': label + "  (" + unit + "/" + rate + ")",
+                    'value': id
+                  } as SelectableValue);
+                }
+                else {
+                  result.push({
+                    'label': label + "  (" + unit + ")",
+                    'value': id
+                  } as SelectableValue);
+                }
+              } else if (sourceGroup === SourceGroup.hostGroup) {
+                if (unit === 'none') {
+                  unit = 'occurence'
+                }
 
-              if (typeof rate !== 'undefined') {
-                result.push({
-                  'name': label + "  (" + unit + "/" + rate + ")",
-                  'id': id
-                } as SelectableValue);
-              }
-              else {
-                result.push({
-                  'name': label + "  (" + unit + ")",
-                  'id': id
-                } as SelectableValue);
+                if (typeof rate !== 'undefined') {
+                  result.push({
+                    'label': label + "  (" + unit + "/" + rate + ")",
+                    'value': id
+                  } as SelectableValue);
+                }
+                else {
+                  result.push({
+                    'label': label + "  (" + unit + ")",
+                    'value': id
+                  } as SelectableValue);
+                }
               }
             }
           }
         }
-      }
-    )
+      )
+    } catch (error) {
+      console.error(error);
+    }
     return result;
   }
 }

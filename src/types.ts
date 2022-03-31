@@ -11,10 +11,10 @@ export enum SourceGroup {
 
 
 export const sourceGroups = [
-  SourceGroup.application,
-  SourceGroup.hostGroup,
-  SourceGroup.webApp,
-  SourceGroup.ip
+  { label: 'Application', value: SourceGroup.application },
+  { label: 'Host Group', value: SourceGroup.hostGroup },
+  { label: 'Web App', value: SourceGroup.webApp },
+  { label: 'IP', value: SourceGroup.ip },
 ];
 
 export const topNDirections: SelectableValue[] = [
@@ -23,15 +23,15 @@ export const topNDirections: SelectableValue[] = [
 ];
 
 export const granularities = [
-  { "value": 60, "text": "60 seconds" },
-  { "value": 300, "text": "5 minutes" },
-  { "value": 3600, "text": "1 hour" },
-  { "value": 21600, "text": "6 hours" },
-  { "value": 86400, "text": "1 day" }
+  { "value": 60, "label": "60 seconds" },
+  { "value": 300, "label": "5 minutes" },
+  { "value": 3600, "label": "1 hour" },
+  { "value": 21600, "label": "6 hours" },
+  { "value": 86400, "label": "1 day" }
 ];
 
 export const findGranularity = (t: string) => {
-  return granularities.find(g => g.text === t);
+  return granularities.find(g => g.value.toString() === t);
 };
 
 export interface AppResponseQuery extends DataQuery {
@@ -40,8 +40,8 @@ export interface AppResponseQuery extends DataQuery {
   alias?: string;
   top?: boolean;
   topN?: number;
-  topNDirection?: SelectableValue<string>;
-  sourceGroup?: SourceGroup;
+  topNDirection?: SelectableValue;
+  sourceGroup: SourceGroup;
   timeshift?: number;
   
   currentMetric?: string;
@@ -55,11 +55,15 @@ export interface AppResponseQuery extends DataQuery {
   currentIP?: string;
 
   metrics: SelectableValue[];
+  lastFetchMetrics: Date;
   hostGroups: SelectableValue[];
+  lastFetchHostGroups: Date;
   applications: SelectableValue[];
+  lastFetchApplications: Date;
   webApps: SelectableValue[];
+  lastFetchWebApps: Date;
 
-  granularity?: {'value': number, 'text': string};
+  granularity?: SelectableValue;
 }
 
 export const defaultQuery: Partial<AppResponseQuery> = {
@@ -69,12 +73,17 @@ export const defaultQuery: Partial<AppResponseQuery> = {
 
   top: false,
   topN: 10,
-  topNDirection: { value: 'desc', label: 'Descending' },
+  topNDirection: topNDirections[0],
   metrics: [],
   hostGroups: [],
   applications: [],
   webApps: [],
   currentIP: '',
+
+  lastFetchMetrics: new Date(),
+  lastFetchHostGroups: new Date(),
+  lastFetchApplications: new Date(),
+  lastFetchWebApps: new Date(),
 };
 
 export interface AppResponseDataSourceOptions extends DataSourceJsonData {

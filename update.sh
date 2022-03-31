@@ -26,7 +26,7 @@ done
 # Exact path to the directory where the plugins are stored.
 pluginsDir="${pluginsDir}/riverbed-appresponse-datasource/"
 
-# Remove old build.
+# Remove old artifacts.
 rm -rf dist
 
 # Build frontend.
