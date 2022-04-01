@@ -32,7 +32,6 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       webApp: this.url + '/webapps',
       metric: this.url + '/aggregates',
       hostGroup: this.url + '/hostgroups',
-      url: this.url + '/urls',
       application: this.url + '/applications',
       instanceCreationSync: this.url + '/instancecreationsync',
     };
@@ -163,7 +162,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         (response) => {
           let name;
           let _dataDef = response.data.data_defs[0];
-          
+
           if (_dataDef.data === undefined) {
             _dataDef.data = [];
           }
@@ -370,7 +369,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             const id = response.data.columns[k].id;
             let unit = response.data.columns[k].unit;
             const rate = response.data.columns[k].rate;
-            const label = response.data.columns[k].label;
+            let label = response.data.columns[k].label;
             if (
               !id.endsWith('.id') && !id.endsWith('_id')
               && !id.endsWith('.id') && !id.endsWith('.name')
@@ -381,63 +380,38 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
               && !id.endsWith('_dns') && !id.endsWith('start_time')
               && !id.endsWith('end_time') && !id.includes('rtp')
             ) {
+              if (typeof rate !== 'undefined') {
+                label = label + "  (" + unit + "/" + rate + ")";
+              } else {
+                label = label + "  (" + unit + ")";
+              }
+
+              if (unit === 'none') {
+                unit = 'occurence'
+              }
+
+              const metric = {
+                'value': id,
+                'label': label
+              } as SelectableValue
+
+              console.log(metric)
+
               if (
                 sourceGroup === SourceGroup.application
                 && !id.includes('p2m') && !id.includes('m2p')
                 && !id.includes('web')
               ) {
-                if (unit === 'none') {
-                  unit = 'occurence'
-                }
-
-                if (typeof rate !== 'undefined') {
-                  result.push({
-                    'label': label + "  (" + unit + "/" + rate + ")",
-                    'value': id
-                  } as SelectableValue);
-                }
-                else {
-                  result.push({
-                    'label': label + "  (" + unit + ")",
-                    'value': id
-                  } as SelectableValue);
-                }
+                result.push(metric);
               } else if (
-                sourceGroup === SourceGroup.webApp && id.includes('web')
+                sourceGroup === SourceGroup.webApp 
+                && id.includes('web')
               ) {
-                if (unit === 'none') {
-                  unit = 'occurence'
-                }
-
-                if (typeof rate !== 'undefined') {
-                  result.push({
-                    'label': label + "  (" + unit + "/" + rate + ")",
-                    'value': id
-                  } as SelectableValue);
-                }
-                else {
-                  result.push({
-                    'label': label + "  (" + unit + ")",
-                    'value': id
-                  } as SelectableValue);
-                }
-              } else if (sourceGroup === SourceGroup.hostGroup) {
-                if (unit === 'none') {
-                  unit = 'occurence'
-                }
-
-                if (typeof rate !== 'undefined') {
-                  result.push({
-                    'label': label + "  (" + unit + "/" + rate + ")",
-                    'value': id
-                  } as SelectableValue);
-                }
-                else {
-                  result.push({
-                    'label': label + "  (" + unit + ")",
-                    'value': id
-                  } as SelectableValue);
-                }
+                result.push(metric);
+              } else if (
+                sourceGroup === SourceGroup.hostGroup
+              ) {
+                result.push(metric);
               }
             }
           }
