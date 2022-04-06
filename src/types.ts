@@ -1,25 +1,18 @@
 import { DataQuery, DataSourceJsonData, SelectableValue } from '@grafana/data';
 
 
-
 export enum SourceGroup {
-  application = 'Application',
-  hostGroup = 'Host Group',
+  ip = 'IP',
   webApp = 'Web App',
-  ip = 'IP'
+  hostGroup = 'Host Group',
+  application = 'Application',
 };
-
 
 export const sourceGroups = [
   { label: 'Application', value: SourceGroup.application },
   { label: 'Host Group', value: SourceGroup.hostGroup },
   { label: 'Web App', value: SourceGroup.webApp },
   { label: 'IP', value: SourceGroup.ip },
-];
-
-export const topNDirections: SelectableValue[] = [
-  { value: 'asc', label: 'Ascending' },
-  { value: 'desc', label: 'Descending' },
 ];
 
 export const granularities = [
@@ -38,12 +31,14 @@ export interface AppResponseQuery extends DataQuery {
   unit?: string;
   rate?: string;
   alias?: string;
+  timeshift?: number;
+  sourceGroup: SourceGroup;
+  granularity?: SelectableValue;
+
   top?: boolean;
   topN?: number;
-  topNDirection?: SelectableValue;
-  sourceGroup: SourceGroup;
-  timeshift?: number;
-  
+
+  currentIP?: string;
   currentMetric?: string;
   currentMetricID?: string;
   currentWebApp?: string;
@@ -52,18 +47,11 @@ export interface AppResponseQuery extends DataQuery {
   currentHostGroupID?: string;
   currentApplication?: string;
   currentApplicationID?: string;
-  currentIP?: string;
 
-  metrics: SelectableValue[];
-  lastFetchMetrics: Date;
-  hostGroups: SelectableValue[];
-  lastFetchHostGroups: Date;
-  applications: SelectableValue[];
-  lastFetchApplications: Date;
-  webApps: SelectableValue[];
-  lastFetchWebApps: Date;
-
-  granularity?: SelectableValue;
+  ipMetrics: SelectableValue[];
+  applicationMetrics: SelectableValue[];
+  webAppMetrics: SelectableValue[];
+  hostGroupMetrics: SelectableValue[];
 }
 
 export const defaultQuery: Partial<AppResponseQuery> = {
@@ -73,25 +61,16 @@ export const defaultQuery: Partial<AppResponseQuery> = {
 
   top: false,
   topN: 10,
-  topNDirection: topNDirections[0],
-  metrics: [],
-  hostGroups: [],
-  applications: [],
-  webApps: [],
+  
   currentIP: '',
-
-  lastFetchMetrics: new Date(),
-  lastFetchHostGroups: new Date(),
-  lastFetchApplications: new Date(),
-  lastFetchWebApps: new Date(),
 };
 
 export interface AppResponseDataSourceOptions extends DataSourceJsonData {
-  skipTlsVerify: boolean | undefined;
   path?: string;
   token?: string;
   username?: string;
   tlsSkipVerify?: boolean;
+  skipTlsVerify: boolean | undefined;
 }
 
 export interface AppResponseSecureJsonData {
@@ -101,10 +80,9 @@ export interface AppResponseSecureJsonData {
 export interface AppResponseURLs {
   base: string;
   auth: string;
-  hostGroup: string;
   metric: string;
-  application: string;
   webApp: string;
-  url: string;
+  hostGroup: string;
+  application: string;
   instanceCreationSync: string;
 }

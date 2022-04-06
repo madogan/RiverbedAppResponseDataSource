@@ -2336,32 +2336,23 @@ function (_super) {
 
     _this.getHostGroups = function () {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, diff, _b, _c;
-
-        var _d;
-
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_e) {
-          switch (_e.label) {
+        var datasource, diff;
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+          switch (_a.label) {
             case 0:
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              diff = (Date.now() - query.lastFetchHostGroups.getTime()) / 1000 / 60;
-              console.log('getHostGroups: diff:', diff);
-              if (!(diff >= 60 || query.hostGroups.length < 1)) return [3
+              datasource = this.props.datasource;
+              diff = (Date.now() - datasource.lastFetchHostGroups.getTime()) / 1000 / 60;
+              if (!(diff >= 15 || datasource.hostGroups.length < 1)) return [3
               /*break*/
-              , 2]; // if (query.lastFetchHostGroups && (Date.now() - query.lastFetchHostGroups.getTime()) / 1000 > 5) {
-
-              query.lastFetchHostGroups = new Date(Date.now());
-              _b = onChange;
-              _c = [Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query)];
-              _d = {};
+              , 2];
               return [4
               /*yield*/
               , datasource.getHostGroups()];
 
             case 1:
-              _b.apply(void 0, [tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"].apply(void 0, _c.concat([(_d.hostGroups = _e.sent(), _d)]))]);
+              _a.sent();
 
-              _e.label = 2;
+              _a.label = 2;
 
             case 2:
               return [2
@@ -2374,32 +2365,23 @@ function (_super) {
 
     _this.getApplications = function () {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, diff, _b, _c;
-
-        var _d;
-
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_e) {
-          switch (_e.label) {
+        var datasource, diff;
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+          switch (_a.label) {
             case 0:
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              diff = (Date.now() - query.lastFetchApplications.getTime()) / 1000 / 60;
-              console.log('getApplications: diff:', diff);
-              if (!(diff >= 60 || query.applications.length < 1)) return [3
+              datasource = this.props.datasource;
+              diff = (Date.now() - datasource.lastFetchApplications.getTime()) / 1000 / 60;
+              if (!(diff >= 15 || datasource.applications.length < 1)) return [3
               /*break*/
-              , 2]; // if (query.lastFetchApplications && (Date.now() - query.lastFetchApplications.getTime()) / 1000 > 5) {
-
-              query.lastFetchApplications = new Date();
-              _b = onChange;
-              _c = [Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query)];
-              _d = {};
+              , 2];
               return [4
               /*yield*/
               , datasource.getApplications()];
 
             case 1:
-              _b.apply(void 0, [tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"].apply(void 0, _c.concat([(_d.applications = _e.sent(), _d)]))]);
+              _a.sent();
 
-              _e.label = 2;
+              _a.label = 2;
 
             case 2:
               return [2
@@ -2412,31 +2394,23 @@ function (_super) {
 
     _this.getWebApps = function () {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, diff, _b, _c;
-
-        var _d;
-
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_e) {
-          switch (_e.label) {
+        var datasource, diff;
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+          switch (_a.label) {
             case 0:
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              diff = (Date.now() - query.lastFetchWebApps.getTime()) / 1000 / 60;
-              console.log('getWebApps: diff:', diff);
-              if (!(diff >= 60 || query.webApps.length < 1)) return [3
+              datasource = this.props.datasource;
+              diff = (Date.now() - datasource.lastFetchWebApps.getTime()) / 1000 / 60;
+              if (!(diff >= 15 || datasource.webApps.length < 1)) return [3
               /*break*/
               , 2];
-              query.lastFetchWebApps = new Date(Date.now());
-              _b = onChange;
-              _c = [Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query)];
-              _d = {};
               return [4
               /*yield*/
               , datasource.getWebApps()];
 
             case 1:
-              _b.apply(void 0, [tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"].apply(void 0, _c.concat([(_d.webApps = _e.sent(), _d)]))]);
+              _a.sent();
 
-              _e.label = 2;
+              _a.label = 2;
 
             case 2:
               return [2
@@ -2449,32 +2423,26 @@ function (_super) {
 
     _this.getMetrics = function (sourceGroup) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, diff, _b, _c;
+        var _a, query, datasource, diff;
 
-        var _d;
-
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_e) {
-          switch (_e.label) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
+          switch (_b.label) {
             case 0:
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              diff = (Date.now() - query.lastFetchMetrics.getTime()) / 1000 / 60;
-              console.log('getMetrics: diff:', diff);
-              if (!(sourceGroup !== undefined && (diff >= 60 || query.metrics.length < 1))) return [3
+              _a = this.props, query = _a.query, datasource = _a.datasource;
+              diff = (Date.now() - datasource.lastFetchMetrics.getTime()) / 1000;
+              if (!(sourceGroup == _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application && datasource.applicationMetrics.length < 1 || sourceGroup == _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup && datasource.hostGroupMetrics.length < 1 || sourceGroup == _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp && datasource.webAppMetrics.length < 1 || diff >= 15) // if bigger than 15 secs.
+              ) return [3
               /*break*/
-              , 2]; // if (sourceGroup !== undefined && (Date.now() - query.lastFetchMetrics.getTime()) / 1000 > 5) {
+              , 2]; // if bigger than 15 secs.
 
-              query.lastFetchMetrics = new Date(Date.now());
-              _b = onChange;
-              _c = [Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query)];
-              _d = {};
               return [4
               /*yield*/
-              , datasource.getMetrics(sourceGroup)];
+              , datasource.getMetrics(sourceGroup || query.sourceGroup)];
 
             case 1:
-              _b.apply(void 0, [tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"].apply(void 0, _c.concat([(_d.metrics = _e.sent(), _d)]))]);
+              _b.sent();
 
-              _e.label = 2;
+              _b.label = 2;
 
             case 2:
               return [2
@@ -2506,7 +2474,16 @@ function (_super) {
       _this.getOptions(v.value);
 
       onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-        sourceGroup: v.value
+        sourceGroup: v.value,
+        currentMetric: '',
+        currentMetricID: '',
+        currentApplication: '',
+        currentApplicationID: '',
+        currentWebApp: '',
+        currentWebAppID: '',
+        currentHostGroup: '',
+        currentHostGroupID: '',
+        currentIP: ''
       }));
       onRunQuery();
     };
@@ -2564,8 +2541,8 @@ function (_super) {
           query = _a.query,
           onRunQuery = _a.onRunQuery;
       onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-        currentMetricID: v.value,
-        currentMetric: v.label
+        currentMetric: v.label,
+        currentMetricID: v.value
       }));
       onRunQuery();
     };
@@ -2588,17 +2565,6 @@ function (_super) {
           onRunQuery = _a.onRunQuery;
       onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
         topN: Object(lodash__WEBPACK_IMPORTED_MODULE_1__["toInteger"])(e.currentTarget.value)
-      }));
-      onRunQuery();
-    };
-
-    _this.onTopNDirectionChange = function (e) {
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
-      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-        topNDirection: e.value
       }));
       onRunQuery();
     };
@@ -2627,8 +2593,8 @@ function (_super) {
 
     _this.onGranularityChange = function (v) {
       var _a = _this.props,
-          onChange = _a.onChange,
           query = _a.query,
+          onChange = _a.onChange,
           onRunQuery = _a.onRunQuery;
       onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
         granularity: v.value
@@ -2642,9 +2608,10 @@ function (_super) {
   QueryEditor.prototype.render = function () {
     var _this = this;
 
-    var _a, _b, _c;
+    var _a, _b;
 
     var query = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["defaults"])(this.props.query, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
+    var datasource = this.props.datasource;
     this.getOptions(query.sourceGroup);
     return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       style: {
@@ -2672,20 +2639,6 @@ function (_super) {
       width: 16,
       value: query.topN || 0,
       onChange: this.onTopNChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Direction"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      options: _types__WEBPACK_IMPORTED_MODULE_4__["topNDirections"],
-      value: (_a = query.topNDirection) === null || _a === void 0 ? void 0 : _a.value,
-      onChange: this.onTopNDirectionChange
     }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
       label: "Source Group"
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
@@ -2708,7 +2661,7 @@ function (_super) {
       menuShouldPortal: true,
       id: query.currentHostGroupID,
       value: query.currentHostGroup,
-      options: query.hostGroups,
+      options: datasource.hostGroups,
       onChange: this.onHostGroupChange
     }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application && !query.top ? {
@@ -2724,7 +2677,7 @@ function (_super) {
       menuShouldPortal: true,
       id: query.currentApplicationID,
       value: query.currentApplication,
-      options: query.applications,
+      options: datasource.applications,
       onChange: this.onApplicationChange
     }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp && !query.top ? {
@@ -2740,7 +2693,7 @@ function (_super) {
       menuShouldPortal: true,
       id: query.currentWebAppID,
       value: query.currentWebApp,
-      options: query.webApps,
+      options: datasource.webApps,
       onChange: this.onWebAppChange
     }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip && !query.top ? {
@@ -2753,28 +2706,85 @@ function (_super) {
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
       value: query.currentIP || '',
       onChange: this.onIPChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
       label: "Metric",
       onLoadStart: function onLoadStart() {
-        return _this.getMetrics(query.sourceGroup);
+        return _this.getMetrics(_types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application);
       }
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
       width: 'auto',
       menuShouldPortal: true,
-      options: query.metrics,
+      options: datasource.applicationMetrics,
       value: query.currentMetric,
       onChange: this.onMetricChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Metric",
+      onLoadStart: function onLoadStart() {
+        return _this.getMetrics(_types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup);
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+      width: 'auto',
+      menuShouldPortal: true,
+      options: datasource.hostGroupMetrics,
+      value: query.currentMetric,
+      onChange: this.onMetricChange
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Metric",
+      onLoadStart: function onLoadStart() {
+        return _this.getMetrics(_types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp);
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+      width: 'auto',
+      menuShouldPortal: true,
+      options: datasource.webAppMetrics,
+      value: query.currentMetric,
+      onChange: this.onMetricChange
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Metric",
+      onLoadStart: function onLoadStart() {
+        return _this.getMetrics(_types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip);
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+      width: 'auto',
+      menuShouldPortal: true,
+      options: datasource.applicationMetrics,
+      value: query.currentMetric,
+      onChange: this.onMetricChange
+    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
       label: "Granularity"
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
       menuShouldPortal: true,
-      value: (_b = query.granularity) === null || _b === void 0 ? void 0 : _b.value,
+      value: (_a = query.granularity) === null || _a === void 0 ? void 0 : _a.value,
       options: _types__WEBPACK_IMPORTED_MODULE_4__["granularities"],
       onChange: this.onGranularityChange
     })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
       label: "Timeshift"
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
-      value: ((_c = query.timeshift) === null || _c === void 0 ? void 0 : _c.toString()) || '0',
+      value: ((_b = query.timeshift) === null || _b === void 0 ? void 0 : _b.toString()) || '0',
       onChange: this.onTimeshiftChange
     })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       style: query.top ? {
@@ -2831,6 +2841,17 @@ function (_super) {
 
     var _this = _super.call(this, instanceSettings) || this;
 
+    _this.webApps = [];
+    _this.webAppMetrics = [];
+    _this.hostGroups = [];
+    _this.hostGroupMetrics = [];
+    _this.applications = [];
+    _this.applicationMetrics = [];
+    _this.queryTimeout = 60; // In seconds
+
+    _this.optionsTimeout = 15; // In minutes
+
+    _this.loadingMetrics = false;
     _this.settings = instanceSettings;
     _this.url = _this.settings.url || '';
     _this.token = (_a = instanceSettings.jsonData.token) !== null && _a !== void 0 ? _a : '';
@@ -2840,13 +2861,18 @@ function (_super) {
       webApp: _this.url + '/webapps',
       metric: _this.url + '/aggregates',
       hostGroup: _this.url + '/hostgroups',
-      url: _this.url + '/urls',
       application: _this.url + '/applications',
       instanceCreationSync: _this.url + '/instancecreationsync'
     };
     _this.headers = {
       'Content-Type': 'application/json'
     };
+    _this.lastFetchQuery = new Date();
+    _this.lastFetchMetrics = new Date();
+    _this.lastFetchWebApps = new Date();
+    _this.lastFetchHostGroups = new Date();
+    _this.lastFetchApplications = new Date();
+    _this.loadingMetrics = false;
     return _this;
   }
 
@@ -2866,7 +2892,7 @@ function (_super) {
         dataDef_columns = [];
         dataDef_filters = [];
         promises = options.targets.map(function (target) {
-          var _a, _b;
+          var _a;
 
           var query = lodash_defaults__WEBPACK_IMPORTED_MODULE_2___default()(target, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
           queryTimeStart = new Date(to).getTime() / 1000;
@@ -2884,12 +2910,12 @@ function (_super) {
             query.timeshift = queryTimeshift;
           }
 
-          if (query.sourceGroup == _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
-            // This variable contains the type of source selected, it is the same for hostgroups and applications
-            dataDef_source = {
-              "name": "aggregates"
-            }; // For each datapoint, data are grouped by timestamp and id of hostgroup
+          dataDef_source = {
+            "name": "aggregates"
+          };
 
+          if (query.sourceGroup == _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
+            // For each datapoint, data are grouped by timestamp and id of hostgroup
             dataDef_groupBy = ["start_time", "host_group.id"]; // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
 
             dataDef_columns = ["start_time", "host_group.id", "host_group.name"]; // Metric request is filtered by hortgroup selected
@@ -2899,9 +2925,6 @@ function (_super) {
               "value": "host_group.id == " + query.currentHostGroupID
             });
           } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
-            dataDef_source = {
-              "name": "aggregates"
-            };
             dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name"];
             dataDef_filters.push({
@@ -2919,12 +2942,6 @@ function (_super) {
               "value": "tcp.ip == " + query.currentIP
             });
           } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
-            dataDef_source = {
-              "origin": "",
-              "path": "aggregates:App",
-              "type": "",
-              "name": "aggregates"
-            };
             dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name"];
             dataDef_filters.push({
@@ -2963,9 +2980,10 @@ function (_super) {
             dataDef.limit = query.topN || 10;
             dataDef.top_by = [{
               "id": query.currentMetricID,
-              "direction": ((_b = query.topNDirection) === null || _b === void 0 ? void 0 : _b.value) || 'desc'
+              "direction": 'desc'
             }];
-            dataDef.group_by = dataDef.group_by.slice(1); // Remove start time.
+            dataDef.group_by = {}; // Remove start time.
+            // dataDef.group_by = dataDef.group_by.slice(1);  // Remove start time.
 
             dataDef.columns = dataDef.columns.slice(1); // Remove start time.
           } else {
@@ -3102,7 +3120,7 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
-            if (!(this.token === '' || this.token === undefined || this.token === null)) return [3
+            if (!(this.settings.jsonData.token === '' || this.settings.jsonData.token === undefined || this.settings.jsonData.token === null)) return [3
             /*break*/
             , 2];
             return [4
@@ -3134,15 +3152,18 @@ function (_super) {
 
   DataSource.prototype.getHostGroups = function () {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_1;
+      var error_1;
+
+      var _this = this;
+
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
-            result = [];
-            _a.label = 1;
+            _a.trys.push([0, 2,, 3]); // if (
+            //   (Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60 < this.optionsTimeout 
+            //   || this.hostGroups.length > 0
+            // ) { return }
 
-          case 1:
-            _a.trys.push([1, 3,, 4]);
 
             return [4
             /*yield*/
@@ -3150,36 +3171,44 @@ function (_super) {
               method: 'GET',
               url: this.urls.hostGroup
             }).then(function (response) {
+              _this.hostGroups = [];
+
               if (typeof response !== 'undefined') {
                 for (var k in response.data.items) {
                   if (response.data.items[k]["enabled"]) {
-                    result.push({
+                    _this.hostGroups.push({
                       'label': response.data.items[k]["name"],
                       'value': response.data.items[k]["id"]
                     });
                   }
                 }
               }
+
+              _this.lastFetchHostGroups = new Date(Date.now());
             })];
 
-          case 2:
+          case 1:
+            // if (
+            //   (Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60 < this.optionsTimeout 
+            //   || this.hostGroups.length > 0
+            // ) { return }
             _a.sent();
 
             return [3
             /*break*/
-            , 4];
+            , 3];
 
-          case 3:
+          case 2:
             error_1 = _a.sent();
             console.error(error_1);
             return [3
             /*break*/
-            , 4];
+            , 3];
 
-          case 4:
+          case 3:
             return [2
             /*return*/
-            , result];
+            ];
         }
       });
     });
@@ -3187,15 +3216,18 @@ function (_super) {
 
   DataSource.prototype.getApplications = function () {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_2;
+      var error_2;
+
+      var _this = this;
+
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
-            result = [];
-            _a.label = 1;
+            _a.trys.push([0, 2,, 3]); // if (
+            //   (Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60 < this.optionsTimeout 
+            //   || this.applications.length > 0
+            // ) { return }
 
-          case 1:
-            _a.trys.push([1, 3,, 4]);
 
             return [4
             /*yield*/
@@ -3204,35 +3236,43 @@ function (_super) {
               url: this.urls.application
             }).then(function (response) {
               if (typeof response !== 'undefined') {
+                _this.applications = [];
+
                 for (var k in response.data.items) {
                   if (response.data.items[k]["enabled"]) {
-                    result.push({
+                    _this.applications.push({
                       'label': response.data.items[k]["name"],
                       'value': response.data.items[k]["id"]
                     });
                   }
                 }
               }
+
+              _this.lastFetchApplications = new Date(Date.now());
             })];
 
-          case 2:
+          case 1:
+            // if (
+            //   (Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60 < this.optionsTimeout 
+            //   || this.applications.length > 0
+            // ) { return }
             _a.sent();
 
             return [3
             /*break*/
-            , 4];
+            , 3];
 
-          case 3:
+          case 2:
             error_2 = _a.sent();
             console.error(error_2);
             return [3
             /*break*/
-            , 4];
+            , 3];
 
-          case 4:
+          case 3:
             return [2
             /*return*/
-            , result];
+            ];
         }
       });
     });
@@ -3240,15 +3280,18 @@ function (_super) {
 
   DataSource.prototype.getWebApps = function () {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_3;
+      var error_3;
+
+      var _this = this;
+
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
-            result = [];
-            _a.label = 1;
+            _a.trys.push([0, 2,, 3]); // if (
+            //   (Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60 < this.optionsTimeout 
+            //   || this.webApps.length > 0
+            // ) { return }
 
-          case 1:
-            _a.trys.push([1, 3,, 4]);
 
             return [4
             /*yield*/
@@ -3257,35 +3300,43 @@ function (_super) {
               url: this.urls.webApp
             }).then(function (response) {
               if (typeof response !== 'undefined') {
+                _this.webApps = [];
+
                 for (var k in response.data.items) {
                   if (response.data.items[k]["enabled"]) {
-                    result.push({
+                    _this.webApps.push({
                       'label': response.data.items[k].name,
                       'value': response.data.items[k].id
                     });
                   }
                 }
               }
+
+              _this.lastFetchWebApps = new Date(Date.now());
             })];
 
-          case 2:
+          case 1:
+            // if (
+            //   (Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60 < this.optionsTimeout 
+            //   || this.webApps.length > 0
+            // ) { return }
             _a.sent();
 
             return [3
             /*break*/
-            , 4];
+            , 3];
 
-          case 3:
+          case 2:
             error_3 = _a.sent();
             console.error(error_3);
             return [3
             /*break*/
-            , 4];
+            , 3];
 
-          case 4:
+          case 3:
             return [2
             /*return*/
-            , result];
+            ];
         }
       });
     });
@@ -3293,100 +3344,95 @@ function (_super) {
 
   DataSource.prototype.getMetrics = function (sourceGroup) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_4;
+      var error_4;
+
+      var _this = this;
+
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
-            result = [];
-            _a.label = 1;
+            _a.trys.push([0, 2,, 3]); // if (
+            //   (Date.now() - this.lastFetchMetrics.getTime()) / 1000 / 60 < this.optionsTimeout 
+            //   || (
+            //     (sourceGroup == SourceGroup.hostGroup && this.hostGroupMetrics.length > 0)
+            //     || (sourceGroup == SourceGroup.application && this.applicationMetrics.length > 0)
+            //     || (sourceGroup == SourceGroup.webApp && this.webAppMetrics.length > 0)
+            //   )
+            // ) { return }
 
-          case 1:
-            _a.trys.push([1, 3,, 4]);
 
+            this.loadingMetrics = true;
             return [4
             /*yield*/
             , this.doRequest({
               method: 'GET',
               url: this.urls.metric
             }).then(function (response) {
+              if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
+                _this.applicationMetrics = [];
+              } else if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
+                _this.webAppMetrics = [];
+              } else {
+                _this.hostGroupMetrics = [];
+              }
+
               for (var k in response.data.columns) {
                 var id = response.data.columns[k].id;
                 var unit = response.data.columns[k].unit;
                 var rate = response.data.columns[k].rate;
-                var label = response.data.columns[k].label;
+                var label = response.data.columns[k].label; // console.log(`id: ${id}, label: ${label}`);
 
                 if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                  if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application && !id.includes('p2m') && !id.includes('m2p') && !id.includes('web')) {
-                    if (unit === 'none') {
-                      unit = 'occurence';
-                    }
+                  if (unit === 'none') {
+                    unit = 'occurence';
+                  }
 
-                    if (typeof rate !== 'undefined') {
-                      result.push({
-                        'label': label + "  (" + unit + "/" + rate + ")",
-                        'value': id
-                      });
-                    } else {
-                      result.push({
-                        'label': label + "  (" + unit + ")",
-                        'value': id
-                      });
-                    }
-                  } else if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp && id.includes('web')) {
-                    if (unit === 'none') {
-                      unit = 'occurence';
-                    }
+                  if (typeof rate !== 'undefined') {
+                    label = label + "  (" + unit + "/" + rate + ")";
+                  } else {
+                    label = label + "  (" + unit + ")";
+                  }
 
-                    if (typeof rate !== 'undefined') {
-                      result.push({
-                        'label': label + "  (" + unit + "/" + rate + ")",
-                        'value': id
-                      });
-                    } else {
-                      result.push({
-                        'label': label + "  (" + unit + ")",
-                        'value': id
-                      });
-                    }
-                  } else if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
-                    if (unit === 'none') {
-                      unit = 'occurence';
-                    }
+                  var metric = {
+                    'value': id,
+                    'label': label
+                  };
 
-                    if (typeof rate !== 'undefined') {
-                      result.push({
-                        'label': label + "  (" + unit + "/" + rate + ")",
-                        'value': id
-                      });
-                    } else {
-                      result.push({
-                        'label': label + "  (" + unit + ")",
-                        'value': id
-                      });
-                    }
+                  if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application && !id.includes('p2m') && !id.includes('m2p') && !id.includes('web') && !id.includes('_db.') && !id.includes('cxa')) {
+                    // console.log(`[application] id: ${id}, label: ${label}`);
+                    _this.applicationMetrics.push(metric);
+                  } else if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp && id.includes('_web.')) {
+                    // console.log(`[webapp] id: ${id}, label: ${label}`);
+                    _this.webAppMetrics.push(metric);
+                  } else {
+                    // console.log(`[host-group] id: ${id}, label: ${label}`);
+                    _this.hostGroupMetrics.push(metric);
                   }
                 }
               }
+
+              _this.lastFetchMetrics = new Date(Date.now());
+              _this.loadingMetrics = false;
             })];
 
-          case 2:
+          case 1:
             _a.sent();
 
             return [3
             /*break*/
-            , 4];
+            , 3];
 
-          case 3:
+          case 2:
             error_4 = _a.sent();
             console.error(error_4);
             return [3
             /*break*/
-            , 4];
+            , 3];
 
-          case 4:
+          case 3:
             return [2
             /*return*/
-            , result];
+            ];
         }
       });
     });
@@ -3426,24 +3472,23 @@ var plugin = new _grafana_data__WEBPACK_IMPORTED_MODULE_0__["DataSourcePlugin"](
 /*!******************!*\
   !*** ./types.ts ***!
   \******************/
-/*! exports provided: SourceGroup, sourceGroups, topNDirections, granularities, findGranularity, defaultQuery */
+/*! exports provided: SourceGroup, sourceGroups, granularities, findGranularity, defaultQuery */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SourceGroup", function() { return SourceGroup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sourceGroups", function() { return sourceGroups; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "topNDirections", function() { return topNDirections; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "granularities", function() { return granularities; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findGranularity", function() { return findGranularity; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultQuery", function() { return defaultQuery; });
 var SourceGroup;
 
 (function (SourceGroup) {
-  SourceGroup["application"] = "Application";
-  SourceGroup["hostGroup"] = "Host Group";
-  SourceGroup["webApp"] = "Web App";
   SourceGroup["ip"] = "IP";
+  SourceGroup["webApp"] = "Web App";
+  SourceGroup["hostGroup"] = "Host Group";
+  SourceGroup["application"] = "Application";
 })(SourceGroup || (SourceGroup = {}));
 
 ;
@@ -3459,13 +3504,6 @@ var sourceGroups = [{
 }, {
   label: 'IP',
   value: SourceGroup.ip
-}];
-var topNDirections = [{
-  value: 'asc',
-  label: 'Ascending'
-}, {
-  value: 'desc',
-  label: 'Descending'
 }];
 var granularities = [{
   "value": 60,
@@ -3494,16 +3532,7 @@ var defaultQuery = {
   sourceGroup: SourceGroup.application,
   top: false,
   topN: 10,
-  topNDirection: topNDirections[0],
-  metrics: [],
-  hostGroups: [],
-  applications: [],
-  webApps: [],
-  currentIP: '',
-  lastFetchMetrics: new Date(),
-  lastFetchHostGroups: new Date(),
-  lastFetchApplications: new Date(),
-  lastFetchWebApps: new Date()
+  currentIP: ''
 };
 
 /***/ }),
