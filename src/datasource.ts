@@ -20,6 +20,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   urls: AppResponseURLs;
   settings: DataSourceInstanceSettings<AppResponseDataSourceOptions>;
 
+  data: any = [];
+  ipMetrics: SelectableValue[] = [];
   webApps: SelectableValue[] = [];
   webAppMetrics: SelectableValue[] = [];
   hostGroups: SelectableValue[] = [];
@@ -30,13 +32,15 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   lastFetchQuery: Date;
   lastFetchMetrics: Date;
   lastFetchWebApps: Date;
+  lastFetchWebAppMetrics: Date;
   lastFetchHostGroups: Date;
+  lastFetchHostGroupMetrics: Date;
   lastFetchApplications: Date;
+  lastFetchApplicationMetrics: Date;
+  lastFetchIPMetrics: Date;
 
   queryTimeout: Number = 60;  // In seconds
   optionsTimeout: Number = 15;  // In minutes
-
-  loadingMetrics: boolean = false;
 
   constructor(instanceSettings: DataSourceInstanceSettings<AppResponseDataSourceOptions>) {
     super(instanceSettings);
@@ -58,15 +62,35 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     this.headers = { 'Content-Type': 'application/json' };
 
     this.lastFetchQuery = new Date();
-    this.lastFetchMetrics = new Date();
-    this.lastFetchWebApps = new Date();
-    this.lastFetchHostGroups = new Date();
-    this.lastFetchApplications = new Date();
 
-    this.loadingMetrics = false;
+    this.lastFetchMetrics = new Date();
+
+    this.lastFetchWebApps = new Date();
+    this.lastFetchWebAppMetrics = new Date();
+
+    this.lastFetchHostGroups = new Date();
+    this.lastFetchHostGroupMetrics = new Date();
+
+    this.lastFetchApplications = new Date();
+    this.lastFetchApplicationMetrics = new Date();
+    this.lastFetchIPMetrics = new Date();
   }
 
   async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
+    const deltaInSeconds = ((Date.now() - this.lastFetchQuery.getTime()) / 1000);
+    console.debug(`[DataSource.query] ${deltaInSeconds} seconds since last query.`);
+    if (
+      deltaInSeconds < this.queryTimeout
+      && this.data.length > 0
+    ) {
+      console.debug('[DataSource.query] Returning cached data.');
+      return Promise.resolve({ data: this.data });
+    } else {
+      console.debug('[DataSource.query] Fetching data from server.');
+      this.lastFetchQuery = new Date(Date.now());
+      this.data = [];
+    }
+
     const { range } = options;
     const to = range!.to.valueOf();
     const from = range!.from.valueOf();
@@ -77,10 +101,11 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     let dataDef_source = {};
     let dataDef_groupBy = {};
     let dataDef_columns: string[] = [];
+    let currentMetric: string = '';
+    let currentMetricID: string = '';
     let dataDef_filters: { type: string; value: string; }[] = [];
 
     const promises = options.targets.map((target) => {
-
       const query = defaults(target, defaultQuery);
       queryTimeStart = ((new Date(to)).getTime()) / 1000;
       queryTimeStop = ((new Date(from)).getTime()) / 1000;
@@ -109,6 +134,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             "value": "host_group.id == " + query.currentHostGroupID
           },
         );
+
+        currentMetric = query.currentHostGroupMetric;
+        currentMetricID = query.currentHostGroupMetricID;
       } else if (query.sourceGroup === SourceGroup.application) {
         dataDef_groupBy = ["start_time", "app.id"];
         dataDef_columns = ["start_time", "app.id", "app.name"];
@@ -118,6 +146,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             "value": "app.id == " + query.currentApplicationID
           },
         );
+
+        currentMetric = query.currentApplicationMetric;
+        currentMetricID = query.currentApplicationMetricID;
       } else if (query.sourceGroup === SourceGroup.ip) {
         dataDef_source = { "name": "aggregates" };
         dataDef_groupBy = ["start_time"];
@@ -128,6 +159,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             "value": "tcp.ip == " + query.currentIP
           },
         );
+
+        currentMetric = query.currentIPMetric;
+        currentMetricID = query.currentIPMetricID;
       } else if (query.sourceGroup === SourceGroup.webApp) {
         dataDef_groupBy = ["start_time", "app.id"]
         dataDef_columns = ["start_time", "app.id", "app.name"]
@@ -137,10 +171,13 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             "value": "app.id == " + query.currentWebAppID
           },
         );
+
+        currentMetric = query.currentWebAppMetric;
+        currentMetricID = query.currentWebAppMetricID;
       }
 
-      if (query.currentMetricID !== undefined) {
-        dataDef_columns.push(query.currentMetricID);
+      if (currentMetricID !== '') {
+        dataDef_columns.push(currentMetricID);
       }
 
       let dataDef: any = {
@@ -167,7 +204,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
       if (query.top) {
         dataDef.limit = query.topN || 10;
-        dataDef.top_by = [{ "id": query.currentMetricID, "direction": 'desc' }];
+        dataDef.top_by = [{ "id": currentMetricID, "direction": 'desc' }];
         dataDef.group_by = {};  // Remove start time.
         // dataDef.group_by = dataDef.group_by.slice(1);  // Remove start time.
         dataDef.columns = dataDef.columns.slice(1);  // Remove start time.
@@ -192,7 +229,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             name = query.alias;
           }
           else {
-            name = query.currentMetric;
+            name = currentMetric;
           }
 
           let fields: any = [];
@@ -237,6 +274,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
               frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
             }
           }
+          
+          // Push data a variable for caching.
+          this.data.push(frame);
 
           return frame;
         }
@@ -297,11 +337,12 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getHostGroups() {
+    let result: SelectableValue<any>[] = [];
     try {
-      // if (
-      //   (Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60 < this.optionsTimeout 
-      //   || this.hostGroups.length > 0
-      // ) { return }
+      if (
+        ((Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.hostGroups.length > 0
+      ) { return this.hostGroups; }
 
       await this.doRequest({
         method: 'GET',
@@ -309,32 +350,39 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       }).then(
         (response) => {
           this.hostGroups = [];
+
           if (typeof response !== 'undefined') {
             for (let k in response.data.items) {
               if (response.data.items[k]["enabled"]) {
-                this.hostGroups.push(
-                  {
-                    'label': response.data.items[k]["name"],
-                    'value': response.data.items[k]["id"]
-                  } as SelectableValue
-                );
+                const hostGroup = {
+                  'label': response.data.items[k]["name"],
+                  'value': response.data.items[k]["id"]
+                } as SelectableValue;
+
+                result.push(hostGroup);
+                this.hostGroups.push(hostGroup);
               }
             }
           }
+
           this.lastFetchHostGroups = new Date(Date.now());
         }
       )
     } catch (error) {
       console.error(error);
     }
+
+    return result;
   }
 
   async getApplications() {
+    let result: SelectableValue<any>[] = [];
+
     try {
-      // if (
-      //   (Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60 < this.optionsTimeout 
-      //   || this.applications.length > 0
-      // ) { return }
+      if (
+        ((Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.applications.length > 0
+      ) { return this.applications; }
 
       await this.doRequest({
         method: 'GET',
@@ -343,14 +391,16 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         (response) => {
           if (typeof response !== 'undefined') {
             this.applications = [];
+
             for (let k in response.data.items) {
               if (response.data.items[k]["enabled"]) {
-                this.applications.push(
-                  {
-                    'label': response.data.items[k]["name"],
-                    'value': response.data.items[k]["id"]
-                  } as SelectableValue
-                );
+                const application = {
+                  'label': response.data.items[k]["name"],
+                  'value': response.data.items[k]["id"]
+                } as SelectableValue;
+
+                result.push(application);
+                this.applications.push(application);
               }
             }
           }
@@ -360,14 +410,18 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     } catch (error) {
       console.error(error);
     }
+
+    return result;
   }
 
   async getWebApps() {
+    let result: SelectableValue<any>[] = [];
+
     try {
-      // if (
-      //   (Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60 < this.optionsTimeout 
-      //   || this.webApps.length > 0
-      // ) { return }
+      if (
+        ((Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.webApps.length > 0
+      ) { return this.webApps; }
 
       await this.doRequest({
         method: 'GET',
@@ -376,14 +430,16 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         (response) => {
           if (typeof response !== 'undefined') {
             this.webApps = [];
+
             for (let k in response.data.items) {
               if (response.data.items[k]["enabled"]) {
-                this.webApps.push(
-                  {
-                    'label': response.data.items[k].name,
-                    'value': response.data.items[k].id
-                  } as SelectableValue
-                );
+                const webApp = {
+                  'label': response.data.items[k]["name"],
+                  'value': response.data.items[k]["id"]
+                } as SelectableValue;
+
+                result.push(webApp);
+                this.webApps.push(webApp);
               }
             }
           }
@@ -393,93 +449,273 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     } catch (error) {
       console.error(error);
     }
+
+    return result;
   }
 
-  async getMetrics(sourceGroup: SourceGroup) {
-    try {
-      // if (
-      //   (Date.now() - this.lastFetchMetrics.getTime()) / 1000 / 60 < this.optionsTimeout 
-      //   || (
-      //     (sourceGroup == SourceGroup.hostGroup && this.hostGroupMetrics.length > 0)
-      //     || (sourceGroup == SourceGroup.application && this.applicationMetrics.length > 0)
-      //     || (sourceGroup == SourceGroup.webApp && this.webAppMetrics.length > 0)
-      //   )
-      // ) { return }
+  async getApplicationMetrics() {
+    let result: SelectableValue<any>[] = [];
 
-      this.loadingMetrics = true;
+    try {
+      if (
+        ((Date.now() - this.lastFetchApplicationMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.applicationMetrics.length > 0
+      ) { return this.applicationMetrics; }
 
       await this.doRequest({
         method: 'GET',
-        url: this.urls.metric
+        url: this.urls.metric,
       }).then(
         (response) => {
-          if (sourceGroup === SourceGroup.application) {
+          if (typeof response !== 'undefined') {
             this.applicationMetrics = [];
-          } else if (sourceGroup === SourceGroup.webApp) {
-            this.webAppMetrics = [];
-          } else {
-            this.hostGroupMetrics = [];
-          }
 
-          for (let k in response.data.columns) {
-            const id = response.data.columns[k].id;
-            let unit = response.data.columns[k].unit;
-            const rate = response.data.columns[k].rate;
-            let label = response.data.columns[k].label;
-
-            // console.log(`id: ${id}, label: ${label}`);
-
-            if (
-              !id.endsWith('.id') && !id.endsWith('_id')
-              && !id.endsWith('.id') && !id.endsWith('.name')
-              && !id.endsWith('_name') && !id.endsWith('.ip')
-              && !id.endsWith('_ip') && !id.endsWith('.url')
-              && !id.endsWith('_url') && !id.endsWith('.type')
-              && !id.endsWith('_type') && !id.endsWith('.dns')
-              && !id.endsWith('_dns') && !id.endsWith('start_time')
-              && !id.endsWith('end_time') && !id.includes('rtp')
-            ) {
-              if (unit === 'none') {
-                unit = 'occurence'
-              }
-
-              if (typeof rate !== 'undefined') {
-                label = label + "  (" + unit + "/" + rate + ")";
-              } else {
-                label = label + "  (" + unit + ")";
-              }
-
-              const metric = {
-                'value': id,
-                'label': label
-              } as SelectableValue;
+            for (let k in response.data.columns) {
+              const id = response.data.columns[k].id;
+              let unit = response.data.columns[k].unit;
+              const rate = response.data.columns[k].rate;
+              let label = response.data.columns[k].label;
 
               if (
-                sourceGroup === SourceGroup.application
-                && !id.includes('p2m') && !id.includes('m2p')
-                && !id.includes('web') && !id.includes('_db.')
-                && !id.includes('cxa')
+                !id.endsWith('.id') && !id.endsWith('_id')
+                && !id.endsWith('.id') && !id.endsWith('.name')
+                && !id.endsWith('_name') && !id.endsWith('.ip')
+                && !id.endsWith('_ip') && !id.endsWith('.url')
+                && !id.endsWith('_url') && !id.endsWith('.type')
+                && !id.endsWith('_type') && !id.endsWith('.dns')
+                && !id.endsWith('_dns') && !id.endsWith('start_time')
+                && !id.endsWith('end_time') && !id.includes('rtp')
               ) {
-                // console.log(`[application] id: ${id}, label: ${label}`);
-                this.applicationMetrics.push(metric);
-              } else if (
-                sourceGroup === SourceGroup.webApp
-                && id.includes('_web.')
-              ) {
-                // console.log(`[webapp] id: ${id}, label: ${label}`);
-                this.webAppMetrics.push(metric);
-              } else {
-                // console.log(`[host-group] id: ${id}, label: ${label}`);
-                this.hostGroupMetrics.push(metric);
+                if (unit === 'none') {
+                  unit = 'occurence'
+                }
+
+                if (typeof rate !== 'undefined') {
+                  label = label + "  (" + unit + "/" + rate + ")";
+                } else {
+                  label = label + "  (" + unit + ")";
+                }
+
+                const metric = {
+                  'value': id,
+                  'label': label
+                } as SelectableValue;
+
+                if (
+                  !id.includes('p2m') && !id.includes('m2p')
+                  && !id.includes('web') && !id.includes('_db.')
+                  && !id.includes('cxa')
+                ) {
+                  result.push(metric);
+                  this.applicationMetrics.push(metric);
+                }
               }
             }
           }
-          this.lastFetchMetrics = new Date(Date.now());
-          this.loadingMetrics = false;
+          this.lastFetchApplicationMetrics = new Date(Date.now());
         }
       )
     } catch (error) {
       console.error(error);
     }
+
+    return result;
+  }
+
+  async getIPMetrics() {
+    let result: SelectableValue<any>[] = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchIPMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.ipMetrics.length > 0
+      ) { return this.ipMetrics; }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.metric,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.ipMetrics = [];
+
+            for (let k in response.data.columns) {
+              const id = response.data.columns[k].id;
+              let unit = response.data.columns[k].unit;
+              const rate = response.data.columns[k].rate;
+              let label = response.data.columns[k].label;
+
+              if (
+                !id.endsWith('.id') && !id.endsWith('_id')
+                && !id.endsWith('.id') && !id.endsWith('.name')
+                && !id.endsWith('_name') && !id.endsWith('.ip')
+                && !id.endsWith('_ip') && !id.endsWith('.url')
+                && !id.endsWith('_url') && !id.endsWith('.type')
+                && !id.endsWith('_type') && !id.endsWith('.dns')
+                && !id.endsWith('_dns') && !id.endsWith('start_time')
+                && !id.endsWith('end_time') && !id.includes('rtp')
+              ) {
+                if (unit === 'none') {
+                  unit = 'occurence'
+                }
+
+                if (typeof rate !== 'undefined') {
+                  label = label + "  (" + unit + "/" + rate + ")";
+                } else {
+                  label = label + "  (" + unit + ")";
+                }
+
+                const metric = {
+                  'value': id,
+                  'label': label
+                } as SelectableValue;
+
+                if (
+                  !id.includes('p2m') && !id.includes('m2p')
+                  && !id.includes('web') && !id.includes('_db.')
+                  && !id.includes('cxa')
+                ) {
+                  result.push(metric);
+                  this.ipMetrics.push(metric);
+                }
+              }
+            }
+          }
+          this.lastFetchIPMetrics = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getHostGroupMetrics() {
+    let result: SelectableValue<any>[] = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchHostGroupMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.hostGroupMetrics.length > 0
+      ) { return this.hostGroupMetrics; }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.metric,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.hostGroupMetrics = [];
+
+            for (let k in response.data.columns) {
+              const id = response.data.columns[k].id;
+              let unit = response.data.columns[k].unit;
+              const rate = response.data.columns[k].rate;
+              let label = response.data.columns[k].label;
+
+              if (
+                !id.endsWith('.id') && !id.endsWith('_id')
+                && !id.endsWith('.id') && !id.endsWith('.name')
+                && !id.endsWith('_name') && !id.endsWith('.ip')
+                && !id.endsWith('_ip') && !id.endsWith('.url')
+                && !id.endsWith('_url') && !id.endsWith('.type')
+                && !id.endsWith('_type') && !id.endsWith('.dns')
+                && !id.endsWith('_dns') && !id.endsWith('start_time')
+                && !id.endsWith('end_time') && !id.includes('rtp')
+              ) {
+                if (unit === 'none') {
+                  unit = 'occurence'
+                }
+
+                if (typeof rate !== 'undefined') {
+                  label = label + "  (" + unit + "/" + rate + ")";
+                } else {
+                  label = label + "  (" + unit + ")";
+                }
+
+                const metric = {
+                  'value': id,
+                  'label': label
+                } as SelectableValue;
+
+                result.push(metric);
+                this.hostGroupMetrics.push(metric);
+              }
+            }
+          }
+          this.lastFetchHostGroupMetrics = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getWebAppMetrics() {
+    let result: SelectableValue<any>[] = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchWebAppMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.webAppMetrics.length > 0
+      ) { return this.webAppMetrics; }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.metric,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.webAppMetrics = [];
+
+            for (let k in response.data.columns) {
+              const id = response.data.columns[k].id;
+              let unit = response.data.columns[k].unit;
+              const rate = response.data.columns[k].rate;
+              let label = response.data.columns[k].label;
+
+              if (
+                !id.endsWith('.id') && !id.endsWith('_id')
+                && !id.endsWith('.id') && !id.endsWith('.name')
+                && !id.endsWith('_name') && !id.endsWith('.ip')
+                && !id.endsWith('_ip') && !id.endsWith('.url')
+                && !id.endsWith('_url') && !id.endsWith('.type')
+                && !id.endsWith('_type') && !id.endsWith('.dns')
+                && !id.endsWith('_dns') && !id.endsWith('start_time')
+                && !id.endsWith('end_time') && !id.includes('rtp')
+              ) {
+                if (unit === 'none') {
+                  unit = 'occurence'
+                }
+
+                if (typeof rate !== 'undefined') {
+                  label = label + "  (" + unit + "/" + rate + ")";
+                } else {
+                  label = label + "  (" + unit + ")";
+                }
+
+                const metric = {
+                  'value': id,
+                  'label': label
+                } as SelectableValue;
+
+                if (id.includes('_web.')) {
+                  result.push(metric);
+                  this.webAppMetrics.push(metric);
+                }
+              }
+            }
+          }
+          this.lastFetchWebAppMetrics = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
   }
 }

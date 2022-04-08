@@ -38,20 +38,32 @@ export interface AppResponseQuery extends DataQuery {
   top?: boolean;
   topN?: number;
 
-  currentIP?: string;
-  currentMetric?: string;
-  currentMetricID?: string;
-  currentWebApp?: string;
-  currentWebAppID?: string;
-  currentHostGroup?: string;
-  currentHostGroupID?: string;
-  currentApplication?: string;
-  currentApplicationID?: string;
+  currentIP: string;
+  currentWebApp: string;
+  currentWebAppID: string;
+  currentHostGroup: string;
+  currentHostGroupID: string;
+  currentApplication: string;
+  currentApplicationID: string;
 
   ipMetrics: SelectableValue[];
-  applicationMetrics: SelectableValue[];
+  currentIPMetric: string;
+  currentIPMetricID: string;
+
+  webApps: SelectableValue[];
   webAppMetrics: SelectableValue[];
+  currentWebAppMetric: string;
+  currentWebAppMetricID: string;
+
+  applications: SelectableValue[];
+  applicationMetrics: SelectableValue[];
+  currentApplicationMetric: string;
+  currentApplicationMetricID: string;
+
+  hostGroups: SelectableValue[];
   hostGroupMetrics: SelectableValue[];
+  currentHostGroupMetric: string;
+  currentHostGroupMetricID: string;
 }
 
 export const defaultQuery: Partial<AppResponseQuery> = {
@@ -61,8 +73,15 @@ export const defaultQuery: Partial<AppResponseQuery> = {
 
   top: false,
   topN: 10,
-  
-  currentIP: '',
+
+  webApps: [],
+  webAppMetrics: [],
+
+  hostGroups: [],
+  hostGroupMetrics: [],
+
+  applications: [],
+  applicationMetrics: [],
 };
 
 export interface AppResponseDataSourceOptions extends DataSourceJsonData {
