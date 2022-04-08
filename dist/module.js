@@ -2341,7 +2341,7 @@ function (_super) {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
           switch (_b.label) {
             case 0:
-              console.debug('getHostGroups');
+              console.debug('[QueryEditor.getHostGroups]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
               return [4
               /*yield*/
@@ -2372,7 +2372,7 @@ function (_super) {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
           switch (_b.label) {
             case 0:
-              console.debug('getApplications');
+              console.debug('[QueryEditor.getApplications]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
               return [4
               /*yield*/
@@ -2403,7 +2403,7 @@ function (_super) {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
           switch (_b.label) {
             case 0:
-              console.debug('getWebApps');
+              console.debug('[QueryEditor.getWebApps]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
               return [4
               /*yield*/
@@ -2434,7 +2434,7 @@ function (_super) {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
           switch (_b.label) {
             case 0:
-              console.debug('getApplicationMetrics');
+              console.debug('[QueryEditor.getApplicationMetrics]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
               return [4
               /*yield*/
@@ -2465,7 +2465,7 @@ function (_super) {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
           switch (_b.label) {
             case 0:
-              console.debug('getIPMetrics');
+              console.debug('[QueryEditor.getIPMetrics]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
               return [4
               /*yield*/
@@ -2496,7 +2496,7 @@ function (_super) {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
           switch (_b.label) {
             case 0:
-              console.debug('getHostGroupMetrics');
+              console.debug('[QueryEditor.getHostGroupMetrics]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
               return [4
               /*yield*/
@@ -2527,7 +2527,7 @@ function (_super) {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
           switch (_b.label) {
             case 0:
-              console.debug('getWebAppMetrics');
+              console.debug('[QueryEditor.getWebAppMetrics]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
               return [4
               /*yield*/
@@ -2554,7 +2554,7 @@ function (_super) {
     _this.getMetrics = function () {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
         return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-          console.debug('getMetrics');
+          console.debug('[QueryEditor.getMetrics]');
           this.getApplicationMetrics();
           this.getIPMetrics();
           this.getHostGroupMetrics();
@@ -2567,7 +2567,7 @@ function (_super) {
     };
 
     _this.getOptions = function (sourceGroup) {
-      console.debug("getOptions: " + sourceGroup);
+      console.debug("[QueryEditor.getOptions] " + sourceGroup);
 
       if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
         _this.getApplications();
@@ -2593,7 +2593,7 @@ function (_super) {
     };
 
     _this.onSourceGroupChange = function (v) {
-      console.debug("onSourceGroupChange: " + v.label + ", " + v.value);
+      console.debug("[QueryEditor.onSourceGroupChange] " + v.label + ", " + v.value);
       var _a = _this.props,
           onChange = _a.onChange,
           query = _a.query,
@@ -2609,58 +2609,62 @@ function (_super) {
     };
 
     _this.onHostGroupChange = function (v) {
-      console.debug("onHostGroupChange: " + v.label + ", " + v.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
+      var _a;
 
-      if (v.value !== query.currentHostGroupID) {
+      console.debug("[QueryEditor.onHostGroupChange] " + v.label + ", " + v.value);
+      var _b = _this.props,
+          onChange = _b.onChange,
+          query = _b.query,
+          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onHostGroupChange] " + JSON.stringify(v) + ", " + query.currentHostGroup);
+
+      if (v.value !== ((_a = query.currentHostGroup) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentHostGroup changed');
         onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          currentHostGroup: v.label,
-          currentHostGroupID: v.value
+          currentHostGroup: v
         }));
         onRunQuery();
       }
     };
 
     _this.onApplicationChange = function (v) {
-      console.debug("onApplicationChange: " + v.label + ", " + v.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
+      var _a;
 
-      if (v.value !== query.currentApplicationID) {
+      console.debug("[QueryEditor.onApplicationChange] " + v.label + ", " + v.value);
+      var _b = _this.props,
+          onChange = _b.onChange,
+          query = _b.query,
+          onRunQuery = _b.onRunQuery;
+
+      if (v.value !== ((_a = query.currentApplication) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentApplication changed');
         onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          currentApplication: v.label,
-          currentApplicationID: v.value
+          currentApplication: v
         }));
         onRunQuery();
       }
     };
 
     _this.onWebAppChange = function (v) {
-      console.debug("onWebAppChange: " + v.label + ", " + v.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
+      var _a;
 
-      if (v.value !== query.currentWebAppID) {
+      console.debug("[QueryEditor.onWebAppChange] " + v.label + ", " + v.value);
+      var _b = _this.props,
+          onChange = _b.onChange,
+          query = _b.query,
+          onRunQuery = _b.onRunQuery;
+
+      if (v.value !== ((_a = query.currentWebApp) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentWebApp changed');
         onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          currentWebApp: v.label,
-          currentWebAppID: v.value
+          currentWebApp: v
         }));
         onRunQuery();
       }
     };
 
     _this.onIPChange = function (e) {
-      console.debug("onIPChange: " + e.currentTarget.value);
+      console.debug("[QueryEdior.onIPChange] " + e.currentTarget.value);
       var _a = _this.props,
           onChange = _a.onChange,
           query = _a.query,
@@ -2672,75 +2676,79 @@ function (_super) {
     };
 
     _this.onApplicationMetricChange = function (v) {
-      console.debug("onApplicationMetricChange: " + v.label + ", " + v.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
+      var _a;
 
-      if (v.value !== query.currentApplicationMetricID) {
-        console.debug('currentApplicationMetric changed');
+      console.debug("[QueryEditor.onApplicationMetricChange] " + v.label + ", " + v.value);
+      var _b = _this.props,
+          onChange = _b.onChange,
+          query = _b.query,
+          onRunQuery = _b.onRunQuery;
+
+      if (v.value !== ((_a = query.currentApplicationMetric) === null || _a === void 0 ? void 0 : _a.value)) {
+        console.debug('[QueryEditor.onApplicationMetricChange] currentApplicationMetric changed');
         onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          currentApplicationMetric: v.label,
-          currentApplicationMetricID: v.value
+          currentApplicationMetric: v
         }));
         onRunQuery();
       }
     };
 
     _this.onHostGroupMetricChange = function (v) {
-      console.debug("onHostGroupMetricChange: " + v.label + ", " + v.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
+      var _a;
 
-      if (v.value !== query.currentHostGroupMetricID) {
-        console.debug('currentHostGroupMetric changed');
+      console.debug("[QueryEditor.onHostGroupMetricChange] " + v.label + ", " + v.value);
+      var _b = _this.props,
+          onChange = _b.onChange,
+          query = _b.query,
+          onRunQuery = _b.onRunQuery;
+
+      if (v.value !== ((_a = query.currentHostGroupMetric) === null || _a === void 0 ? void 0 : _a.value)) {
+        console.debug('[QueryEditor.onHostGroupMetricChange] currentHostGroupMetric changed.');
         onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          currentHostGroupMetric: v.label,
-          currentHostGroupMetricID: v.value
+          currentHostGroupMetric: v
         }));
         onRunQuery();
       }
     };
 
     _this.onWebAppMetricChange = function (v) {
-      console.debug("onWebAppMetricChange: " + v.label + ", " + v.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
+      var _a;
 
-      if (v.value !== query.currentWebAppMetricID) {
-        console.debug('currentWebAppMetric changed');
+      console.debug("[QueryEditor.onWebAppMetricChange] " + v.label + ", " + v.value);
+      var _b = _this.props,
+          onChange = _b.onChange,
+          query = _b.query,
+          onRunQuery = _b.onRunQuery;
+
+      if (v.value !== ((_a = query.currentWebAppMetric) === null || _a === void 0 ? void 0 : _a.value)) {
+        console.debug('[QueryEditor.onWebAppMetricChange] currentWebAppMetric changed.');
         onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          currentWebAppMetric: v.label,
-          currentWebAppMetricID: v.value
+          currentWebAppMetric: v
         }));
         onRunQuery();
       }
     };
 
     _this.onIPMetricChange = function (v) {
-      console.debug("onIPMetricChange: " + v.label + ", " + v.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
+      var _a;
 
-      if (v.value !== query.currentIPMetricID) {
-        console.debug('currentIPMetric changed');
+      console.debug("[QueryEditor.onIPMetricChange] " + v.label + ", " + v.value);
+      var _b = _this.props,
+          onChange = _b.onChange,
+          query = _b.query,
+          onRunQuery = _b.onRunQuery;
+
+      if (v.value !== ((_a = query.currentIPMetric) === null || _a === void 0 ? void 0 : _a.value)) {
+        console.debug('[QueryEditor.onIPMetricChange] currentIPMetric changed.');
         onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-          currentIPMetric: v.label,
-          currentIPMetricID: v.value
+          currentIPMetric: v
         }));
         onRunQuery();
       }
     };
 
     _this.onTopChange = function (e) {
-      console.debug("onTopChange: " + e.currentTarget.checked);
+      console.debug("[QueryEditor.onTopChange] " + e.currentTarget.checked);
       var _a = _this.props,
           onChange = _a.onChange,
           query = _a.query,
@@ -2752,7 +2760,7 @@ function (_super) {
     };
 
     _this.onTopNChange = function (e) {
-      console.debug("onTopNChange: " + e.currentTarget.value);
+      console.debug("[QueryEditor.onTopNChange] " + e.currentTarget.value);
       var _a = _this.props,
           onChange = _a.onChange,
           query = _a.query,
@@ -2764,7 +2772,7 @@ function (_super) {
     };
 
     _this.onAliasChange = function (v) {
-      console.debug("onAliasChange: " + v.target.value);
+      console.debug("[QueryEditor.onAliasChange] " + v.target.value);
       var _a = _this.props,
           onChange = _a.onChange,
           query = _a.query,
@@ -2776,7 +2784,7 @@ function (_super) {
     };
 
     _this.onTimeshiftChange = function (v) {
-      console.debug("onTimeshiftChange: " + v.target.value);
+      console.debug("[QueryEditor.onTimeshiftChange] " + v.target.value);
       var _a = _this.props,
           onChange = _a.onChange,
           query = _a.query,
@@ -2788,7 +2796,7 @@ function (_super) {
     };
 
     _this.onGranularityChange = function (v) {
-      console.debug("onGranularityChange: " + v.target.value);
+      console.debug("[QueryEditor.onGranularityChange] " + v.target.value);
       var _a = _this.props,
           query = _a.query,
           onChange = _a.onChange,
@@ -2807,7 +2815,7 @@ function (_super) {
 
     var _a, _b;
 
-    console.debug('render');
+    console.debug('[QueryEditor.render]');
     var query = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["defaults"])(this.props.query, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
     this.getOptions(query.sourceGroup);
     return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
@@ -3076,7 +3084,7 @@ function (_super) {
 
   DataSource.prototype.query = function (options) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
-      var deltaInSeconds, range, to, from, queryTimeStop, queryTimeStart, queryTimeshift, dataDef_source, dataDef_groupBy, dataDef_columns, currentMetric, currentMetricID, dataDef_filters, promises;
+      var deltaInSeconds, range, to, from, queryTimeStop, queryTimeStart, queryTimeshift, dataDef_source, dataDef_groupBy, dataDef_columns, currentMetric, dataDef_filters, promises;
 
       var _this = this;
 
@@ -3104,11 +3112,9 @@ function (_super) {
         dataDef_source = {};
         dataDef_groupBy = {};
         dataDef_columns = [];
-        currentMetric = '';
-        currentMetricID = '';
         dataDef_filters = [];
         promises = options.targets.map(function (target) {
-          var _a;
+          var _a, _b, _c, _d, _e, _f, _g, _h;
 
           var query = lodash_defaults__WEBPACK_IMPORTED_MODULE_2___default()(target, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
           queryTimeStart = new Date(to).getTime() / 1000;
@@ -3138,19 +3144,17 @@ function (_super) {
 
             dataDef_filters.push({
               "type": "STEELFILTER",
-              "value": "host_group.id == " + query.currentHostGroupID
+              "value": "host_group.id == " + ((_a = query.currentHostGroup) === null || _a === void 0 ? void 0 : _a.value)
             });
-            currentMetric = query.currentHostGroupMetric;
-            currentMetricID = query.currentHostGroupMetricID;
+            dataDef_columns.push((_b = query.currentHostGroupMetric) === null || _b === void 0 ? void 0 : _b.value);
           } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
             dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name"];
             dataDef_filters.push({
               "type": "STEELFILTER",
-              "value": "app.id == " + query.currentApplicationID
+              "value": "app.id == " + ((_c = query.currentApplication) === null || _c === void 0 ? void 0 : _c.value)
             });
-            currentMetric = query.currentApplicationMetric;
-            currentMetricID = query.currentApplicationMetricID;
+            dataDef_columns.push((_d = query.currentApplicationMetric) === null || _d === void 0 ? void 0 : _d.value);
           } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip) {
             dataDef_source = {
               "name": "aggregates"
@@ -3161,53 +3165,35 @@ function (_super) {
               "type": "STEELFILTER",
               "value": "tcp.ip == " + query.currentIP
             });
-            currentMetric = query.currentIPMetric;
-            currentMetricID = query.currentIPMetricID;
+            dataDef_columns.push((_e = query.currentIPMetric) === null || _e === void 0 ? void 0 : _e.value);
           } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
             dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name"];
             dataDef_filters.push({
               "type": "STEELFILTER",
-              "value": "app.id == " + query.currentWebAppID
+              "value": "app.id == " + ((_f = query.currentWebApp) === null || _f === void 0 ? void 0 : _f.value)
             });
-            currentMetric = query.currentWebAppMetric;
-            currentMetricID = query.currentWebAppMetricID;
-          }
-
-          if (currentMetricID !== '') {
-            dataDef_columns.push(currentMetricID);
+            dataDef_columns.push((_g = query.currentWebAppMetric) === null || _g === void 0 ? void 0 : _g.value);
           }
 
           var dataDef = {
-            // Data source to handle the data request. The source property is an object
-            // It has the following required sub-properties: name (required) and path (optional)
             'source': dataDef_source,
-            // Specify the time duration of the data requests
-            // The time property also includes a few properties that help refine time-series requests.
             "time": {
-              // Epoch start time of the request, the start time is inclusive, the unit is seconds.
               "start": queryTimeStop.toString(),
-              // Epoch end time of the request, the end time is exclusive, the unit is seconds.
               "end": queryTimeStart.toString(),
-              // This refers to the amount of time for which the data source computes a summary of the metrics it received
-              // The data source examines all data and creates summaries for 1 minute, 5 minutes, 1 hour, 6 hours, and 1 day
-              'granularity': (_a = query.granularity) === null || _a === void 0 ? void 0 : _a.value.toString()
+              'granularity': (_h = query.granularity) === null || _h === void 0 ? void 0 : _h.value.toString()
             },
-            // The group by property specifies the keys in the request. It is usually used to determine what kind of data is requested
-            // If the start_time (or end_time) column is in the group_by, then the request is considered time series
             "group_by": dataDef_groupBy,
-            // Request columns, the client can specify the requested key/metric columns, as well as their order
             "columns": dataDef_columns
           };
 
           if (query.top) {
             dataDef.limit = query.topN || 10;
             dataDef.top_by = [{
-              "id": currentMetricID,
+              "id": currentMetric === null || currentMetric === void 0 ? void 0 : currentMetric.value,
               "direction": 'desc'
             }];
             dataDef.group_by = {}; // Remove start time.
-            // dataDef.group_by = dataDef.group_by.slice(1);  // Remove start time.
 
             dataDef.columns = dataDef.columns.slice(1); // Remove start time.
           } else {
@@ -3231,7 +3217,7 @@ function (_super) {
             if (query.alias !== undefined && query.alias.trim() !== '') {
               name = query.alias;
             } else {
-              name = currentMetric;
+              name = currentMetric === null || currentMetric === void 0 ? void 0 : currentMetric.value;
             }
 
             var fields = [];
@@ -3348,11 +3334,10 @@ function (_super) {
         switch (_a.label) {
           case 0:
             console.debug("[DataSource.doRequest] " + options.method + " " + options.url);
-            console.debug("[DataSource.doRequest] " + JSON.stringify(options.data));
-            console.debug("[DataSource.doRequest] jsonData: " + JSON.stringify(this.settings.jsonData));
             if (!(this.settings.jsonData.token === '' || this.settings.jsonData.token === undefined || this.settings.jsonData.token === null)) return [3
             /*break*/
             , 2];
+            console.debug("[DataSource.doRequest] No token.");
             return [4
             /*yield*/
             , Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__["getBackendSrv"])().datasourceRequest({
@@ -3397,6 +3382,7 @@ function (_super) {
             _a.trys.push([1, 3,, 4]);
 
             if ((Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60 < this.optionsTimeout && this.hostGroups.length > 0) {
+              console.debug('[DataSource.getHostGroups] Cache hit.');
               return [2
               /*return*/
               , this.hostGroups];
@@ -3466,6 +3452,7 @@ function (_super) {
             _a.trys.push([1, 3,, 4]);
 
             if ((Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60 < this.optionsTimeout && this.applications.length > 0) {
+              console.debug('[DataSource.getApplications] Cache hit.');
               return [2
               /*return*/
               , this.applications];
@@ -3535,6 +3522,7 @@ function (_super) {
             _a.trys.push([1, 3,, 4]);
 
             if ((Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60 < this.optionsTimeout && this.webApps.length > 0) {
+              console.debug('[DataSource.getWebApps] Cache hit.');
               return [2
               /*return*/
               , this.webApps];
@@ -3604,6 +3592,7 @@ function (_super) {
             _a.trys.push([1, 3,, 4]);
 
             if ((Date.now() - this.lastFetchApplicationMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.applicationMetrics.length > 0) {
+              console.debug('[DataSource.getApplicationMetrics] Cache hit.');
               return [2
               /*return*/
               , this.applicationMetrics];
@@ -3625,14 +3614,10 @@ function (_super) {
                   var label = response.data.columns[k].label;
 
                   if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                    if (unit === 'none') {
-                      unit = 'occurence';
-                    }
-
-                    if (typeof rate !== 'undefined') {
-                      label = label + "  (" + unit + "/" + rate + ")";
-                    } else {
-                      label = label + "  (" + unit + ")";
+                    if (typeof rate !== 'undefined' && unit !== 'none') {
+                      label = label + " (" + unit + "/" + rate + ")";
+                    } else if (typeof rate !== 'undefined') {
+                      label = label + " (" + rate + ")";
                     }
 
                     var metric = {
@@ -3691,6 +3676,7 @@ function (_super) {
             _a.trys.push([1, 3,, 4]);
 
             if ((Date.now() - this.lastFetchIPMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.ipMetrics.length > 0) {
+              console.debug('[DataSource.getIPMetrics] Cache hit.');
               return [2
               /*return*/
               , this.ipMetrics];
@@ -3712,14 +3698,10 @@ function (_super) {
                   var label = response.data.columns[k].label;
 
                   if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                    if (unit === 'none') {
-                      unit = 'occurence';
-                    }
-
-                    if (typeof rate !== 'undefined') {
-                      label = label + "  (" + unit + "/" + rate + ")";
-                    } else {
-                      label = label + "  (" + unit + ")";
+                    if (typeof rate !== 'undefined' && unit !== 'none') {
+                      label = label + " (" + unit + "/" + rate + ")";
+                    } else if (typeof rate !== 'undefined') {
+                      label = label + " (" + rate + ")";
                     }
 
                     var metric = {
@@ -3778,6 +3760,7 @@ function (_super) {
             _a.trys.push([1, 3,, 4]);
 
             if ((Date.now() - this.lastFetchHostGroupMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.hostGroupMetrics.length > 0) {
+              console.debug('[DataSource.getHostGroupMetrics] Cache hit.');
               return [2
               /*return*/
               , this.hostGroupMetrics];
@@ -3799,14 +3782,10 @@ function (_super) {
                   var label = response.data.columns[k].label;
 
                   if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                    if (unit === 'none') {
-                      unit = 'occurence';
-                    }
-
-                    if (typeof rate !== 'undefined') {
-                      label = label + "  (" + unit + "/" + rate + ")";
-                    } else {
-                      label = label + "  (" + unit + ")";
+                    if (typeof rate !== 'undefined' && unit !== 'none') {
+                      label = label + " (" + unit + "/" + rate + ")";
+                    } else if (typeof rate !== 'undefined') {
+                      label = label + " (" + rate + ")";
                     }
 
                     var metric = {
@@ -3862,6 +3841,7 @@ function (_super) {
             _a.trys.push([1, 3,, 4]);
 
             if ((Date.now() - this.lastFetchWebAppMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.webAppMetrics.length > 0) {
+              console.debug('[DataSource.getWebAppMetrics] Cache hit.');
               return [2
               /*return*/
               , this.webAppMetrics];
@@ -3883,14 +3863,10 @@ function (_super) {
                   var label = response.data.columns[k].label;
 
                   if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                    if (unit === 'none') {
-                      unit = 'occurence';
-                    }
-
-                    if (typeof rate !== 'undefined') {
-                      label = label + "  (" + unit + "/" + rate + ")";
-                    } else {
-                      label = label + "  (" + unit + ")";
+                    if (typeof rate !== 'undefined' && unit !== 'none') {
+                      label = label + " (" + unit + "/" + rate + ")";
+                    } else if (typeof rate !== 'undefined') {
+                      label = label + " (" + rate + ")";
                     }
 
                     var metric = {

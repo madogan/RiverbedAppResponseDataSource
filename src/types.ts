@@ -39,31 +39,24 @@ export interface AppResponseQuery extends DataQuery {
   topN?: number;
 
   currentIP: string;
-  currentWebApp: string;
-  currentWebAppID: string;
-  currentHostGroup: string;
-  currentHostGroupID: string;
-  currentApplication: string;
-  currentApplicationID: string;
+  currentWebApp: SelectableValue;
+  currentHostGroup: SelectableValue;
+  currentApplication: SelectableValue;
 
   ipMetrics: SelectableValue[];
-  currentIPMetric: string;
-  currentIPMetricID: string;
+  currentIPMetric: SelectableValue;
 
   webApps: SelectableValue[];
   webAppMetrics: SelectableValue[];
-  currentWebAppMetric: string;
-  currentWebAppMetricID: string;
+  currentWebAppMetric: SelectableValue;
 
   applications: SelectableValue[];
   applicationMetrics: SelectableValue[];
-  currentApplicationMetric: string;
-  currentApplicationMetricID: string;
+  currentApplicationMetric: SelectableValue;
 
   hostGroups: SelectableValue[];
   hostGroupMetrics: SelectableValue[];
-  currentHostGroupMetric: string;
-  currentHostGroupMetricID: string;
+  currentHostGroupMetric: SelectableValue;
 }
 
 export const defaultQuery: Partial<AppResponseQuery> = {

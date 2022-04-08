@@ -101,8 +101,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     let dataDef_source = {};
     let dataDef_groupBy = {};
     let dataDef_columns: string[] = [];
-    let currentMetric: string = '';
-    let currentMetricID: string = '';
+    let currentMetric: SelectableValue;
     let dataDef_filters: { type: string; value: string; }[] = [];
 
     const promises = options.targets.map((target) => {
@@ -131,24 +130,20 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         dataDef_filters.push(
           {
             "type": "STEELFILTER",
-            "value": "host_group.id == " + query.currentHostGroupID
+            "value": "host_group.id == " + query.currentHostGroup?.value
           },
         );
-
-        currentMetric = query.currentHostGroupMetric;
-        currentMetricID = query.currentHostGroupMetricID;
+        dataDef_columns.push(query.currentHostGroupMetric?.value);
       } else if (query.sourceGroup === SourceGroup.application) {
         dataDef_groupBy = ["start_time", "app.id"];
         dataDef_columns = ["start_time", "app.id", "app.name"];
         dataDef_filters.push(
           {
             "type": "STEELFILTER",
-            "value": "app.id == " + query.currentApplicationID
+            "value": "app.id == " + query.currentApplication?.value
           },
         );
-
-        currentMetric = query.currentApplicationMetric;
-        currentMetricID = query.currentApplicationMetricID;
+        dataDef_columns.push(query.currentApplicationMetric?.value);
       } else if (query.sourceGroup === SourceGroup.ip) {
         dataDef_source = { "name": "aggregates" };
         dataDef_groupBy = ["start_time"];
@@ -159,54 +154,34 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             "value": "tcp.ip == " + query.currentIP
           },
         );
-
-        currentMetric = query.currentIPMetric;
-        currentMetricID = query.currentIPMetricID;
+        dataDef_columns.push(query.currentIPMetric?.value);
       } else if (query.sourceGroup === SourceGroup.webApp) {
         dataDef_groupBy = ["start_time", "app.id"]
         dataDef_columns = ["start_time", "app.id", "app.name"]
         dataDef_filters.push(
           {
             "type": "STEELFILTER",
-            "value": "app.id == " + query.currentWebAppID
+            "value": "app.id == " + query.currentWebApp?.value
           },
         );
-
-        currentMetric = query.currentWebAppMetric;
-        currentMetricID = query.currentWebAppMetricID;
-      }
-
-      if (currentMetricID !== '') {
-        dataDef_columns.push(currentMetricID);
+        dataDef_columns.push(query.currentWebAppMetric?.value);
       }
 
       let dataDef: any = {
-        // Data source to handle the data request. The source property is an object
-        // It has the following required sub-properties: name (required) and path (optional)
         'source': dataDef_source,
-        // Specify the time duration of the data requests
-        // The time property also includes a few properties that help refine time-series requests.
         "time": {
-          // Epoch start time of the request, the start time is inclusive, the unit is seconds.
           "start": queryTimeStop.toString(),
-          // Epoch end time of the request, the end time is exclusive, the unit is seconds.
           "end": queryTimeStart.toString(),
-          // This refers to the amount of time for which the data source computes a summary of the metrics it received
-          // The data source examines all data and creates summaries for 1 minute, 5 minutes, 1 hour, 6 hours, and 1 day
           'granularity': query.granularity?.value.toString(),
         },
-        // The group by property specifies the keys in the request. It is usually used to determine what kind of data is requested
-        // If the start_time (or end_time) column is in the group_by, then the request is considered time series
         "group_by": dataDef_groupBy,
-        // Request columns, the client can specify the requested key/metric columns, as well as their order
         "columns": dataDef_columns,
       };
 
       if (query.top) {
         dataDef.limit = query.topN || 10;
-        dataDef.top_by = [{ "id": currentMetricID, "direction": 'desc' }];
+        dataDef.top_by = [{ "id": currentMetric?.value, "direction": 'desc' }];
         dataDef.group_by = {};  // Remove start time.
-        // dataDef.group_by = dataDef.group_by.slice(1);  // Remove start time.
         dataDef.columns = dataDef.columns.slice(1);  // Remove start time.
       } else {
         dataDef.filters = dataDef_filters;
@@ -229,7 +204,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             name = query.alias;
           }
           else {
-            name = currentMetric;
+            name = currentMetric?.value;
           }
 
           let fields: any = [];
@@ -503,14 +478,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 && !id.endsWith('_dns') && !id.endsWith('start_time')
                 && !id.endsWith('end_time') && !id.includes('rtp')
               ) {
-                if (unit === 'none') {
-                  unit = 'occurence'
-                }
-
-                if (typeof rate !== 'undefined') {
-                  label = label + "  (" + unit + "/" + rate + ")";
-                } else {
-                  label = label + "  (" + unit + ")";
+                if (typeof rate !== 'undefined' && unit !== 'none') {
+                  label = `${label} (${unit}/${rate})`;
+                } else if (typeof rate !== 'undefined') {
+                  label = `${label} (${rate})`;
                 }
 
                 const metric = {
@@ -575,14 +546,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 && !id.endsWith('_dns') && !id.endsWith('start_time')
                 && !id.endsWith('end_time') && !id.includes('rtp')
               ) {
-                if (unit === 'none') {
-                  unit = 'occurence'
-                }
-
-                if (typeof rate !== 'undefined') {
-                  label = label + "  (" + unit + "/" + rate + ")";
-                } else {
-                  label = label + "  (" + unit + ")";
+                if (typeof rate !== 'undefined' && unit !== 'none') {
+                  label = `${label} (${unit}/${rate})`;
+                } else if (typeof rate !== 'undefined') {
+                  label = `${label} (${rate})`;
                 }
 
                 const metric = {
@@ -647,14 +614,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 && !id.endsWith('_dns') && !id.endsWith('start_time')
                 && !id.endsWith('end_time') && !id.includes('rtp')
               ) {
-                if (unit === 'none') {
-                  unit = 'occurence'
-                }
-
-                if (typeof rate !== 'undefined') {
-                  label = label + "  (" + unit + "/" + rate + ")";
-                } else {
-                  label = label + "  (" + unit + ")";
+                if (typeof rate !== 'undefined' && unit !== 'none') {
+                  label = `${label} (${unit}/${rate})`;
+                } else if (typeof rate !== 'undefined') {
+                  label = `${label} (${rate})`;
                 }
 
                 const metric = {
@@ -713,14 +676,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 && !id.endsWith('_dns') && !id.endsWith('start_time')
                 && !id.endsWith('end_time') && !id.includes('rtp')
               ) {
-                if (unit === 'none') {
-                  unit = 'occurence'
-                }
-
-                if (typeof rate !== 'undefined') {
-                  label = label + "  (" + unit + "/" + rate + ")";
-                } else {
-                  label = label + "  (" + unit + ")";
+                if (typeof rate !== 'undefined' && unit !== 'none') {
+                  label = `${label} (${unit}/${rate})`;
+                } else if (typeof rate !== 'undefined') {
+                  label = `${label} (${rate})`;
                 }
 
                 const metric = {
