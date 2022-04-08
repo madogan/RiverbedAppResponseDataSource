@@ -3082,17 +3082,17 @@ function (_super) {
 
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         deltaInSeconds = (Date.now() - this.lastFetchQuery.getTime()) / 1000;
-        console.debug("query: " + deltaInSeconds + " seconds since last query");
+        console.debug("[DataSource.query] " + deltaInSeconds + " seconds since last query.");
 
         if (deltaInSeconds < this.queryTimeout && this.data.length > 0) {
-          console.debug('query:Returning cached data.');
+          console.debug('[DataSource.query] Returning cached data.');
           return [2
           /*return*/
           , Promise.resolve({
             data: this.data
           })];
         } else {
-          console.debug('query:Fetching data from server.');
+          console.debug('[DataSource.query] Fetching data from server.');
           this.lastFetchQuery = new Date(Date.now());
           this.data = [];
         }
@@ -3287,7 +3287,8 @@ function (_super) {
                 var row = _dataDef.data[i];
                 frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
               }
-            }
+            } // Push data a variable for caching.
+
 
             _this.data.push(frame);
 
@@ -3346,6 +3347,9 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
+            console.debug("[DataSource.doRequest] " + options.method + " " + options.url);
+            console.debug("[DataSource.doRequest] " + JSON.stringify(options.data));
+            console.debug("[DataSource.doRequest] jsonData: " + JSON.stringify(this.settings.jsonData));
             if (!(this.settings.jsonData.token === '' || this.settings.jsonData.token === undefined || this.settings.jsonData.token === null)) return [3
             /*break*/
             , 2];
@@ -3385,6 +3389,7 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
+            console.debug('[DataSource.getHostGroups]');
             result = [];
             _a.label = 1;
 
