@@ -2431,8 +2431,10 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
         var _a, query, datasource, onChange, applicationMetrics;
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-          switch (_b.label) {
+        var _b;
+
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
+          switch (_c.label) {
             case 0:
               console.debug('[QueryEditor.getApplicationMetrics]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
@@ -2441,9 +2443,9 @@ function (_super) {
               , datasource.getApplicationMetrics()];
 
             case 1:
-              applicationMetrics = _b.sent();
+              applicationMetrics = _c.sent();
 
-              if (applicationMetrics.length !== (query.applicationMetrics.length || 0)) {
+              if (applicationMetrics.length !== (((_b = query.applicationMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
                 console.debug('applicationMetrics changed');
                 onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
                   applicationMetrics: applicationMetrics
@@ -2462,8 +2464,10 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
         var _a, query, datasource, onChange, ipMetrics;
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-          switch (_b.label) {
+        var _b;
+
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
+          switch (_c.label) {
             case 0:
               console.debug('[QueryEditor.getIPMetrics]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
@@ -2472,9 +2476,9 @@ function (_super) {
               , datasource.getIPMetrics()];
 
             case 1:
-              ipMetrics = _b.sent();
+              ipMetrics = _c.sent();
 
-              if (ipMetrics.length !== (query.ipMetrics.length || 0)) {
+              if (ipMetrics.length !== (((_b = query.ipMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
                 console.debug('ipMetrics changed');
                 onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
                   ipMetrics: ipMetrics
@@ -2493,8 +2497,10 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
         var _a, query, datasource, onChange, hostGroupMetrics;
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-          switch (_b.label) {
+        var _b;
+
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
+          switch (_c.label) {
             case 0:
               console.debug('[QueryEditor.getHostGroupMetrics]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
@@ -2503,9 +2509,9 @@ function (_super) {
               , datasource.getHostGroupMetrics()];
 
             case 1:
-              hostGroupMetrics = _b.sent();
+              hostGroupMetrics = _c.sent();
 
-              if (hostGroupMetrics.length !== (query.hostGroupMetrics.length || 0)) {
+              if (hostGroupMetrics.length !== (((_b = query.hostGroupMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
                 console.debug('hostGroupMetrics changed');
                 onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
                   hostGroupMetrics: hostGroupMetrics
@@ -2524,8 +2530,10 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
         var _a, query, datasource, onChange, webAppMetrics;
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-          switch (_b.label) {
+        var _b;
+
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
+          switch (_c.label) {
             case 0:
               console.debug('[QueryEditor.getWebAppMetrics]');
               _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
@@ -2534,9 +2542,9 @@ function (_super) {
               , datasource.getWebAppMetrics()];
 
             case 1:
-              webAppMetrics = _b.sent();
+              webAppMetrics = _c.sent();
 
-              if (webAppMetrics.length !== (query.webAppMetrics.length || 0)) {
+              if (webAppMetrics.length !== (((_b = query.webAppMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
                 console.debug('webAppMetrics changed');
                 onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
                   webAppMetrics: webAppMetrics
@@ -2664,13 +2672,13 @@ function (_super) {
     };
 
     _this.onIPChange = function (e) {
-      console.debug("[QueryEdior.onIPChange] " + e.currentTarget.value);
+      console.debug("[QueryEditor.onIPChange] " + JSON.stringify(e));
       var _a = _this.props,
           onChange = _a.onChange,
           query = _a.query,
           onRunQuery = _a.onRunQuery;
       onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-        currentIP: e.currentTarget.value
+        currentIP: e.target.value
       }));
       onRunQuery();
     };
@@ -3091,20 +3099,6 @@ function (_super) {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         deltaInSeconds = (Date.now() - this.lastFetchQuery.getTime()) / 1000;
         console.debug("[DataSource.query] " + deltaInSeconds + " seconds since last query.");
-
-        if (deltaInSeconds < this.queryTimeout && this.data.length > 0) {
-          console.debug('[DataSource.query] Returning cached data.');
-          return [2
-          /*return*/
-          , Promise.resolve({
-            data: this.data
-          })];
-        } else {
-          console.debug('[DataSource.query] Fetching data from server.');
-          this.lastFetchQuery = new Date(Date.now());
-          this.data = [];
-        }
-
         range = options.range;
         to = range.to.valueOf();
         from = range.from.valueOf();

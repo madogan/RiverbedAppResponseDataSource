@@ -52,7 +52,7 @@ export class QueryEditor extends PureComponent<Props> {
     console.debug('[QueryEditor.getApplicationMetrics]');
     const { query, datasource, onChange } = this.props;
     const applicationMetrics = await datasource.getApplicationMetrics();
-    if (applicationMetrics.length !== (query.applicationMetrics.length || 0)) {
+    if (applicationMetrics.length !== (query.applicationMetrics?.length || 0)) {
       console.debug('applicationMetrics changed');
       onChange({
         ...query,
@@ -65,7 +65,7 @@ export class QueryEditor extends PureComponent<Props> {
     console.debug('[QueryEditor.getIPMetrics]');
     const { query, datasource, onChange } = this.props;
     const ipMetrics = await datasource.getIPMetrics();
-    if (ipMetrics.length !== (query.ipMetrics.length || 0)) {
+    if (ipMetrics.length !== (query.ipMetrics?.length || 0)) {
       console.debug('ipMetrics changed');
       onChange({
         ...query,
@@ -78,7 +78,7 @@ export class QueryEditor extends PureComponent<Props> {
     console.debug('[QueryEditor.getHostGroupMetrics]');
     const { query, datasource, onChange } = this.props;
     const hostGroupMetrics = await datasource.getHostGroupMetrics();
-    if (hostGroupMetrics.length !== (query.hostGroupMetrics.length || 0)) {
+    if (hostGroupMetrics.length !== (query.hostGroupMetrics?.length || 0)) {
       console.debug('hostGroupMetrics changed');
       onChange({
         ...query,
@@ -91,7 +91,7 @@ export class QueryEditor extends PureComponent<Props> {
     console.debug('[QueryEditor.getWebAppMetrics]');
     const { query, datasource, onChange } = this.props;
     const webAppMetrics = await datasource.getWebAppMetrics();
-    if (webAppMetrics.length !== (query.webAppMetrics.length || 0)) {
+    if (webAppMetrics.length !== (query.webAppMetrics?.length || 0)) {
       console.debug('webAppMetrics changed');
       onChange({
         ...query,
@@ -147,9 +147,6 @@ export class QueryEditor extends PureComponent<Props> {
   onHostGroupChange = (v: any) => {
     console.debug(`[QueryEditor.onHostGroupChange] ${v.label}, ${v.value}`);
     const { onChange, query, onRunQuery } = this.props;
-
-    console.debug(`[QueryEditor.onHostGroupChange] ${JSON.stringify(v)}, ${query.currentHostGroup}`);
-
     if (v.value !== query.currentHostGroup?.value) {
       console.debug('currentHostGroup changed');
       onChange({
@@ -187,11 +184,11 @@ export class QueryEditor extends PureComponent<Props> {
   }
 
   onIPChange = (e: any) => {
-    console.debug(`[QueryEdior.onIPChange] ${e.currentTarget.value}`);
+    console.debug(`[QueryEditor.onIPChange] ${JSON.stringify(e)}`);	
     const { onChange, query, onRunQuery } = this.props;
     onChange({
       ...query,
-      currentIP: e.currentTarget.value,
+      currentIP: e.target.value,
     });
     onRunQuery();
   }

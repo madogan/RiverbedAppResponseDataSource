@@ -79,17 +79,17 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
     const deltaInSeconds = ((Date.now() - this.lastFetchQuery.getTime()) / 1000);
     console.debug(`[DataSource.query] ${deltaInSeconds} seconds since last query.`);
-    if (
-      deltaInSeconds < this.queryTimeout
-      && this.data.length > 0
-    ) {
-      console.debug('[DataSource.query] Returning cached data.');
-      return Promise.resolve({ data: this.data });
-    } else {
-      console.debug('[DataSource.query] Fetching data from server.');
-      this.lastFetchQuery = new Date(Date.now());
-      this.data = [];
-    }
+    // if (
+    //   deltaInSeconds < this.queryTimeout
+    //   && this.data.length > 0
+    // ) {
+    //   console.debug('[DataSource.query] Returning cached data.');
+    //   return Promise.resolve({ data: this.data });
+    // } else {
+    //   console.debug('[DataSource.query] Fetching data from server.');
+    //   this.lastFetchQuery = new Date(Date.now());
+    //   this.data = [];
+    // }
 
     const { range } = options;
     const to = range!.to.valueOf();
@@ -252,7 +252,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           
           // Push data a variable for caching.
           this.data.push(frame);
-
+          
           return frame;
         }
       );
