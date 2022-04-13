@@ -184,7 +184,8 @@ export class QueryEditor extends PureComponent<Props> {
   }
 
   onIPChange = (e: any) => {
-    console.debug(`[QueryEditor.onIPChange] ${JSON.stringify(e)}`);	
+    console.debug(`[QueryEditor.onIPChange] ${e.target.value}`);	
+    console.debug(e);
     const { onChange, query, onRunQuery } = this.props;
     onChange({
       ...query,
@@ -380,7 +381,7 @@ export class QueryEditor extends PureComponent<Props> {
           <div style={query.sourceGroup === SourceGroup.ip && !query.top ? { display: 'block' } : { display: 'none' }}>
             <InlineField label={query.sourceGroup}>
               <Input
-                value={query.currentIP || ''}
+                value={query.currentIP}
                 onChange={this.onIPChange}
               />
             </InlineField>

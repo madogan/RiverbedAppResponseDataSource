@@ -2624,7 +2624,6 @@ function (_super) {
           onChange = _b.onChange,
           query = _b.query,
           onRunQuery = _b.onRunQuery;
-      console.debug("[QueryEditor.onHostGroupChange] " + JSON.stringify(v) + ", " + query.currentHostGroup);
 
       if (v.value !== ((_a = query.currentHostGroup) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentHostGroup changed');
@@ -2672,7 +2671,8 @@ function (_super) {
     };
 
     _this.onIPChange = function (e) {
-      console.debug("[QueryEditor.onIPChange] " + JSON.stringify(e));
+      console.debug("[QueryEditor.onIPChange] " + e.target.value);
+      console.debug(e);
       var _a = _this.props,
           onChange = _a.onChange,
           query = _a.query,
@@ -2914,7 +2914,7 @@ function (_super) {
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
       label: query.sourceGroup
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
-      value: query.currentIP || '',
+      value: query.currentIP,
       onChange: this.onIPChange
     }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application ? {
@@ -3141,6 +3141,7 @@ function (_super) {
               "value": "host_group.id == " + ((_a = query.currentHostGroup) === null || _a === void 0 ? void 0 : _a.value)
             });
             dataDef_columns.push((_b = query.currentHostGroupMetric) === null || _b === void 0 ? void 0 : _b.value);
+            currentMetric = query.currentHostGroupMetric;
           } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
             dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name"];
@@ -3149,6 +3150,7 @@ function (_super) {
               "value": "app.id == " + ((_c = query.currentApplication) === null || _c === void 0 ? void 0 : _c.value)
             });
             dataDef_columns.push((_d = query.currentApplicationMetric) === null || _d === void 0 ? void 0 : _d.value);
+            currentMetric = query.currentApplicationMetric;
           } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip) {
             dataDef_source = {
               "name": "aggregates"
@@ -3160,6 +3162,7 @@ function (_super) {
               "value": "tcp.ip == " + query.currentIP
             });
             dataDef_columns.push((_e = query.currentIPMetric) === null || _e === void 0 ? void 0 : _e.value);
+            currentMetric = query.currentIPMetric;
           } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
             dataDef_groupBy = ["start_time", "app.id"];
             dataDef_columns = ["start_time", "app.id", "app.name"];
@@ -3168,6 +3171,7 @@ function (_super) {
               "value": "app.id == " + ((_f = query.currentWebApp) === null || _f === void 0 ? void 0 : _f.value)
             });
             dataDef_columns.push((_g = query.currentWebAppMetric) === null || _g === void 0 ? void 0 : _g.value);
+            currentMetric = query.currentWebAppMetric;
           }
 
           var dataDef = {

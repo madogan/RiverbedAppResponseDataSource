@@ -134,6 +134,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           },
         );
         dataDef_columns.push(query.currentHostGroupMetric?.value);
+        currentMetric = query.currentHostGroupMetric;
       } else if (query.sourceGroup === SourceGroup.application) {
         dataDef_groupBy = ["start_time", "app.id"];
         dataDef_columns = ["start_time", "app.id", "app.name"];
@@ -144,6 +145,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           },
         );
         dataDef_columns.push(query.currentApplicationMetric?.value);
+        currentMetric = query.currentApplicationMetric;
       } else if (query.sourceGroup === SourceGroup.ip) {
         dataDef_source = { "name": "aggregates" };
         dataDef_groupBy = ["start_time"];
@@ -155,6 +157,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           },
         );
         dataDef_columns.push(query.currentIPMetric?.value);
+        currentMetric = query.currentIPMetric;
       } else if (query.sourceGroup === SourceGroup.webApp) {
         dataDef_groupBy = ["start_time", "app.id"]
         dataDef_columns = ["start_time", "app.id", "app.name"]
@@ -165,6 +168,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           },
         );
         dataDef_columns.push(query.currentWebAppMetric?.value);
+        currentMetric = query.currentWebAppMetric;
       }
 
       let dataDef: any = {
@@ -249,10 +253,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
               frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
             }
           }
-          
+
           // Push data a variable for caching.
           this.data.push(frame);
-          
+
           return frame;
         }
       );
@@ -324,7 +328,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         && this.hostGroups.length > 0
       ) {
         console.debug('[DataSource.getHostGroups] Cache hit.');
-        return this.hostGroups; 
+        return this.hostGroups;
       }
 
       await this.doRequest({
@@ -365,9 +369,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       if (
         ((Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60) < this.optionsTimeout
         && this.applications.length > 0
-      ) { 
+      ) {
         console.debug('[DataSource.getApplications] Cache hit.');
-        return this.applications; 
+        return this.applications;
       }
 
       await this.doRequest({
@@ -407,9 +411,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       if (
         ((Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60) < this.optionsTimeout
         && this.webApps.length > 0
-      ) { 
+      ) {
         console.debug('[DataSource.getWebApps] Cache hit.');
-        return this.webApps; 
+        return this.webApps;
       }
 
       await this.doRequest({
@@ -449,9 +453,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       if (
         ((Date.now() - this.lastFetchApplicationMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
         && this.applicationMetrics.length > 0
-      ) { 
+      ) {
         console.debug('[DataSource.getApplicationMetrics] Cache hit.');
-        return this.applicationMetrics; 
+        return this.applicationMetrics;
       }
 
       await this.doRequest({
@@ -517,9 +521,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       if (
         ((Date.now() - this.lastFetchIPMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
         && this.ipMetrics.length > 0
-      ) { 
+      ) {
         console.debug('[DataSource.getIPMetrics] Cache hit.');
-        return this.ipMetrics; 
+        return this.ipMetrics;
       }
 
       await this.doRequest({
@@ -585,9 +589,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       if (
         ((Date.now() - this.lastFetchHostGroupMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
         && this.hostGroupMetrics.length > 0
-      ) { 
-        console.debug('[DataSource.getHostGroupMetrics] Cache hit.'); 
-        return this.hostGroupMetrics; 
+      ) {
+        console.debug('[DataSource.getHostGroupMetrics] Cache hit.');
+        return this.hostGroupMetrics;
       }
 
       await this.doRequest({
@@ -647,9 +651,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       if (
         ((Date.now() - this.lastFetchWebAppMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
         && this.webAppMetrics.length > 0
-      ) { 
+      ) {
         console.debug('[DataSource.getWebAppMetrics] Cache hit.');
-        return this.webAppMetrics; 
+        return this.webAppMetrics;
       }
 
       await this.doRequest({
