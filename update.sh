@@ -26,6 +26,9 @@ done
 # Exact path to the directory where the plugins are stored.
 pluginsDir="${pluginsDir}/riverbed-appresponse-datasource/"
 
+# Remove old artifacts.
+rm -rf dist
+
 # Build frontend.
 yarn dev
 
@@ -34,6 +37,7 @@ mage -v
 
 # Copy files into plugin directory.
 # ATTENTION: It overwrite current files.
+rm -rf $pluginsDir
 mkdir -p $pluginsDir
 cp -r -f -v ./dist $pluginsDir
 cp -r -f -v ./src $pluginsDir

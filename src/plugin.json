@@ -42,10 +42,6 @@
       "url": "{{ .JsonData.path }}/api/npm.classification/2.0/applications"
     },
     {
-      "path": "urls",
-      "url": "{{ .JsonData.path }}/api/npm.classification/2.0/urls"
-    },
-    {
       "path": "webapps",
       "url": "{{ .JsonData.path }}/api/npm.wta_config/1.0/wta_webapps"
     },

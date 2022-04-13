@@ -1,54 +1,62 @@
 import { DataQuery, DataSourceJsonData, SelectableValue } from '@grafana/data';
 
+
 export enum SourceGroup {
-  application = 'Application',
-  hostGroup = 'Host Group',
+  ip = 'IP',
   webApp = 'Web App',
-  ip = 'IP'
+  hostGroup = 'Host Group',
+  application = 'Application',
 };
 
 export const sourceGroups = [
-  SourceGroup.application,
-  SourceGroup.hostGroup,
-  SourceGroup.webApp,
-  SourceGroup.ip
+  { label: 'Application', value: SourceGroup.application },
+  { label: 'Host Group', value: SourceGroup.hostGroup },
+  { label: 'Web App', value: SourceGroup.webApp },
+  { label: 'IP', value: SourceGroup.ip },
 ];
 
 export const granularities = [
-  { "value": 60, "text": "60 seconds" },
-  { "value": 300, "text": "5 minutes" },
-  { "value": 3600, "text": "1 hour" },
-  { "value": 21600, "text": "6 hours" },
-  { "value": 86400, "text": "1 day" }
+  { "value": 60, "label": "60 seconds" },
+  { "value": 300, "label": "5 minutes" },
+  { "value": 3600, "label": "1 hour" },
+  { "value": 21600, "label": "6 hours" },
+  { "value": 86400, "label": "1 day" }
 ];
 
 export const findGranularity = (t: string) => {
-  return granularities.find(g => g.text === t);
+  return granularities.find(g => g.value.toString() === t);
 };
 
 export interface AppResponseQuery extends DataQuery {
   unit?: string;
   rate?: string;
   alias?: string;
-  sourceGroup?: SourceGroup;
   timeshift?: number;
- 
-  currentMetric?: string;
-  currentMetricID?: string;
-  currentWebApp?: string;
-  currentWebAppID?: string;
-  currentHostGroup?: string;
-  currentHostGroupID?: string;
-  currentApplication?: string;
-  currentApplicationID?: string;
-  currentIP?: string;
+  sourceGroup: SourceGroup;
+  granularity?: SelectableValue;
 
-  metrics: SelectableValue[];
-  hostGroups: SelectableValue[];
-  applications: SelectableValue[];
+  top?: boolean;
+  topN?: number;
+
+  currentIP: string;
+  currentWebApp: SelectableValue;
+  currentHostGroup: SelectableValue;
+  currentApplication: SelectableValue;
+
+  ipMetrics: SelectableValue[];
+  currentIPMetric: SelectableValue;
+
   webApps: SelectableValue[];
+  webAppMetrics: SelectableValue[];
+  currentWebAppMetric: SelectableValue;
 
-  granularity?: {'value': number, 'text': string};
+  applications: SelectableValue[];
+  applicationMetrics: SelectableValue[];
+  currentApplicationMetric: SelectableValue;
+
+  hostGroups: SelectableValue[];
+  hostGroupMetrics: SelectableValue[];
+  currentHostGroupMetric: SelectableValue;
 }
 
 export const defaultQuery: Partial<AppResponseQuery> = {
@@ -56,19 +64,25 @@ export const defaultQuery: Partial<AppResponseQuery> = {
   granularity: granularities[0],
   sourceGroup: SourceGroup.application,
 
-  metrics: [],
-  hostGroups: [],
-  applications: [],
+  top: false,
+  topN: 10,
+
   webApps: [],
-  currentIP: '',
+  webAppMetrics: [],
+
+  hostGroups: [],
+  hostGroupMetrics: [],
+
+  applications: [],
+  applicationMetrics: [],
 };
 
 export interface AppResponseDataSourceOptions extends DataSourceJsonData {
-  skipTlsVerify: boolean | undefined;
   path?: string;
   token?: string;
   username?: string;
   tlsSkipVerify?: boolean;
+  skipTlsVerify: boolean | undefined;
 }
 
 export interface AppResponseSecureJsonData {
@@ -78,10 +92,9 @@ export interface AppResponseSecureJsonData {
 export interface AppResponseURLs {
   base: string;
   auth: string;
-  hostGroup: string;
   metric: string;
-  application: string;
   webApp: string;
-  url: string;
+  hostGroup: string;
+  application: string;
   instanceCreationSync: string;
 }
