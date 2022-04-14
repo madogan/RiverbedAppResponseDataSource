@@ -2767,6 +2767,18 @@ function (_super) {
       onRunQuery();
     };
 
+    _this.onTopGraphChange = function (e) {
+      console.debug("[QueryEditor.onTopGraphChange] " + e.currentTarget.checked);
+      var _a = _this.props,
+          onChange = _a.onChange,
+          query = _a.query,
+          onRunQuery = _a.onRunQuery;
+      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        topGraph: e.currentTarget.checked
+      }));
+      onRunQuery();
+    };
+
     _this.onTopNChange = function (e) {
       console.debug("[QueryEditor.onTopNChange] " + e.currentTarget.value);
       var _a = _this.props,
@@ -2821,7 +2833,7 @@ function (_super) {
   QueryEditor.prototype.render = function () {
     var _this = this;
 
-    var _a, _b;
+    var _a;
 
     console.debug('[QueryEditor.render]');
     var query = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["defaults"])(this.props.query, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
@@ -2830,7 +2842,13 @@ function (_super) {
       style: {
         width: '100%'
       }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.top ? {
+        display: 'none'
+      } : {
+        display: 'block'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
       label: "Top"
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       style: {
@@ -2840,19 +2858,7 @@ function (_super) {
       value: query.top,
       checked: query.top,
       onChange: this.onTopChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "N"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
-      width: 16,
-      value: query.topN || 0,
-      onChange: this.onTopNChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
       label: "Source Group"
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
       width: 'auto',
@@ -2984,18 +2990,57 @@ function (_super) {
       options: query.ipMetrics,
       value: query.currentIPMetric,
       onChange: this.onIPMetricChange
-    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.top ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Top"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: {
+        marginTop: '8px'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
+      value: query.top,
+      checked: query.top,
+      onChange: this.onTopChange
+    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.top ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "N"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
+      width: 16,
+      value: query.topN || 0,
+      onChange: this.onTopNChange
+    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: query.top ? {
+        display: 'block'
+      } : {
+        display: 'none'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+      label: "Graph"
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+      style: {
+        marginTop: '8px'
+      }
+    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
+      value: query.topGraph,
+      checked: query.topGraph,
+      onChange: this.onTopGraphChange
+    }))))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
       label: "Granularity"
     }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
       menuShouldPortal: true,
       value: (_a = query.granularity) === null || _a === void 0 ? void 0 : _a.value,
       options: _types__WEBPACK_IMPORTED_MODULE_4__["granularities"],
       onChange: this.onGranularityChange
-    })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Timeshift"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
-      value: ((_b = query.timeshift) === null || _b === void 0 ? void 0 : _b.toString()) || '0',
-      onChange: this.onTimeshiftChange
     })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
       style: query.top ? {
         display: 'none'
@@ -3090,19 +3135,148 @@ function (_super) {
     return _this;
   }
 
+  DataSource.prototype.topngraphquery = function (target, start, end, granularity) {
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
+      var dataDef_groupBy, dataDef_topBy, dataDef_columns, filterIN, data;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            dataDef_topBy = [];
+            dataDef_columns = [];
+            console.debug(dataDef_groupBy);
+
+            if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
+              dataDef_topBy = [{
+                "direction": "desc",
+                "id": target.currentApplicationMetric.value
+              }];
+              dataDef_columns = ["app.id", "app.name", target.currentApplicationMetric.value];
+              dataDef_groupBy = ["start_time", "app.id"];
+            } else if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
+              dataDef_topBy = [{
+                "direction": "desc",
+                "id": target.currentHostGroupMetric.value
+              }];
+              dataDef_columns = ["host_group.id", "host_group.name", target.currentHostGroupMetric.value];
+              dataDef_groupBy = ["start_time", "host_group.id"];
+            } else if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
+              dataDef_topBy = [{
+                "direction": "desc",
+                "id": target.currentWebAppMetric.value
+              }];
+              dataDef_columns = ["app.id", "app.name", target.currentWebAppMetric.value];
+              dataDef_groupBy = ["start_time", "app.id"];
+            } else if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip) {
+              dataDef_topBy = [{
+                "direction": "desc",
+                "id": target.currentIPMetric.value
+              }];
+              dataDef_columns = ["tcp.ip", "tcp.dns", "tcp.ip.host_group.ids", "tcp.ip.host_group.names", target.currentIPMetric.value];
+              dataDef_groupBy = ["start_time", "tcp.ip"];
+            } else {
+              throw new Error("Unknown source group");
+            }
+
+            filterIN = "";
+            return [4
+            /*yield*/
+            , this.doRequest({
+              method: "POST",
+              url: this.urls.instanceCreationSync,
+              data: {
+                "data_defs": [{
+                  "source": {
+                    "name": "aggregates"
+                  },
+                  "time": {
+                    "start": start.toString(),
+                    "end": end.toString(),
+                    "granularity": granularity.toString()
+                  },
+                  "top_by": dataDef_topBy,
+                  "columns": dataDef_columns,
+                  "limit": target.topN || 10
+                }]
+              }
+            }).then(function (response) {
+              console.debug("First Response: " + JSON.stringify(response));
+              var topNResponse;
+
+              if (response.data.data_defs[0].hasOwnProperty("data")) {
+                topNResponse = response.data.data_defs[0].data;
+              } else {
+                topNResponse = [];
+              }
+
+              console.debug("topNResponse: " + JSON.stringify(topNResponse));
+
+              for (var index = 0; index < topNResponse.length; index++) {
+                if (index === topNResponse.length - 1) {
+                  filterIN += "'" + topNResponse[index][0] + "'";
+                } else {
+                  filterIN += "'" + topNResponse[index][0] + "', ";
+                }
+              }
+
+              return filterIN;
+            })];
+
+          case 1:
+            _a.sent(); // Insert 'start_time' into first index of columns.
+
+
+            dataDef_columns.unshift("start_time");
+            return [4
+            /*yield*/
+            , this.doRequest({
+              method: 'POST',
+              url: this.urls.instanceCreationSync,
+              data: {
+                "data_defs": [{
+                  "source": {
+                    "name": "aggregates"
+                  },
+                  "time": {
+                    "start": start.toString(),
+                    "end": end.toString(),
+                    "granularity": granularity.toString()
+                  },
+                  "group_by": ["start_time"],
+                  "columns": dataDef_columns,
+                  "filters": [{
+                    "type": "STEELFILTER",
+                    "value": dataDef_columns[1] + " IN (" + filterIN + ")"
+                  }]
+                }]
+              }
+            }).then(function (response) {
+              if (response.data.data_defs[0].hasOwnProperty("data")) {
+                return response.data.data_defs[0].data;
+              } else {
+                return [];
+              }
+            })];
+
+          case 2:
+            data = _a.sent();
+            return [2
+            /*return*/
+            , data];
+        }
+      });
+    });
+  };
+
   DataSource.prototype.query = function (options) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
-      var deltaInSeconds, range, to, from, queryTimeStop, queryTimeStart, queryTimeshift, dataDef_source, dataDef_groupBy, dataDef_columns, currentMetric, dataDef_filters, promises;
+      var range, to, from, end, start, dataDef_source, dataDef_groupBy, dataDef_columns, currentMetric, dataDef_filters, promises;
 
       var _this = this;
 
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        deltaInSeconds = (Date.now() - this.lastFetchQuery.getTime()) / 1000;
-        console.debug("[DataSource.query] " + deltaInSeconds + " seconds since last query.");
         range = options.range;
         to = range.to.valueOf();
         from = range.from.valueOf();
-        queryTimeshift = 0;
         dataDef_source = {};
         dataDef_groupBy = {};
         dataDef_columns = [];
@@ -3111,20 +3285,16 @@ function (_super) {
           var _a, _b, _c, _d, _e, _f, _g, _h;
 
           var query = lodash_defaults__WEBPACK_IMPORTED_MODULE_2___default()(target, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
-          queryTimeStart = new Date(to).getTime() / 1000;
-          queryTimeStop = new Date(from).getTime() / 1000;
-
-          if (typeof query.timeshift === "undefined" || typeof query.timeshift === "string" && query.timeshift === []) {
-            query.timeshift = 0;
-          }
-
-          queryTimeshift = query.timeshift + query.timeshift * 86400 - 1 * query.timeshift;
-          queryTimeStop = queryTimeStop - queryTimeshift;
-          queryTimeStart = queryTimeStart - queryTimeshift;
-
-          if (typeof queryTimeshift !== 'undefined') {
-            query.timeshift = queryTimeshift;
-          }
+          end = new Date(to).getTime() / 1000;
+          start = new Date(from).getTime() / 1000; // if (typeof query.timeshift === "undefined" || (typeof query.timeshift === "string" && query.timeshift === [])) {
+          //   query.timeshift = 0;
+          // }
+          // queryTimeshift = query.timeshift + query.timeshift * 86400 - (1 * query.timeshift);
+          // end = end - queryTimeshift;
+          // start = start - queryTimeshift
+          // if (typeof queryTimeshift !== 'undefined') {
+          //   query.timeshift = queryTimeshift;
+          // }
 
           dataDef_source = {
             "name": "aggregates"
@@ -3177,8 +3347,8 @@ function (_super) {
           var dataDef = {
             'source': dataDef_source,
             "time": {
-              "start": queryTimeStop.toString(),
-              "end": queryTimeStart.toString(),
+              "end": end.toString(),
+              "start": start.toString(),
               'granularity': (_h = query.granularity) === null || _h === void 0 ? void 0 : _h.value.toString()
             },
             "group_by": dataDef_groupBy,
@@ -3194,6 +3364,8 @@ function (_super) {
             dataDef.group_by = {}; // Remove start time.
 
             dataDef.columns = dataDef.columns.slice(1); // Remove start time.
+
+            _this.topngraphquery(query, start, end, 0);
           } else {
             dataDef.filters = dataDef_filters;
           }
@@ -4001,6 +4173,7 @@ var defaultQuery = {
   sourceGroup: SourceGroup.application,
   top: false,
   topN: 10,
+  topGraph: false,
   webApps: [],
   webAppMetrics: [],
   hostGroups: [],

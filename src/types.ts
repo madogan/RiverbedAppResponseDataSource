@@ -37,6 +37,7 @@ export interface AppResponseQuery extends DataQuery {
 
   top?: boolean;
   topN?: number;
+  topGraph?: boolean;
 
   currentIP: string;
   currentWebApp: SelectableValue;
@@ -66,6 +67,7 @@ export const defaultQuery: Partial<AppResponseQuery> = {
 
   top: false,
   topN: 10,
+  topGraph: false,
 
   webApps: [],
   webAppMetrics: [],

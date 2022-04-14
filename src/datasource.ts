@@ -76,28 +76,154 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     this.lastFetchIPMetrics = new Date();
   }
 
-  async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
-    const deltaInSeconds = ((Date.now() - this.lastFetchQuery.getTime()) / 1000);
-    console.debug(`[DataSource.query] ${deltaInSeconds} seconds since last query.`);
-    // if (
-    //   deltaInSeconds < this.queryTimeout
-    //   && this.data.length > 0
-    // ) {
-    //   console.debug('[DataSource.query] Returning cached data.');
-    //   return Promise.resolve({ data: this.data });
-    // } else {
-    //   console.debug('[DataSource.query] Fetching data from server.');
-    //   this.lastFetchQuery = new Date(Date.now());
-    //   this.data = [];
-    // }
+  async topngraphquery(
+    target: AppResponseQuery, start: Number, end: Number, granularity: Number,
+  ) {
+    let dataDef_groupBy;
+    let dataDef_topBy: any = [];
+    let dataDef_columns: any = [];
 
+    console.debug(dataDef_groupBy);
+
+    if (target.sourceGroup === SourceGroup.application) {
+      dataDef_topBy = [{
+        "direction": "desc",
+        "id": target.currentApplicationMetric.value,
+      }];
+      dataDef_columns = [
+        "app.id",
+        "app.name",
+        target.currentApplicationMetric.value,
+      ];
+      dataDef_groupBy = ["start_time", "app.id"];
+    } else if (target.sourceGroup === SourceGroup.hostGroup) {
+      dataDef_topBy = [{
+        "direction": "desc",
+        "id": target.currentHostGroupMetric.value,
+      }];
+      dataDef_columns = [
+        "host_group.id",
+        "host_group.name",
+        target.currentHostGroupMetric.value,
+      ];
+      dataDef_groupBy = ["start_time", "host_group.id"];
+    } else if (target.sourceGroup === SourceGroup.webApp) {
+      dataDef_topBy = [{
+        "direction": "desc",
+        "id": target.currentWebAppMetric.value,
+      }];
+      dataDef_columns = [
+        "app.id",
+        "app.name",
+        target.currentWebAppMetric.value,
+      ];
+      dataDef_groupBy = ["start_time", "app.id"];
+    } else if (target.sourceGroup === SourceGroup.ip) {
+      dataDef_topBy = [{
+        "direction": "desc",
+        "id": target.currentIPMetric.value,
+      }];
+      dataDef_columns = [
+        "tcp.ip",
+        "tcp.dns",
+        "tcp.ip.host_group.ids",
+        "tcp.ip.host_group.names",
+        target.currentIPMetric.value,
+      ];
+      dataDef_groupBy = ["start_time", "tcp.ip"];
+    } else {
+      throw new Error("Unknown source group");
+    }
+
+    let filterIN = "";
+
+    await this.doRequest({
+      method: "POST",
+      url: this.urls.instanceCreationSync,
+      data: {
+        "data_defs": [
+          {
+            "source": { "name": "aggregates" },
+            "time": {
+              "start": start.toString(),
+              "end": end.toString(),
+              "granularity": granularity.toString(),
+            },
+            "top_by": dataDef_topBy,
+            "columns": dataDef_columns,
+            "limit": target.topN || 10,
+          },
+        ]
+      },
+    }).then(
+      (response: any) => {
+        console.debug(`First Response: ${JSON.stringify(response)}`);
+        let topNResponse;
+        if (response.data.data_defs[0].hasOwnProperty("data")) {
+          topNResponse = response.data.data_defs[0].data;
+        } else {
+          topNResponse = [];
+        }
+        console.debug(`topNResponse: ${JSON.stringify(topNResponse)}`);
+
+        for (let index = 0; index < topNResponse.length; index++) {
+          if (index === topNResponse.length - 1) {
+            filterIN += `'${topNResponse[index][0]}'`;
+          } else {
+            filterIN += `'${topNResponse[index][0]}', `;
+          }
+        }
+
+        return filterIN;
+      }
+    );
+
+    // Insert 'start_time' into first index of columns.
+    dataDef_columns.unshift("start_time");
+
+    const data = await this.doRequest({
+      method: 'POST',
+      url: this.urls.instanceCreationSync,
+      data: {
+        "data_defs": [
+          {
+            "source": { "name": "aggregates" },
+            "time": {
+              "start": start.toString(),
+              "end": end.toString(),
+              "granularity": granularity.toString(),
+            },
+            "group_by": ["start_time"],
+            "columns": dataDef_columns,
+            "filters": [
+              {
+                "type": "STEELFILTER",
+                "value": `${dataDef_columns[1]} IN (${filterIN})`,
+              }
+            ],
+          },
+        ]
+      },
+    }).then(
+      (response: any) => {
+        if (response.data.data_defs[0].hasOwnProperty("data")) {
+          return response.data.data_defs[0].data;
+        } else {
+          return [];
+        }
+      }
+    );
+
+    return data;
+  }
+
+  async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
     const { range } = options;
     const to = range!.to.valueOf();
     const from = range!.from.valueOf();
 
-    let queryTimeStop;
-    let queryTimeStart;
-    let queryTimeshift = 0;
+    let end;
+    let start;
     let dataDef_source = {};
     let dataDef_groupBy = {};
     let dataDef_columns: string[] = [];
@@ -106,19 +232,18 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
     const promises = options.targets.map((target) => {
       const query = defaults(target, defaultQuery);
-      queryTimeStart = ((new Date(to)).getTime()) / 1000;
-      queryTimeStop = ((new Date(from)).getTime()) / 1000;
+      end = ((new Date(to)).getTime()) / 1000;
+      start = ((new Date(from)).getTime()) / 1000;
 
-      if (typeof query.timeshift === "undefined" || (typeof query.timeshift === "string" && query.timeshift === [])) {
-        query.timeshift = 0;
-      }
-
-      queryTimeshift = query.timeshift + query.timeshift * 86400 - (1 * query.timeshift);
-      queryTimeStop = queryTimeStop - queryTimeshift;
-      queryTimeStart = queryTimeStart - queryTimeshift
-      if (typeof queryTimeshift !== 'undefined') {
-        query.timeshift = queryTimeshift;
-      }
+      // if (typeof query.timeshift === "undefined" || (typeof query.timeshift === "string" && query.timeshift === [])) {
+      //   query.timeshift = 0;
+      // }
+      // queryTimeshift = query.timeshift + query.timeshift * 86400 - (1 * query.timeshift);
+      // end = end - queryTimeshift;
+      // start = start - queryTimeshift
+      // if (typeof queryTimeshift !== 'undefined') {
+      //   query.timeshift = queryTimeshift;
+      // }
 
       dataDef_source = { "name": "aggregates" };
       if (query.sourceGroup == SourceGroup.hostGroup) {
@@ -174,8 +299,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       let dataDef: any = {
         'source': dataDef_source,
         "time": {
-          "start": queryTimeStop.toString(),
-          "end": queryTimeStart.toString(),
+          "end": end.toString(),
+          "start": start.toString(),
           'granularity': query.granularity?.value.toString(),
         },
         "group_by": dataDef_groupBy,
@@ -187,6 +312,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         dataDef.top_by = [{ "id": currentMetric?.value, "direction": 'desc' }];
         dataDef.group_by = {};  // Remove start time.
         dataDef.columns = dataDef.columns.slice(1);  // Remove start time.
+
+        this.topngraphquery(query, start, end, 0);
       } else {
         dataDef.filters = dataDef_filters;
       }
