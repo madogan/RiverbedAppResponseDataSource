@@ -22,6 +22,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
   data: any = [];
   ipMetrics: SelectableValue[] = [];
+  topMetrics: SelectableValue[] = [];
   webApps: SelectableValue[] = [];
   webAppMetrics: SelectableValue[] = [];
   hostGroups: SelectableValue[] = [];
@@ -83,57 +84,42 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     let dataDef_topBy: any = [];
     let dataDef_columns: any = [];
 
-    console.debug(dataDef_groupBy);
+    dataDef_topBy = [{
+      "direction": "desc",
+      "id": target.currentTopMetric.value,
+    }];
 
     if (target.sourceGroup === SourceGroup.application) {
-      dataDef_topBy = [{
-        "direction": "desc",
-        "id": target.currentApplicationMetric.value,
-      }];
       dataDef_columns = [
         "app.id",
         "app.name",
-        target.currentApplicationMetric.value,
       ];
       dataDef_groupBy = ["start_time", "app.id"];
     } else if (target.sourceGroup === SourceGroup.hostGroup) {
-      dataDef_topBy = [{
-        "direction": "desc",
-        "id": target.currentHostGroupMetric.value,
-      }];
       dataDef_columns = [
         "host_group.id",
         "host_group.name",
-        target.currentHostGroupMetric.value,
       ];
       dataDef_groupBy = ["start_time", "host_group.id"];
     } else if (target.sourceGroup === SourceGroup.webApp) {
-      dataDef_topBy = [{
-        "direction": "desc",
-        "id": target.currentWebAppMetric.value,
-      }];
       dataDef_columns = [
         "app.id",
         "app.name",
-        target.currentWebAppMetric.value,
       ];
       dataDef_groupBy = ["start_time", "app.id"];
     } else if (target.sourceGroup === SourceGroup.ip) {
-      dataDef_topBy = [{
-        "direction": "desc",
-        "id": target.currentIPMetric.value,
-      }];
       dataDef_columns = [
         "tcp.ip",
         "tcp.dns",
         "tcp.ip.host_group.ids",
         "tcp.ip.host_group.names",
-        target.currentIPMetric.value,
       ];
       dataDef_groupBy = ["start_time", "tcp.ip"];
     } else {
       throw new Error("Unknown source group");
     }
+
+    dataDef_columns.push(target.currentTopMetric.value);
 
     let filterIN = "";
 
@@ -193,7 +179,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
               "end": end.toString(),
               "granularity": granularity.toString(),
             },
-            "group_by": ["start_time"],
+            "group_by": dataDef_groupBy,
             "columns": dataDef_columns,
             "filters": [
               {
@@ -207,7 +193,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     }).then(
       (response: any) => {
         if (response.data.data_defs[0].hasOwnProperty("data")) {
-          return response.data.data_defs[0].data;
+          return response.data;
         } else {
           return [];
         }
@@ -234,16 +220,6 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       const query = defaults(target, defaultQuery);
       end = ((new Date(to)).getTime()) / 1000;
       start = ((new Date(from)).getTime()) / 1000;
-
-      // if (typeof query.timeshift === "undefined" || (typeof query.timeshift === "string" && query.timeshift === [])) {
-      //   query.timeshift = 0;
-      // }
-      // queryTimeshift = query.timeshift + query.timeshift * 86400 - (1 * query.timeshift);
-      // end = end - queryTimeshift;
-      // start = start - queryTimeshift
-      // if (typeof queryTimeshift !== 'undefined') {
-      //   query.timeshift = queryTimeshift;
-      // }
 
       dataDef_source = { "name": "aggregates" };
       if (query.sourceGroup == SourceGroup.hostGroup) {
@@ -294,6 +270,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         );
         dataDef_columns.push(query.currentWebAppMetric?.value);
         currentMetric = query.currentWebAppMetric;
+      } else {
+        throw new Error("Unknown source group");
       }
 
       let dataDef: any = {
@@ -313,7 +291,50 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         dataDef.group_by = {};  // Remove start time.
         dataDef.columns = dataDef.columns.slice(1);  // Remove start time.
 
-        this.topngraphquery(query, start, end, 0);
+        if (query.topGraph) {
+          return this.topngraphquery(query, start, end, 0).then(
+            (data: any) => {
+              let _dataDef = data.data_defs[0];
+              if (!_dataDef.hasOwnProperty('data')) {
+                _dataDef.data = [];
+              }
+
+              let name;
+              if (query.alias !== undefined && query.alias.trim() !== '') {
+                name = query.alias;
+              } else {
+                name = currentMetric?.label;
+              }
+
+              let frame;
+              let fields: any = [];
+
+              for (let index = 0; index < _dataDef.columns.length; index++) {
+                const column = _dataDef.columns[index];
+
+                if (column.includes("time")) {
+                  fields.push({ name: "Time", type: FieldType.time });
+                } else {
+                  fields.push({ name: column, type: FieldType.other });
+                }
+              }
+
+              frame = new MutableDataFrame({
+                name: name,
+                fields: fields,
+                refId: query.refId,
+              });
+
+              for (let i = 0; i < _dataDef.data.length; i++) {
+                _dataDef.data[i][0] = new Date(_dataDef.data[i][0] * 1000);
+                frame.appendRow(_dataDef.data[i]);
+              }
+
+              return frame;
+            }
+          )
+        }
+
       } else {
         dataDef.filters = dataDef_filters;
       }
@@ -571,6 +592,22 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     }
 
     return result;
+  }
+
+  async getTopMetrics(sourceGroup: SourceGroup) {
+    if (sourceGroup === SourceGroup.application) {
+      this.topMetrics = await this.getApplicationMetrics();
+    } else if (sourceGroup === SourceGroup.hostGroup) {
+      this.topMetrics = await this.getHostGroupMetrics();
+    } else if (sourceGroup === SourceGroup.webApp) {
+      this.topMetrics = await this.getWebAppMetrics();
+    } else if (sourceGroup === SourceGroup.ip) {
+      this.topMetrics = await this.getIPMetrics();
+    } else {
+      throw new Error('Unknown source group');
+    }
+
+    return this.topMetrics;
   }
 
   async getApplicationMetrics() {

@@ -38,6 +38,8 @@ export interface AppResponseQuery extends DataQuery {
   top?: boolean;
   topN?: number;
   topGraph?: boolean;
+  topMetrics: SelectableValue[];
+  currentTopMetric: SelectableValue;
 
   currentIP: string;
   currentWebApp: SelectableValue;
