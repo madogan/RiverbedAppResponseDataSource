@@ -3089,7 +3089,7 @@ function (_super) {
       checked: query.topGraph,
       onChange: this.onTopGraphChange
     })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.topGraph ? {
+      style: query.top && query.topGraph ? {
         display: 'block'
       } : {
         display: 'none'

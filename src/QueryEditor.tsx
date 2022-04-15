@@ -504,7 +504,7 @@ export class QueryEditor extends PureComponent<Props> {
             </InlineField>
           </div>
 
-          <div style={query.topGraph ? { display: 'block' } : { display: 'none' }}>
+          <div style={query.top && query.topGraph ? { display: 'block' } : { display: 'none' }}>
             <InlineField label="Top Metric" onLoadStart={() => this.getTopMetrics()}>
               <Select
                 width='auto'

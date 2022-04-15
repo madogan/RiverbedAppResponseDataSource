@@ -77,9 +77,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     this.lastFetchIPMetrics = new Date();
   }
 
-  async topngraphquery(
-    target: AppResponseQuery, start: Number, end: Number, granularity: Number,
-  ) {
+  async topngraphquery(target: AppResponseQuery, start: Number, end: Number, granularity: Number) {
     let dataDef_groupBy;
     let dataDef_topBy: any = [];
     let dataDef_columns: any = [];
@@ -121,7 +119,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
     dataDef_columns.push(target.currentTopMetric.value);
 
-    let filterIN = "";
+    let tops: any = [];
+    let filterIN: string = "";
 
     await this.doRequest({
       method: "POST",
@@ -143,23 +142,20 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       },
     }).then(
       (response: any) => {
-        console.debug(`First Response: ${JSON.stringify(response)}`);
         let topNResponse;
         if (response.data.data_defs[0].hasOwnProperty("data")) {
           topNResponse = response.data.data_defs[0].data;
         } else {
           topNResponse = [];
         }
-        console.debug(`topNResponse: ${JSON.stringify(topNResponse)}`);
-
         for (let index = 0; index < topNResponse.length; index++) {
+          tops.push(topNResponse[index][0]);
           if (index === topNResponse.length - 1) {
             filterIN += `'${topNResponse[index][0]}'`;
           } else {
             filterIN += `'${topNResponse[index][0]}', `;
           }
         }
-
         return filterIN;
       }
     );
@@ -167,7 +163,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     // Insert 'start_time' into first index of columns.
     dataDef_columns.unshift("start_time");
 
-    const data = await this.doRequest({
+    const result = await this.doRequest({
       method: 'POST',
       url: this.urls.instanceCreationSync,
       data: {
@@ -200,7 +196,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       }
     );
 
-    return data;
+    return {
+      tops: tops,
+      result: result,
+    };
   }
 
   async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
@@ -294,29 +293,26 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         if (query.topGraph) {
           return this.topngraphquery(query, start, end, 0).then(
             (data: any) => {
-              let _dataDef = data.data_defs[0];
-              if (!_dataDef.hasOwnProperty('data')) {
-                _dataDef.data = [];
-              }
-
               let name;
+              const tops = data.tops;
+              const result = data.result;
+              let dataDef = result.data_defs[0];
+
+              if (!dataDef.hasOwnProperty('data')) { dataDef.data = []; }
+
               if (query.alias !== undefined && query.alias.trim() !== '') {
                 name = query.alias;
               } else {
-                name = currentMetric?.label;
+                name = query.currentTopMetric?.label;
               }
 
               let frame;
-              let fields: any = [];
+              let fields = [
+                { name: "Time", type: FieldType.time },
+              ];
 
-              for (let index = 0; index < _dataDef.columns.length; index++) {
-                const column = _dataDef.columns[index];
-
-                if (column.includes("time")) {
-                  fields.push({ name: "Time", type: FieldType.time });
-                } else {
-                  fields.push({ name: column, type: FieldType.other });
-                }
+              for (let index = 0; index < tops.length; index++) {
+                fields.push({ name: tops[index], type: FieldType.other });
               }
 
               frame = new MutableDataFrame({
@@ -325,9 +321,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 refId: query.refId,
               });
 
-              for (let i = 0; i < _dataDef.data.length; i++) {
-                _dataDef.data[i][0] = new Date(_dataDef.data[i][0] * 1000);
-                frame.appendRow(_dataDef.data[i]);
+              for (let i = 0; i < dataDef.data.length; i++) {
+                let datum = dataDef.data[i];
+                datum[0] = new Date(datum[0] * 1000);
+                frame.appendRow(dataDef.data[i]);
               }
 
               return frame;
