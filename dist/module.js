@@ -3426,7 +3426,6 @@ function (_super) {
                 var _a;
 
                 var name;
-                var frame;
                 var tops = data.tops;
                 var result = data.result;
                 var dataDef = result.data_defs[0];
@@ -3443,27 +3442,27 @@ function (_super) {
 
                 var fields = [{
                   name: "Time",
-                  type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time
+                  type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time,
+                  values: []
                 }];
 
                 for (var index = 0; index < tops.length; index++) {
                   fields.push({
                     name: tops[index],
-                    type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number
+                    type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number,
+                    values: []
                   });
                 }
 
-                frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
+                var frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
                   name: name,
                   fields: fields,
                   refId: query.refId
                 });
-                console.debug(frame.get(-1).values);
 
                 for (var i = 0; i < dataDef.data.length; i++) {
                   var row = [];
                   var datum = dataDef.data[i];
-                  console.debug("datum: " + JSON.stringify(datum));
                   row.push(new Date(datum[0] * 1000));
 
                   for (var index = 0; index < tops.length; index++) {
@@ -3475,7 +3474,6 @@ function (_super) {
                   }
 
                   frame.appendRow(row);
-                  console.debug("Row: " + JSON.stringify(row));
                 }
 
                 return frame;
@@ -3516,7 +3514,7 @@ function (_super) {
 
                 if (column.search('id') === -1) {
                   fields.push({
-                    name: column.replace(/\.|_/g, " ").toUpperCase(),
+                    name: column,
                     type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].other
                   });
                 } else {

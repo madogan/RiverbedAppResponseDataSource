@@ -292,7 +292,6 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           return this.topngraphquery(query, start, end, 0).then(
             (data: any) => {
               let name;
-              let frame;
               const tops = data.tops;
               const result = data.result;
               let dataDef = result.data_defs[0];
@@ -305,42 +304,32 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 name = query.currentTopMetric?.label;
               }
 
-              let fields = [
-                { name: "Time", type: FieldType.time },
-              ];
-
+              let fields = [{ name: "Time", type: FieldType.time, values: [] }];
               for (let index = 0; index < tops.length; index++) {
-                fields.push({ name: tops[index], type: FieldType.number });
+                fields.push({ name: tops[index], type: FieldType.number, values: [] });
               }
 
-              frame = new MutableDataFrame({
+              let frame = new MutableDataFrame({
                 name: name,
                 fields: fields,
                 refId: query.refId,
               });
 
-              console.debug(frame.get(-1).values);
-
               for (let i = 0; i < dataDef.data.length; i++) {
                 let row = [];
                 let datum = dataDef.data[i];
 
-                console.debug(`datum: ${JSON.stringify(datum)}`);
-
                 row.push(new Date(datum[0] * 1000));
-                
+
                 for (let index = 0; index < tops.length; index++) {
                   if (tops[index] === datum[2]){
-                    
                     row.push(datum[datum.length - 1]);
                   } else {
                     row.push(null);
                   }
                 }
-                
-                frame.appendRow(row);
 
-                console.debug(`Row: ${JSON.stringify(row)}`);
+                frame.appendRow(row);
               }
 
               return frame;
@@ -381,7 +370,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             for (let index = 0; index < _dataDef.columns.length; index++) {
               const column = _dataDef.columns[index];
               if (column.search('id') === -1) {
-                fields.push({ name: column.replace(/\.|_/g, " ").toUpperCase(), type: FieldType.other });
+                fields.push({ name: column, type: FieldType.other });
               } else {
                 removeIndices.push(index);
               }
