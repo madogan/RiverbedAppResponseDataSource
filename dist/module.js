@@ -3209,7 +3209,7 @@ function (_super) {
 
   DataSource.prototype.topngraphquery = function (target, start, end, granularity) {
     return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var dataDef_groupBy, dataDef_topBy, dataDef_columns, filterIN, data;
+      var dataDef_groupBy, dataDef_topBy, dataDef_columns, tops, filterIN, result;
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
         switch (_a.label) {
           case 0:
@@ -3230,13 +3230,14 @@ function (_super) {
               dataDef_columns = ["app.id", "app.name"];
               dataDef_groupBy = ["start_time", "app.id"];
             } else if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip) {
-              dataDef_columns = ["tcp.ip", "tcp.dns", "tcp.ip.host_group.ids", "tcp.ip.host_group.names"];
+              dataDef_columns = ["tcp.ip", "tcp.dns"];
               dataDef_groupBy = ["start_time", "tcp.ip"];
             } else {
               throw new Error("Unknown source group");
             }
 
             dataDef_columns.push(target.currentTopMetric.value);
+            tops = [];
             filterIN = "";
             return [4
             /*yield*/
@@ -3259,7 +3260,6 @@ function (_super) {
                 }]
               }
             }).then(function (response) {
-              console.debug("First Response: " + JSON.stringify(response));
               var topNResponse;
 
               if (response.data.data_defs[0].hasOwnProperty("data")) {
@@ -3268,9 +3268,9 @@ function (_super) {
                 topNResponse = [];
               }
 
-              console.debug("topNResponse: " + JSON.stringify(topNResponse));
-
               for (var index = 0; index < topNResponse.length; index++) {
+                tops.push(topNResponse[index][1]);
+
                 if (index === topNResponse.length - 1) {
                   filterIN += "'" + topNResponse[index][0] + "'";
                 } else {
@@ -3318,10 +3318,13 @@ function (_super) {
             })];
 
           case 2:
-            data = _a.sent();
+            result = _a.sent();
             return [2
             /*return*/
-            , data];
+            , {
+              tops: tops,
+              result: result
+            }];
         }
       });
     });
@@ -3420,37 +3423,34 @@ function (_super) {
 
             if (query.topGraph) {
               return _this.topngraphquery(query, start, end, 0).then(function (data) {
-                var _dataDef = data.data_defs[0];
-
-                if (!_dataDef.hasOwnProperty('data')) {
-                  _dataDef.data = [];
-                }
+                var _a;
 
                 var name;
+                var frame;
+                var tops = data.tops;
+                var result = data.result;
+                var dataDef = result.data_defs[0];
+
+                if (!dataDef.hasOwnProperty('data')) {
+                  dataDef.data = [];
+                }
 
                 if (query.alias !== undefined && query.alias.trim() !== '') {
                   name = query.alias;
                 } else {
-                  name = currentMetric === null || currentMetric === void 0 ? void 0 : currentMetric.label;
+                  name = (_a = query.currentTopMetric) === null || _a === void 0 ? void 0 : _a.label;
                 }
 
-                var frame;
-                var fields = [];
+                var fields = [{
+                  name: "Time",
+                  type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time
+                }];
 
-                for (var index = 0; index < _dataDef.columns.length; index++) {
-                  var column = _dataDef.columns[index];
-
-                  if (column.includes("time")) {
-                    fields.push({
-                      name: "Time",
-                      type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time
-                    });
-                  } else {
-                    fields.push({
-                      name: column,
-                      type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].other
-                    });
-                  }
+                for (var index = 0; index < tops.length; index++) {
+                  fields.push({
+                    name: tops[index],
+                    type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number
+                  });
                 }
 
                 frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
@@ -3458,10 +3458,24 @@ function (_super) {
                   fields: fields,
                   refId: query.refId
                 });
+                console.debug(frame.get(-1).values);
 
-                for (var i = 0; i < _dataDef.data.length; i++) {
-                  _dataDef.data[i][0] = new Date(_dataDef.data[i][0] * 1000);
-                  frame.appendRow(_dataDef.data[i]);
+                for (var i = 0; i < dataDef.data.length; i++) {
+                  var row = [];
+                  var datum = dataDef.data[i];
+                  console.debug("datum: " + JSON.stringify(datum));
+                  row.push(new Date(datum[0] * 1000));
+
+                  for (var index = 0; index < tops.length; index++) {
+                    if (tops[index] === datum[2]) {
+                      row.push(datum[datum.length - 1]);
+                    } else {
+                      row.push(null);
+                    }
+                  }
+
+                  frame.appendRow(row);
+                  console.debug("Row: " + JSON.stringify(row));
                 }
 
                 return frame;

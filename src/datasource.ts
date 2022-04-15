@@ -109,8 +109,6 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       dataDef_columns = [
         "tcp.ip",
         "tcp.dns",
-        "tcp.ip.host_group.ids",
-        "tcp.ip.host_group.names",
       ];
       dataDef_groupBy = ["start_time", "tcp.ip"];
     } else {
@@ -149,7 +147,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           topNResponse = [];
         }
         for (let index = 0; index < topNResponse.length; index++) {
-          tops.push(topNResponse[index][0]);
+          tops.push(topNResponse[index][1]);
           if (index === topNResponse.length - 1) {
             filterIN += `'${topNResponse[index][0]}'`;
           } else {
@@ -294,6 +292,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           return this.topngraphquery(query, start, end, 0).then(
             (data: any) => {
               let name;
+              let frame;
               const tops = data.tops;
               const result = data.result;
               let dataDef = result.data_defs[0];
@@ -306,13 +305,12 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 name = query.currentTopMetric?.label;
               }
 
-              let frame;
               let fields = [
                 { name: "Time", type: FieldType.time },
               ];
 
               for (let index = 0; index < tops.length; index++) {
-                fields.push({ name: tops[index], type: FieldType.other });
+                fields.push({ name: tops[index], type: FieldType.number });
               }
 
               frame = new MutableDataFrame({
@@ -321,10 +319,28 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 refId: query.refId,
               });
 
+              console.debug(frame.get(-1).values);
+
               for (let i = 0; i < dataDef.data.length; i++) {
+                let row = [];
                 let datum = dataDef.data[i];
-                datum[0] = new Date(datum[0] * 1000);
-                frame.appendRow(dataDef.data[i]);
+
+                console.debug(`datum: ${JSON.stringify(datum)}`);
+
+                row.push(new Date(datum[0] * 1000));
+                
+                for (let index = 0; index < tops.length; index++) {
+                  if (tops[index] === datum[2]){
+                    
+                    row.push(datum[datum.length - 1]);
+                  } else {
+                    row.push(null);
+                  }
+                }
+                
+                frame.appendRow(row);
+
+                console.debug(`Row: ${JSON.stringify(row)}`);
               }
 
               return frame;
