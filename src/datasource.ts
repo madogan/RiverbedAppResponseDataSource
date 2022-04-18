@@ -22,6 +22,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
   data: any = [];
   ipMetrics: SelectableValue[] = [];
+  topMetrics: SelectableValue[] = [];
   webApps: SelectableValue[] = [];
   webAppMetrics: SelectableValue[] = [];
   hostGroups: SelectableValue[] = [];
@@ -76,28 +77,136 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     this.lastFetchIPMetrics = new Date();
   }
 
-  async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
-    const deltaInSeconds = ((Date.now() - this.lastFetchQuery.getTime()) / 1000);
-    console.debug(`[DataSource.query] ${deltaInSeconds} seconds since last query.`);
-    // if (
-    //   deltaInSeconds < this.queryTimeout
-    //   && this.data.length > 0
-    // ) {
-    //   console.debug('[DataSource.query] Returning cached data.');
-    //   return Promise.resolve({ data: this.data });
-    // } else {
-    //   console.debug('[DataSource.query] Fetching data from server.');
-    //   this.lastFetchQuery = new Date(Date.now());
-    //   this.data = [];
-    // }
+  async topngraphquery(target: AppResponseQuery, start: Number, end: Number, granularity: Number) {
+    let dataDef_groupBy;
+    let dataDef_topBy: any = [];
+    let dataDef_columns: any = [];
 
+    dataDef_topBy = [{
+      "direction": "desc",
+      "id": target.currentTopMetric.value,
+    }];
+
+    if (target.sourceGroup === SourceGroup.application) {
+      dataDef_columns = [
+        "app.id",
+        "app.name",
+      ];
+      dataDef_groupBy = ["start_time", "app.id"];
+    } else if (target.sourceGroup === SourceGroup.hostGroup) {
+      dataDef_columns = [
+        "host_group.id",
+        "host_group.name",
+      ];
+      dataDef_groupBy = ["start_time", "host_group.id"];
+    } else if (target.sourceGroup === SourceGroup.webApp) {
+      dataDef_columns = [
+        "app.id",
+        "app.name",
+      ];
+      dataDef_groupBy = ["start_time", "app.id"];
+    } else if (target.sourceGroup === SourceGroup.ip) {
+      dataDef_columns = [
+        "tcp.ip",
+        "tcp.dns",
+      ];
+      dataDef_groupBy = ["start_time", "tcp.ip"];
+    } else {
+      throw new Error("Unknown source group");
+    }
+
+    dataDef_columns.push(target.currentTopMetric.value);
+
+    let tops: any = [];
+    let filterIN: string = "";
+
+    await this.doRequest({
+      method: "POST",
+      url: this.urls.instanceCreationSync,
+      data: {
+        "data_defs": [
+          {
+            "source": { "name": "aggregates" },
+            "time": {
+              "start": start.toString(),
+              "end": end.toString(),
+              "granularity": granularity.toString(),
+            },
+            "top_by": dataDef_topBy,
+            "columns": dataDef_columns,
+            "limit": target.topN || 10,
+          },
+        ]
+      },
+    }).then(
+      (response: any) => {
+        let topNResponse;
+        if (response.data.data_defs[0].hasOwnProperty("data")) {
+          topNResponse = response.data.data_defs[0].data;
+        } else {
+          topNResponse = [];
+        }
+        for (let index = 0; index < topNResponse.length; index++) {
+          tops.push(topNResponse[index][1]);
+          if (index === topNResponse.length - 1) {
+            filterIN += `'${topNResponse[index][0]}'`;
+          } else {
+            filterIN += `'${topNResponse[index][0]}', `;
+          }
+        }
+        return filterIN;
+      }
+    );
+
+    // Insert 'start_time' into first index of columns.
+    dataDef_columns.unshift("start_time");
+
+    const result = await this.doRequest({
+      method: 'POST',
+      url: this.urls.instanceCreationSync,
+      data: {
+        "data_defs": [
+          {
+            "source": { "name": "aggregates" },
+            "time": {
+              "start": start.toString(),
+              "end": end.toString(),
+              "granularity": granularity.toString(),
+            },
+            "group_by": dataDef_groupBy,
+            "columns": dataDef_columns,
+            "filters": [
+              {
+                "type": "STEELFILTER",
+                "value": `${dataDef_columns[1]} IN (${filterIN})`,
+              }
+            ],
+          },
+        ]
+      },
+    }).then(
+      (response: any) => {
+        if (response.data.data_defs[0].hasOwnProperty("data")) {
+          return response.data;
+        } else {
+          return [];
+        }
+      }
+    );
+
+    return {
+      tops: tops,
+      result: result,
+    };
+  }
+
+  async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
     const { range } = options;
     const to = range!.to.valueOf();
     const from = range!.from.valueOf();
 
-    let queryTimeStop;
-    let queryTimeStart;
-    let queryTimeshift = 0;
+    let end;
+    let start;
     let dataDef_source = {};
     let dataDef_groupBy = {};
     let dataDef_columns: string[] = [];
@@ -106,19 +215,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
     const promises = options.targets.map((target) => {
       const query = defaults(target, defaultQuery);
-      queryTimeStart = ((new Date(to)).getTime()) / 1000;
-      queryTimeStop = ((new Date(from)).getTime()) / 1000;
-
-      if (typeof query.timeshift === "undefined" || (typeof query.timeshift === "string" && query.timeshift === [])) {
-        query.timeshift = 0;
-      }
-
-      queryTimeshift = query.timeshift + query.timeshift * 86400 - (1 * query.timeshift);
-      queryTimeStop = queryTimeStop - queryTimeshift;
-      queryTimeStart = queryTimeStart - queryTimeshift
-      if (typeof queryTimeshift !== 'undefined') {
-        query.timeshift = queryTimeshift;
-      }
+      end = ((new Date(to)).getTime()) / 1000;
+      start = ((new Date(from)).getTime()) / 1000;
 
       dataDef_source = { "name": "aggregates" };
       if (query.sourceGroup == SourceGroup.hostGroup) {
@@ -169,13 +267,15 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         );
         dataDef_columns.push(query.currentWebAppMetric?.value);
         currentMetric = query.currentWebAppMetric;
+      } else {
+        throw new Error("Unknown source group");
       }
 
       let dataDef: any = {
         'source': dataDef_source,
         "time": {
-          "start": queryTimeStop.toString(),
-          "end": queryTimeStart.toString(),
+          "end": end.toString(),
+          "start": start.toString(),
           'granularity': query.granularity?.value.toString(),
         },
         "group_by": dataDef_groupBy,
@@ -187,6 +287,56 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         dataDef.top_by = [{ "id": currentMetric?.value, "direction": 'desc' }];
         dataDef.group_by = {};  // Remove start time.
         dataDef.columns = dataDef.columns.slice(1);  // Remove start time.
+
+        if (query.topGraph) {
+          return this.topngraphquery(query, start, end, 0).then(
+            (data: any) => {
+              let name;
+              const tops = data.tops;
+              const result = data.result;
+              let dataDef = result.data_defs[0];
+
+              if (!dataDef.hasOwnProperty('data')) { dataDef.data = []; }
+
+              if (query.alias !== undefined && query.alias.trim() !== '') {
+                name = query.alias;
+              } else {
+                name = query.currentTopMetric?.label;
+              }
+
+              let fields = [{ name: "Time", type: FieldType.time, values: [] }];
+              for (let index = 0; index < tops.length; index++) {
+                fields.push({ name: tops[index], type: FieldType.number, values: [] });
+              }
+
+              let frame = new MutableDataFrame({
+                name: name,
+                fields: fields,
+                refId: query.refId,
+              });
+
+              for (let i = 0; i < dataDef.data.length; i++) {
+                let row = [];
+                let datum = dataDef.data[i];
+
+                row.push(new Date(datum[0] * 1000));
+
+                for (let index = 0; index < tops.length; index++) {
+                  if (tops[index] === datum[2]){
+                    row.push(datum[datum.length - 1]);
+                  } else {
+                    row.push(null);
+                  }
+                }
+
+                frame.appendRow(row);
+              }
+
+              return frame;
+            }
+          )
+        }
+
       } else {
         dataDef.filters = dataDef_filters;
       }
@@ -220,7 +370,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             for (let index = 0; index < _dataDef.columns.length; index++) {
               const column = _dataDef.columns[index];
               if (column.search('id') === -1) {
-                fields.push({ name: column.replace(/\.|_/g, " ").toUpperCase(), type: FieldType.other });
+                fields.push({ name: column, type: FieldType.other });
               } else {
                 removeIndices.push(index);
               }
@@ -444,6 +594,22 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     }
 
     return result;
+  }
+
+  async getTopMetrics(sourceGroup: SourceGroup) {
+    if (sourceGroup === SourceGroup.application) {
+      this.topMetrics = await this.getApplicationMetrics();
+    } else if (sourceGroup === SourceGroup.hostGroup) {
+      this.topMetrics = await this.getHostGroupMetrics();
+    } else if (sourceGroup === SourceGroup.webApp) {
+      this.topMetrics = await this.getWebAppMetrics();
+    } else if (sourceGroup === SourceGroup.ip) {
+      this.topMetrics = await this.getIPMetrics();
+    } else {
+      throw new Error('Unknown source group');
+    }
+
+    return this.topMetrics;
   }
 
   async getApplicationMetrics() {

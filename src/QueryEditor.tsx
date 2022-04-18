@@ -100,12 +100,26 @@ export class QueryEditor extends PureComponent<Props> {
     }
   }
 
+  getTopMetrics = async () => {
+    console.debug('[QueryEditor.getTopMetrics]');
+    const { query, datasource, onChange } = this.props;
+    const topMetrics = await datasource.getTopMetrics(query.sourceGroup);
+    if (topMetrics.length !== (query.topMetrics?.length || 0)) {
+      console.debug('topMetrics changed');
+      onChange({
+        ...query,
+        topMetrics: topMetrics,
+      });
+    }
+  }
+
   getMetrics = async () => {
     console.debug('[QueryEditor.getMetrics]');
     this.getApplicationMetrics();
     this.getIPMetrics();
     this.getHostGroupMetrics();
     this.getWebAppMetrics();
+    this.getTopMetrics();
   }
 
   getOptions = (sourceGroup: SourceGroup) => {
@@ -129,6 +143,8 @@ export class QueryEditor extends PureComponent<Props> {
     if (sourceGroup === SourceGroup.ip) {
       this.getIPMetrics();
     }
+
+    this.getTopMetrics();
   }
 
   onSourceGroupChange = (v: any) => {
@@ -184,7 +200,7 @@ export class QueryEditor extends PureComponent<Props> {
   }
 
   onIPChange = (e: any) => {
-    console.debug(`[QueryEditor.onIPChange] ${e.target.value}`);	
+    console.debug(`[QueryEditor.onIPChange] ${e.target.value}`);
     console.debug(e);
     const { onChange, query, onRunQuery } = this.props;
     onChange({
@@ -246,6 +262,19 @@ export class QueryEditor extends PureComponent<Props> {
     }
   }
 
+  onTopMetricChange = (v: any) => {
+    console.debug(`[QueryEditor.onTopMetricChange] ${v.label}, ${v.value}`);
+    const { onChange, query, onRunQuery } = this.props;
+    if (v.value !== query.currentTopMetric?.value) {
+      console.debug('[QueryEditor.onTopMetricChange] currentTopMetric changed.');
+      onChange({
+        ...query,
+        currentTopMetric: v
+      });
+      onRunQuery();
+    }
+  }
+
   onTopChange = (e: any) => {
     console.debug(`[QueryEditor.onTopChange] ${e.currentTarget.checked}`);
     const { onChange, query, onRunQuery } = this.props;
@@ -253,6 +282,18 @@ export class QueryEditor extends PureComponent<Props> {
       ...query,
       top: e.currentTarget.checked,
     });
+    onRunQuery();
+  }
+
+  onTopGraphChange = (e: any) => {
+    console.debug(`[QueryEditor.onTopGraphChange] ${e.currentTarget.checked}`);
+    const { onChange, query, onRunQuery } = this.props;
+
+    onChange({
+      ...query,
+      topGraph: e.currentTarget.checked,
+    });
+
     onRunQuery();
   }
 
@@ -306,23 +347,15 @@ export class QueryEditor extends PureComponent<Props> {
     return (
       <div style={{ width: '100%' }}>
         <InlineFieldRow>
-          <InlineField label="Top">
-            <div style={{ marginTop: '8px' }}>
-              <Switch
-                value={query.top}
-                checked={query.top}
-                onChange={this.onTopChange}
-              />
-            </div>
-          </InlineField>
-
-          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label="N">
-              <Input
-                width={16}
-                value={query.topN || 0}
-                onChange={this.onTopNChange}
-              />
+          <div style={query.top ? { display: 'none' } : { display: 'block' }}>
+            <InlineField label="Top">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  value={query.top}
+                  checked={query.top}
+                  onChange={this.onTopChange}
+                />
+              </div>
             </InlineField>
           </div>
 
@@ -437,6 +470,54 @@ export class QueryEditor extends PureComponent<Props> {
         </InlineFieldRow>
 
         <InlineFieldRow>
+          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label="Top">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  value={query.top}
+                  checked={query.top}
+                  onChange={this.onTopChange}
+                />
+              </div>
+            </InlineField>
+          </div>
+
+          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label="N">
+              <Input
+                width={16}
+                value={query.topN || 0}
+                onChange={this.onTopNChange}
+              />
+            </InlineField>
+          </div>
+
+          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label="Graph">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  value={query.topGraph}
+                  checked={query.topGraph}
+                  onChange={this.onTopGraphChange}
+                />
+              </div>
+            </InlineField>
+          </div>
+
+          <div style={query.top && query.topGraph ? { display: 'block' } : { display: 'none' }}>
+            <InlineField label="Top Metric" onLoadStart={() => this.getTopMetrics()}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={query.topMetrics}
+                value={query.currentTopMetric}
+                onChange={this.onTopMetricChange}
+              />
+            </InlineField>
+          </div>
+        </InlineFieldRow>
+
+        <InlineFieldRow>
           <InlineField label="Granularity">
             <Select
               menuShouldPortal
@@ -444,13 +525,6 @@ export class QueryEditor extends PureComponent<Props> {
               options={granularities}
               onChange={this.onGranularityChange}
             />
-          </InlineField>
-
-          <InlineField label="Timeshift">
-            <Input
-              value={query.timeshift?.toString() || '0'}
-              onChange={this.onTimeshiftChange}
-            ></Input>
           </InlineField>
 
           <div style={query.top ? { display: 'none' } : { display: 'block' }}>
