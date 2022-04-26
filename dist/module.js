@@ -1797,7 +1797,7 @@ module.exports = stubFalse;
 /*!******************************************!*\
   !*** ../node_modules/tslib/tslib.es6.js ***!
   \******************************************/
-/*! exports provided: __extends, __assign, __rest, __decorate, __param, __metadata, __awaiter, __generator, __createBinding, __exportStar, __values, __read, __spread, __spreadArrays, __spreadArray, __await, __asyncGenerator, __asyncDelegator, __asyncValues, __makeTemplateObject, __importStar, __importDefault, __classPrivateFieldGet, __classPrivateFieldSet */
+/*! exports provided: __extends, __assign, __rest, __decorate, __param, __metadata, __awaiter, __generator, __createBinding, __exportStar, __values, __read, __spread, __spreadArrays, __spreadArray, __await, __asyncGenerator, __asyncDelegator, __asyncValues, __makeTemplateObject, __importStar, __importDefault, __classPrivateFieldGet, __classPrivateFieldSet, __classPrivateFieldIn */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1826,7 +1826,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__importDefault", function() { return __importDefault; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__classPrivateFieldGet", function() { return __classPrivateFieldGet; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__classPrivateFieldSet", function() { return __classPrivateFieldSet; });
-/*! *****************************************************************************
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__classPrivateFieldIn", function() { return __classPrivateFieldIn; });
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -1935,7 +1936,11 @@ function __generator(thisArg, body) {
 
 var __createBinding = Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -2066,6 +2071,11 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
 }
 
+function __classPrivateFieldIn(state, receiver) {
+    if (receiver === null || (typeof receiver !== "object" && typeof receiver !== "function")) throw new TypeError("Cannot use 'in' operator on non-object");
+    return typeof state === "function" ? receiver === state : state.has(receiver);
+}
+
 
 /***/ }),
 
@@ -2143,79 +2153,96 @@ module.exports = function(module) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ConfigEditor", function() { return ConfigEditor; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "../node_modules/tslib/tslib.es6.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "react");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
-/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
+/* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
 
 
+var ConfigEditor = /*#__PURE__*/function (_PureComponent) {
+  _inherits(ConfigEditor, _PureComponent);
 
-var ConfigEditor =
-/** @class */
-function (_super) {
-  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(ConfigEditor, _super);
+  var _super = _createSuper(ConfigEditor);
 
   function ConfigEditor() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
+    var _this;
+
+    _classCallCheck(this, ConfigEditor);
+
+    _this = _super.apply(this, arguments);
 
     _this._onOptionsChange = function (_options) {
-      var _a = _this.props,
-          onOptionsChange = _a.onOptionsChange,
-          options = _a.options;
-      return onOptionsChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options), _options));
+      var _this$props = _this.props,
+          onOptionsChange = _this$props.onOptionsChange,
+          options = _this$props.options;
+      return onOptionsChange(Object.assign(Object.assign({}, options), _options));
     };
 
     _this.onPathChange = function (event) {
-      var _a = _this.props,
-          onOptionsChange = _a.onOptionsChange,
-          options = _a.options;
-
-      var jsonData = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options.jsonData), {
+      var _this$props2 = _this.props,
+          onOptionsChange = _this$props2.onOptionsChange,
+          options = _this$props2.options;
+      var jsonData = Object.assign(Object.assign({}, options.jsonData), {
         path: event.target.value
       });
-
-      onOptionsChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options), {
+      onOptionsChange(Object.assign(Object.assign({}, options), {
         jsonData: jsonData
       }));
     };
 
     _this.onTlsSkipVerifyChange = function (event) {
-      var _a = _this.props,
-          onOptionsChange = _a.onOptionsChange,
-          options = _a.options;
-
-      var jsonData = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options.jsonData), {
+      var _this$props3 = _this.props,
+          onOptionsChange = _this$props3.onOptionsChange,
+          options = _this$props3.options;
+      var jsonData = Object.assign(Object.assign({}, options.jsonData), {
         tlsSkipVerify: event.target.checked,
         skipTlsVerify: event.target.checked
       });
-
-      onOptionsChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options), {
+      onOptionsChange(Object.assign(Object.assign({}, options), {
         jsonData: jsonData
       }));
     };
 
     _this.onUsernameChange = function (event) {
-      var _a = _this.props,
-          onOptionsChange = _a.onOptionsChange,
-          options = _a.options;
-
-      var jsonData = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options.jsonData), {
+      var _this$props4 = _this.props,
+          onOptionsChange = _this$props4.onOptionsChange,
+          options = _this$props4.options;
+      var jsonData = Object.assign(Object.assign({}, options.jsonData), {
         username: event.target.value
       });
-
-      onOptionsChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options), {
+      onOptionsChange(Object.assign(Object.assign({}, options), {
         jsonData: jsonData
       }));
     };
 
     _this.onPasswordChange = function (event) {
-      var _a = _this.props,
-          onOptionsChange = _a.onOptionsChange,
-          options = _a.options;
-      onOptionsChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options), {
+      var _this$props5 = _this.props,
+          onOptionsChange = _this$props5.onOptionsChange,
+          options = _this$props5.options;
+      onOptionsChange(Object.assign(Object.assign({}, options), {
         secureJsonData: {
           password: event.target.value
         }
@@ -2223,14 +2250,14 @@ function (_super) {
     };
 
     _this.onResetPassword = function () {
-      var _a = _this.props,
-          onOptionsChange = _a.onOptionsChange,
-          options = _a.options;
-      onOptionsChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options), {
-        secureJsonFields: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options.secureJsonFields), {
+      var _this$props6 = _this.props,
+          onOptionsChange = _this$props6.onOptionsChange,
+          options = _this$props6.options;
+      onOptionsChange(Object.assign(Object.assign({}, options), {
+        secureJsonFields: Object.assign(Object.assign({}, options.secureJsonFields), {
           password: false
         }),
-        secureJsonData: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options.secureJsonData), {
+        secureJsonData: Object.assign(Object.assign({}, options.secureJsonData), {
           password: ''
         })
       }));
@@ -2239,66 +2266,67 @@ function (_super) {
     return _this;
   }
 
-  ConfigEditor.prototype.render = function () {
-    var options = this.props.options;
-    var secureJsonFields = options.secureJsonFields;
-    var Input = _grafana_ui__WEBPACK_IMPORTED_MODULE_2__["LegacyForms"].Input,
-        SecretFormField = _grafana_ui__WEBPACK_IMPORTED_MODULE_2__["LegacyForms"].SecretFormField;
-    var secureJsonData = options.secureJsonData || {};
-    return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineFormLabel"], {
-      className: "width-10"
-    }, "Path"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "width-10"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(Input, {
-      className: "width-20",
-      value: options.jsonData.path || '',
-      onChange: this.onPathChange
-    })))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineFormLabel"], {
-      className: "width-10"
-    }, "User"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "width-10"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(Input, {
-      className: "width-20",
-      value: options.jsonData.username || '',
-      onChange: this.onUsernameChange
-    })))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(SecretFormField, {
-      isConfigured: secureJsonFields && secureJsonFields.password,
-      value: secureJsonData.password || '',
-      label: "Password",
-      "aria-label": "Password",
-      labelWidth: 10,
-      inputWidth: 20,
-      onReset: this.onResetPassword,
-      onChange: this.onPasswordChange
-    }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form-inline"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-      className: "gf-form"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineField"], {
-      label: "Skip TLS Verify"
-    }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_2__["InlineSwitch"], {
-      value: options.jsonData.tlsSkipVerify || options.jsonData.skipTlsVerify,
-      checked: options.jsonData.tlsSkipVerify || options.jsonData.skipTlsVerify,
-      onChange: this.onTlsSkipVerifyChange
-    }))))));
-  };
+  _createClass(ConfigEditor, [{
+    key: "render",
+    value: function render() {
+      var options = this.props.options;
+      var secureJsonFields = options.secureJsonFields;
+      var Input = _grafana_ui__WEBPACK_IMPORTED_MODULE_1__["LegacyForms"].Input,
+          SecretFormField = _grafana_ui__WEBPACK_IMPORTED_MODULE_1__["LegacyForms"].SecretFormField;
+      var secureJsonData = options.secureJsonData || {};
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gf-form-inline"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gf-form"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineFormLabel"], {
+        className: "width-10"
+      }, "Path"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "width-10"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Input, {
+        className: "width-20",
+        value: options.jsonData.path || '',
+        onChange: this.onPathChange
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gf-form-inline"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gf-form"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineFormLabel"], {
+        className: "width-10"
+      }, "User"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "width-10"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Input, {
+        className: "width-20",
+        value: options.jsonData.username || '',
+        onChange: this.onUsernameChange
+      })))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gf-form-inline"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gf-form"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(SecretFormField, {
+        isConfigured: secureJsonFields && secureJsonFields.password,
+        value: secureJsonData.password || '',
+        label: "Password",
+        "aria-label": "Password",
+        labelWidth: 10,
+        inputWidth: 20,
+        onReset: this.onResetPassword,
+        onChange: this.onPasswordChange
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gf-form-inline"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "gf-form"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineField"], {
+        label: "Skip TLS Verify"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_1__["InlineSwitch"], {
+        value: options.jsonData.tlsSkipVerify || options.jsonData.skipTlsVerify,
+        checked: options.jsonData.tlsSkipVerify || options.jsonData.skipTlsVerify,
+        onChange: this.onTlsSkipVerifyChange
+      }))))));
+    }
+  }]);
 
   return ConfigEditor;
-}(react__WEBPACK_IMPORTED_MODULE_1__["PureComponent"]);
-
-
+}(react__WEBPACK_IMPORTED_MODULE_0__["PureComponent"]);
 
 /***/ }),
 
@@ -2320,296 +2348,325 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/ui */ "@grafana/ui");
 /* harmony import */ var _grafana_ui__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./types */ "./types.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
 
 
 
 
-var QueryEditor =
-/** @class */
-function (_super) {
-  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(QueryEditor, _super);
+var QueryEditor = /*#__PURE__*/function (_PureComponent) {
+  _inherits(QueryEditor, _PureComponent);
+
+  var _super = _createSuper(QueryEditor);
 
   function QueryEditor() {
-    var _this = _super !== null && _super.apply(this, arguments) || this;
+    var _this;
+
+    _classCallCheck(this, QueryEditor);
+
+    _this = _super.apply(this, arguments);
 
     _this.getHostGroups = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, hostGroups;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var _this$props, query, datasource, onChange, hostGroups;
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-          switch (_b.label) {
-            case 0:
-              console.debug('[QueryEditor.getHostGroups]');
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              return [4
-              /*yield*/
-              , datasource.getHostGroups()];
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                console.debug('[QueryEditor.getHostGroups]');
+                _this$props = this.props, query = _this$props.query, datasource = _this$props.datasource, onChange = _this$props.onChange;
+                _context.next = 4;
+                return datasource.getHostGroups();
 
-            case 1:
-              hostGroups = _b.sent();
+              case 4:
+                hostGroups = _context.sent;
 
-              if (hostGroups.length !== (query.hostGroups.length || 0)) {
-                console.debug('hostGroups changed');
-                onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-                  hostGroups: hostGroups
-                }));
-              }
+                if (hostGroups.length !== (query.hostGroups.length || 0)) {
+                  console.debug('hostGroups changed');
+                  onChange(Object.assign(Object.assign({}, query), {
+                    hostGroups: hostGroups
+                  }));
+                }
 
-              return [2
-              /*return*/
-              ];
+              case 6:
+              case "end":
+                return _context.stop();
+            }
           }
-        });
-      });
+        }, _callee, this);
+      }));
     };
 
     _this.getApplications = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, applications;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var _this$props2, query, datasource, onChange, applications;
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-          switch (_b.label) {
-            case 0:
-              console.debug('[QueryEditor.getApplications]');
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              return [4
-              /*yield*/
-              , datasource.getApplications()];
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                console.debug('[QueryEditor.getApplications]');
+                _this$props2 = this.props, query = _this$props2.query, datasource = _this$props2.datasource, onChange = _this$props2.onChange;
+                _context2.next = 4;
+                return datasource.getApplications();
 
-            case 1:
-              applications = _b.sent();
+              case 4:
+                applications = _context2.sent;
 
-              if (applications.length !== (query.applications.length || 0)) {
-                console.debug('applications changed');
-                onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-                  applications: applications
-                }));
-              }
+                if (applications.length !== (query.applications.length || 0)) {
+                  console.debug('applications changed');
+                  onChange(Object.assign(Object.assign({}, query), {
+                    applications: applications
+                  }));
+                }
 
-              return [2
-              /*return*/
-              ];
+              case 6:
+              case "end":
+                return _context2.stop();
+            }
           }
-        });
-      });
+        }, _callee2, this);
+      }));
     };
 
     _this.getWebApps = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, webApps;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var _this$props3, query, datasource, onChange, webApps;
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_b) {
-          switch (_b.label) {
-            case 0:
-              console.debug('[QueryEditor.getWebApps]');
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              return [4
-              /*yield*/
-              , datasource.getWebApps()];
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                console.debug('[QueryEditor.getWebApps]');
+                _this$props3 = this.props, query = _this$props3.query, datasource = _this$props3.datasource, onChange = _this$props3.onChange;
+                _context3.next = 4;
+                return datasource.getWebApps();
 
-            case 1:
-              webApps = _b.sent();
+              case 4:
+                webApps = _context3.sent;
 
-              if (webApps.length !== (query.webApps.length || 0)) {
-                console.debug('webApps changed');
-                onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-                  webApps: webApps
-                }));
-              }
+                if (webApps.length !== (query.webApps.length || 0)) {
+                  console.debug('webApps changed');
+                  onChange(Object.assign(Object.assign({}, query), {
+                    webApps: webApps
+                  }));
+                }
 
-              return [2
-              /*return*/
-              ];
+              case 6:
+              case "end":
+                return _context3.stop();
+            }
           }
-        });
-      });
+        }, _callee3, this);
+      }));
     };
 
     _this.getApplicationMetrics = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, applicationMetrics;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+        var _a, _this$props4, query, datasource, onChange, applicationMetrics;
 
-        var _b;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                console.debug('[QueryEditor.getApplicationMetrics]');
+                _this$props4 = this.props, query = _this$props4.query, datasource = _this$props4.datasource, onChange = _this$props4.onChange;
+                _context4.next = 4;
+                return datasource.getApplicationMetrics();
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
-          switch (_c.label) {
-            case 0:
-              console.debug('[QueryEditor.getApplicationMetrics]');
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              return [4
-              /*yield*/
-              , datasource.getApplicationMetrics()];
+              case 4:
+                applicationMetrics = _context4.sent;
 
-            case 1:
-              applicationMetrics = _c.sent();
+                if (applicationMetrics.length !== (((_a = query.applicationMetrics) === null || _a === void 0 ? void 0 : _a.length) || 0)) {
+                  console.debug('applicationMetrics changed');
+                  onChange(Object.assign(Object.assign({}, query), {
+                    applicationMetrics: applicationMetrics
+                  }));
+                }
 
-              if (applicationMetrics.length !== (((_b = query.applicationMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
-                console.debug('applicationMetrics changed');
-                onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-                  applicationMetrics: applicationMetrics
-                }));
-              }
-
-              return [2
-              /*return*/
-              ];
+              case 6:
+              case "end":
+                return _context4.stop();
+            }
           }
-        });
-      });
+        }, _callee4, this);
+      }));
     };
 
     _this.getIPMetrics = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, ipMetrics;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+        var _b, _this$props5, query, datasource, onChange, ipMetrics;
 
-        var _b;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                console.debug('[QueryEditor.getIPMetrics]');
+                _this$props5 = this.props, query = _this$props5.query, datasource = _this$props5.datasource, onChange = _this$props5.onChange;
+                _context5.next = 4;
+                return datasource.getIPMetrics();
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
-          switch (_c.label) {
-            case 0:
-              console.debug('[QueryEditor.getIPMetrics]');
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              return [4
-              /*yield*/
-              , datasource.getIPMetrics()];
+              case 4:
+                ipMetrics = _context5.sent;
 
-            case 1:
-              ipMetrics = _c.sent();
+                if (ipMetrics.length !== (((_b = query.ipMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
+                  console.debug('ipMetrics changed');
+                  onChange(Object.assign(Object.assign({}, query), {
+                    ipMetrics: ipMetrics
+                  }));
+                }
 
-              if (ipMetrics.length !== (((_b = query.ipMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
-                console.debug('ipMetrics changed');
-                onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-                  ipMetrics: ipMetrics
-                }));
-              }
-
-              return [2
-              /*return*/
-              ];
+              case 6:
+              case "end":
+                return _context5.stop();
+            }
           }
-        });
-      });
+        }, _callee5, this);
+      }));
     };
 
     _this.getHostGroupMetrics = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, hostGroupMetrics;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+        var _c, _this$props6, query, datasource, onChange, hostGroupMetrics;
 
-        var _b;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                console.debug('[QueryEditor.getHostGroupMetrics]');
+                _this$props6 = this.props, query = _this$props6.query, datasource = _this$props6.datasource, onChange = _this$props6.onChange;
+                _context6.next = 4;
+                return datasource.getHostGroupMetrics();
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
-          switch (_c.label) {
-            case 0:
-              console.debug('[QueryEditor.getHostGroupMetrics]');
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              return [4
-              /*yield*/
-              , datasource.getHostGroupMetrics()];
+              case 4:
+                hostGroupMetrics = _context6.sent;
 
-            case 1:
-              hostGroupMetrics = _c.sent();
+                if (hostGroupMetrics.length !== (((_c = query.hostGroupMetrics) === null || _c === void 0 ? void 0 : _c.length) || 0)) {
+                  console.debug('hostGroupMetrics changed');
+                  onChange(Object.assign(Object.assign({}, query), {
+                    hostGroupMetrics: hostGroupMetrics
+                  }));
+                }
 
-              if (hostGroupMetrics.length !== (((_b = query.hostGroupMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
-                console.debug('hostGroupMetrics changed');
-                onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-                  hostGroupMetrics: hostGroupMetrics
-                }));
-              }
-
-              return [2
-              /*return*/
-              ];
+              case 6:
+              case "end":
+                return _context6.stop();
+            }
           }
-        });
-      });
+        }, _callee6, this);
+      }));
     };
 
     _this.getWebAppMetrics = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, webAppMetrics;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+        var _d, _this$props7, query, datasource, onChange, webAppMetrics;
 
-        var _b;
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                console.debug('[QueryEditor.getWebAppMetrics]');
+                _this$props7 = this.props, query = _this$props7.query, datasource = _this$props7.datasource, onChange = _this$props7.onChange;
+                _context7.next = 4;
+                return datasource.getWebAppMetrics();
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
-          switch (_c.label) {
-            case 0:
-              console.debug('[QueryEditor.getWebAppMetrics]');
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              return [4
-              /*yield*/
-              , datasource.getWebAppMetrics()];
+              case 4:
+                webAppMetrics = _context7.sent;
 
-            case 1:
-              webAppMetrics = _c.sent();
+                if (webAppMetrics.length !== (((_d = query.webAppMetrics) === null || _d === void 0 ? void 0 : _d.length) || 0)) {
+                  console.debug('webAppMetrics changed');
+                  onChange(Object.assign(Object.assign({}, query), {
+                    webAppMetrics: webAppMetrics
+                  }));
+                }
 
-              if (webAppMetrics.length !== (((_b = query.webAppMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
-                console.debug('webAppMetrics changed');
-                onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-                  webAppMetrics: webAppMetrics
-                }));
-              }
-
-              return [2
-              /*return*/
-              ];
+              case 6:
+              case "end":
+                return _context7.stop();
+            }
           }
-        });
-      });
+        }, _callee7, this);
+      }));
     };
 
     _this.getTopMetrics = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        var _a, query, datasource, onChange, topMetrics;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+        var _e, _this$props8, query, datasource, onChange, topMetrics;
 
-        var _b;
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                console.debug('[QueryEditor.getTopMetrics]');
+                _this$props8 = this.props, query = _this$props8.query, datasource = _this$props8.datasource, onChange = _this$props8.onChange;
+                _context8.next = 4;
+                return datasource.getTopMetrics(query.sourceGroup);
 
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_c) {
-          switch (_c.label) {
-            case 0:
-              console.debug('[QueryEditor.getTopMetrics]');
-              _a = this.props, query = _a.query, datasource = _a.datasource, onChange = _a.onChange;
-              return [4
-              /*yield*/
-              , datasource.getTopMetrics(query.sourceGroup)];
+              case 4:
+                topMetrics = _context8.sent;
 
-            case 1:
-              topMetrics = _c.sent();
+                if (topMetrics.length !== (((_e = query.topMetrics) === null || _e === void 0 ? void 0 : _e.length) || 0)) {
+                  console.debug('topMetrics changed');
+                  onChange(Object.assign(Object.assign({}, query), {
+                    topMetrics: topMetrics
+                  }));
+                }
 
-              if (topMetrics.length !== (((_b = query.topMetrics) === null || _b === void 0 ? void 0 : _b.length) || 0)) {
-                console.debug('topMetrics changed');
-                onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-                  topMetrics: topMetrics
-                }));
-              }
-
-              return [2
-              /*return*/
-              ];
+              case 6:
+              case "end":
+                return _context8.stop();
+            }
           }
-        });
-      });
+        }, _callee8, this);
+      }));
     };
 
     _this.getMetrics = function () {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_this, void 0, void 0, function () {
-        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-          console.debug('[QueryEditor.getMetrics]');
-          this.getApplicationMetrics();
-          this.getIPMetrics();
-          this.getHostGroupMetrics();
-          this.getWebAppMetrics();
-          this.getTopMetrics();
-          return [2
-          /*return*/
-          ];
-        });
-      });
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                console.debug('[QueryEditor.getMetrics]');
+                this.getApplicationMetrics();
+                this.getIPMetrics();
+                this.getHostGroupMetrics();
+                this.getWebAppMetrics();
+                this.getTopMetrics();
+
+              case 6:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, this);
+      }));
     };
 
     _this.getOptions = function (sourceGroup) {
-      console.debug("[QueryEditor.getOptions] " + sourceGroup);
+      console.debug("[QueryEditor.getOptions] ".concat(sourceGroup));
 
       if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
         _this.getApplications();
@@ -2637,15 +2694,15 @@ function (_super) {
     };
 
     _this.onSourceGroupChange = function (v) {
-      console.debug("[QueryEditor.onSourceGroupChange] " + v.label + ", " + v.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
+      console.debug("[QueryEditor.onSourceGroupChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props9 = _this.props,
+          onChange = _this$props9.onChange,
+          query = _this$props9.query,
+          onRunQuery = _this$props9.onRunQuery;
 
       if (v.value !== query.sourceGroup) {
         console.debug('sourceGroup changed');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           sourceGroup: v.value
         }));
         onRunQuery();
@@ -2655,15 +2712,15 @@ function (_super) {
     _this.onHostGroupChange = function (v) {
       var _a;
 
-      console.debug("[QueryEditor.onHostGroupChange] " + v.label + ", " + v.value);
-      var _b = _this.props,
-          onChange = _b.onChange,
-          query = _b.query,
-          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onHostGroupChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props10 = _this.props,
+          onChange = _this$props10.onChange,
+          query = _this$props10.query,
+          onRunQuery = _this$props10.onRunQuery;
 
       if (v.value !== ((_a = query.currentHostGroup) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentHostGroup changed');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           currentHostGroup: v
         }));
         onRunQuery();
@@ -2673,15 +2730,15 @@ function (_super) {
     _this.onApplicationChange = function (v) {
       var _a;
 
-      console.debug("[QueryEditor.onApplicationChange] " + v.label + ", " + v.value);
-      var _b = _this.props,
-          onChange = _b.onChange,
-          query = _b.query,
-          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onApplicationChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props11 = _this.props,
+          onChange = _this$props11.onChange,
+          query = _this$props11.query,
+          onRunQuery = _this$props11.onRunQuery;
 
       if (v.value !== ((_a = query.currentApplication) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentApplication changed');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           currentApplication: v
         }));
         onRunQuery();
@@ -2691,15 +2748,15 @@ function (_super) {
     _this.onWebAppChange = function (v) {
       var _a;
 
-      console.debug("[QueryEditor.onWebAppChange] " + v.label + ", " + v.value);
-      var _b = _this.props,
-          onChange = _b.onChange,
-          query = _b.query,
-          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onWebAppChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props12 = _this.props,
+          onChange = _this$props12.onChange,
+          query = _this$props12.query,
+          onRunQuery = _this$props12.onRunQuery;
 
       if (v.value !== ((_a = query.currentWebApp) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentWebApp changed');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           currentWebApp: v
         }));
         onRunQuery();
@@ -2707,13 +2764,13 @@ function (_super) {
     };
 
     _this.onIPChange = function (e) {
-      console.debug("[QueryEditor.onIPChange] " + e.target.value);
+      console.debug("[QueryEditor.onIPChange] ".concat(e.target.value));
       console.debug(e);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
-      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+      var _this$props13 = _this.props,
+          onChange = _this$props13.onChange,
+          query = _this$props13.query,
+          onRunQuery = _this$props13.onRunQuery;
+      onChange(Object.assign(Object.assign({}, query), {
         currentIP: e.target.value
       }));
       onRunQuery();
@@ -2722,15 +2779,15 @@ function (_super) {
     _this.onApplicationMetricChange = function (v) {
       var _a;
 
-      console.debug("[QueryEditor.onApplicationMetricChange] " + v.label + ", " + v.value);
-      var _b = _this.props,
-          onChange = _b.onChange,
-          query = _b.query,
-          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onApplicationMetricChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props14 = _this.props,
+          onChange = _this$props14.onChange,
+          query = _this$props14.query,
+          onRunQuery = _this$props14.onRunQuery;
 
       if (v.value !== ((_a = query.currentApplicationMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onApplicationMetricChange] currentApplicationMetric changed');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           currentApplicationMetric: v
         }));
         onRunQuery();
@@ -2740,15 +2797,15 @@ function (_super) {
     _this.onHostGroupMetricChange = function (v) {
       var _a;
 
-      console.debug("[QueryEditor.onHostGroupMetricChange] " + v.label + ", " + v.value);
-      var _b = _this.props,
-          onChange = _b.onChange,
-          query = _b.query,
-          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onHostGroupMetricChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props15 = _this.props,
+          onChange = _this$props15.onChange,
+          query = _this$props15.query,
+          onRunQuery = _this$props15.onRunQuery;
 
       if (v.value !== ((_a = query.currentHostGroupMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onHostGroupMetricChange] currentHostGroupMetric changed.');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           currentHostGroupMetric: v
         }));
         onRunQuery();
@@ -2758,15 +2815,15 @@ function (_super) {
     _this.onWebAppMetricChange = function (v) {
       var _a;
 
-      console.debug("[QueryEditor.onWebAppMetricChange] " + v.label + ", " + v.value);
-      var _b = _this.props,
-          onChange = _b.onChange,
-          query = _b.query,
-          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onWebAppMetricChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props16 = _this.props,
+          onChange = _this$props16.onChange,
+          query = _this$props16.query,
+          onRunQuery = _this$props16.onRunQuery;
 
       if (v.value !== ((_a = query.currentWebAppMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onWebAppMetricChange] currentWebAppMetric changed.');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           currentWebAppMetric: v
         }));
         onRunQuery();
@@ -2776,15 +2833,15 @@ function (_super) {
     _this.onIPMetricChange = function (v) {
       var _a;
 
-      console.debug("[QueryEditor.onIPMetricChange] " + v.label + ", " + v.value);
-      var _b = _this.props,
-          onChange = _b.onChange,
-          query = _b.query,
-          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onIPMetricChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props17 = _this.props,
+          onChange = _this$props17.onChange,
+          query = _this$props17.query,
+          onRunQuery = _this$props17.onRunQuery;
 
       if (v.value !== ((_a = query.currentIPMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onIPMetricChange] currentIPMetric changed.');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           currentIPMetric: v
         }));
         onRunQuery();
@@ -2794,15 +2851,15 @@ function (_super) {
     _this.onTopMetricChange = function (v) {
       var _a;
 
-      console.debug("[QueryEditor.onTopMetricChange] " + v.label + ", " + v.value);
-      var _b = _this.props,
-          onChange = _b.onChange,
-          query = _b.query,
-          onRunQuery = _b.onRunQuery;
+      console.debug("[QueryEditor.onTopMetricChange] ".concat(v.label, ", ").concat(v.value));
+      var _this$props18 = _this.props,
+          onChange = _this$props18.onChange,
+          query = _this$props18.query,
+          onRunQuery = _this$props18.onRunQuery;
 
       if (v.value !== ((_a = query.currentTopMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onTopMetricChange] currentTopMetric changed.');
-        onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+        onChange(Object.assign(Object.assign({}, query), {
           currentTopMetric: v
         }));
         onRunQuery();
@@ -2810,73 +2867,73 @@ function (_super) {
     };
 
     _this.onTopChange = function (e) {
-      console.debug("[QueryEditor.onTopChange] " + e.currentTarget.checked);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
-      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+      console.debug("[QueryEditor.onTopChange] ".concat(e.currentTarget.checked));
+      var _this$props19 = _this.props,
+          onChange = _this$props19.onChange,
+          query = _this$props19.query,
+          onRunQuery = _this$props19.onRunQuery;
+      onChange(Object.assign(Object.assign({}, query), {
         top: e.currentTarget.checked
       }));
       onRunQuery();
     };
 
     _this.onTopGraphChange = function (e) {
-      console.debug("[QueryEditor.onTopGraphChange] " + e.currentTarget.checked);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
-      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+      console.debug("[QueryEditor.onTopGraphChange] ".concat(e.currentTarget.checked));
+      var _this$props20 = _this.props,
+          onChange = _this$props20.onChange,
+          query = _this$props20.query,
+          onRunQuery = _this$props20.onRunQuery;
+      onChange(Object.assign(Object.assign({}, query), {
         topGraph: e.currentTarget.checked
       }));
       onRunQuery();
     };
 
     _this.onTopNChange = function (e) {
-      console.debug("[QueryEditor.onTopNChange] " + e.currentTarget.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
-      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+      console.debug("[QueryEditor.onTopNChange] ".concat(e.currentTarget.value));
+      var _this$props21 = _this.props,
+          onChange = _this$props21.onChange,
+          query = _this$props21.query,
+          onRunQuery = _this$props21.onRunQuery;
+      onChange(Object.assign(Object.assign({}, query), {
         topN: Object(lodash__WEBPACK_IMPORTED_MODULE_1__["toInteger"])(e.currentTarget.value)
       }));
       onRunQuery();
     };
 
     _this.onAliasChange = function (v) {
-      console.debug("[QueryEditor.onAliasChange] " + v.target.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
-      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+      console.debug("[QueryEditor.onAliasChange] ".concat(v.target.value));
+      var _this$props22 = _this.props,
+          onChange = _this$props22.onChange,
+          query = _this$props22.query,
+          onRunQuery = _this$props22.onRunQuery;
+      onChange(Object.assign(Object.assign({}, query), {
         alias: v.target.value
       }));
       onRunQuery();
     };
 
     _this.onTimeshiftChange = function (v) {
-      console.debug("[QueryEditor.onTimeshiftChange] " + v.target.value);
-      var _a = _this.props,
-          onChange = _a.onChange,
-          query = _a.query,
-          onRunQuery = _a.onRunQuery;
-      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
+      console.debug("[QueryEditor.onTimeshiftChange] ".concat(v.target.value));
+      var _this$props23 = _this.props,
+          onChange = _this$props23.onChange,
+          query = _this$props23.query,
+          onRunQuery = _this$props23.onRunQuery;
+      onChange(Object.assign(Object.assign({}, query), {
         timeshift: v.target.value
       }));
       onRunQuery();
     };
 
     _this.onGranularityChange = function (v) {
-      console.debug("[QueryEditor.onGranularityChange] " + v.target.value);
-      var _a = _this.props,
-          query = _a.query,
-          onChange = _a.onChange,
-          onRunQuery = _a.onRunQuery;
-      onChange(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, query), {
-        granularity: v.value
+      console.debug("[QueryEditor.onGranularityChange] ".concat(JSON.stringify(v)));
+      var _this$props24 = _this.props,
+          query = _this$props24.query,
+          onChange = _this$props24.onChange,
+          onRunQuery = _this$props24.onRunQuery;
+      onChange(Object.assign(Object.assign({}, query), {
+        granularity: v
       }));
       onRunQuery();
     };
@@ -2884,252 +2941,253 @@ function (_super) {
     return _this;
   }
 
-  QueryEditor.prototype.render = function () {
-    var _this = this;
+  _createClass(QueryEditor, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
 
-    var _a;
+      var _a;
 
-    console.debug('[QueryEditor.render]');
-    var query = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["defaults"])(this.props.query, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
-    this.getOptions(query.sourceGroup);
-    return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: {
-        width: '100%'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.top ? {
-        display: 'none'
-      } : {
-        display: 'block'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Top"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: {
-        marginTop: '8px'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
-      value: query.top,
-      checked: query.top,
-      onChange: this.onTopChange
-    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Source Group"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      options: _types__WEBPACK_IMPORTED_MODULE_4__["sourceGroups"],
-      value: query.sourceGroup,
-      onChange: this.onSourceGroupChange
-    })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup && !query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: query.sourceGroup,
-      onLoadStart: this.getHostGroups
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      value: query.currentHostGroup,
-      options: query.hostGroups,
-      onChange: this.onHostGroupChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application && !query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: query.sourceGroup,
-      onLoadStart: this.getApplications
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      value: query.currentApplication,
-      options: query.applications,
-      onChange: this.onApplicationChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp && !query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: query.sourceGroup,
-      onLoadStart: this.getWebApps
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      value: query.currentWebApp,
-      options: query.webApps,
-      onChange: this.onWebAppChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip && !query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: query.sourceGroup
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
-      value: query.currentIP,
-      onChange: this.onIPChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Metric",
-      onLoadStart: function onLoadStart() {
-        return _this.getApplicationMetrics();
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      options: query.applicationMetrics,
-      value: query.currentApplicationMetric,
-      onChange: this.onApplicationMetricChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Metric",
-      onLoadStart: function onLoadStart() {
-        return _this.getHostGroupMetrics();
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      options: query.hostGroupMetrics,
-      value: query.currentHostGroupMetric,
-      onChange: this.onHostGroupMetricChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Metric",
-      onLoadStart: function onLoadStart() {
-        return _this.getWebAppMetrics();
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      options: query.webAppMetrics,
-      value: query.currentWebAppMetric,
-      onChange: this.onWebAppMetricChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Metric",
-      onLoadStart: function onLoadStart() {
-        return _this.getIPMetrics();
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      options: query.ipMetrics,
-      value: query.currentIPMetric,
-      onChange: this.onIPMetricChange
-    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Top"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: {
-        marginTop: '8px'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
-      value: query.top,
-      checked: query.top,
-      onChange: this.onTopChange
-    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "N"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
-      width: 16,
-      value: query.topN || 0,
-      onChange: this.onTopNChange
-    }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.top ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Graph"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: {
-        marginTop: '8px'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
-      value: query.topGraph,
-      checked: query.topGraph,
-      onChange: this.onTopGraphChange
-    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.top && query.topGraph ? {
-        display: 'block'
-      } : {
-        display: 'none'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Top Metric",
-      onLoadStart: function onLoadStart() {
-        return _this.getTopMetrics();
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      width: 'auto',
-      menuShouldPortal: true,
-      options: query.topMetrics,
-      value: query.currentTopMetric,
-      onChange: this.onTopMetricChange
-    })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Granularity"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
-      menuShouldPortal: true,
-      value: (_a = query.granularity) === null || _a === void 0 ? void 0 : _a.value,
-      options: _types__WEBPACK_IMPORTED_MODULE_4__["granularities"],
-      onChange: this.onGranularityChange
-    })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-      style: query.top ? {
-        display: 'none'
-      } : {
-        display: 'block'
-      }
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
-      label: "Alias"
-    }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
-      value: query.alias || '',
-      onChange: this.onAliasChange
-    })))));
-  };
+      console.debug('[QueryEditor.render]');
+      var query = Object(lodash__WEBPACK_IMPORTED_MODULE_1__["defaults"])(this.props.query, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
+      this.getOptions(query.sourceGroup);
+      return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: {
+          width: '100%'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.top ? {
+          display: 'none'
+        } : {
+          display: 'block'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Top"
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: {
+          marginTop: '8px'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
+        value: query.top,
+        checked: query.top,
+        onChange: this.onTopChange
+      })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Source Group"
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        options: _types__WEBPACK_IMPORTED_MODULE_4__["sourceGroups"],
+        value: query.sourceGroup,
+        onChange: this.onSourceGroupChange
+      })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup && !query.top ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: query.sourceGroup,
+        onLoadStart: this.getHostGroups
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        value: query.currentHostGroup,
+        options: query.hostGroups,
+        onChange: this.onHostGroupChange
+      }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application && !query.top ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: query.sourceGroup,
+        onLoadStart: this.getApplications
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        value: query.currentApplication,
+        options: query.applications,
+        onChange: this.onApplicationChange
+      }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp && !query.top ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: query.sourceGroup,
+        onLoadStart: this.getWebApps
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        value: query.currentWebApp,
+        options: query.webApps,
+        onChange: this.onWebAppChange
+      }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip && !query.top ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: query.sourceGroup
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
+        value: query.currentIP,
+        onChange: this.onIPChange
+      }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Metric",
+        onLoadStart: function onLoadStart() {
+          return _this2.getApplicationMetrics();
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        options: query.applicationMetrics,
+        value: query.currentApplicationMetric,
+        onChange: this.onApplicationMetricChange
+      }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Metric",
+        onLoadStart: function onLoadStart() {
+          return _this2.getHostGroupMetrics();
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        options: query.hostGroupMetrics,
+        value: query.currentHostGroupMetric,
+        onChange: this.onHostGroupMetricChange
+      }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Metric",
+        onLoadStart: function onLoadStart() {
+          return _this2.getWebAppMetrics();
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        options: query.webAppMetrics,
+        value: query.currentWebAppMetric,
+        onChange: this.onWebAppMetricChange
+      }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Metric",
+        onLoadStart: function onLoadStart() {
+          return _this2.getIPMetrics();
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        options: query.ipMetrics,
+        value: query.currentIPMetric,
+        onChange: this.onIPMetricChange
+      })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.top ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Top"
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: {
+          marginTop: '8px'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
+        value: query.top,
+        checked: query.top,
+        onChange: this.onTopChange
+      })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.top ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "N"
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
+        width: 16,
+        value: query.topN || 0,
+        onChange: this.onTopNChange
+      }))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.top ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Graph"
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: {
+          marginTop: '8px'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Switch"], {
+        value: query.topGraph,
+        checked: query.topGraph,
+        onChange: this.onTopGraphChange
+      })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.top && query.topGraph ? {
+          display: 'block'
+        } : {
+          display: 'none'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Top Metric",
+        onLoadStart: function onLoadStart() {
+          return _this2.getTopMetrics();
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        width: 'auto',
+        menuShouldPortal: true,
+        options: query.topMetrics,
+        value: query.currentTopMetric,
+        onChange: this.onTopMetricChange
+      })))), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineFieldRow"], null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Granularity"
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Select"], {
+        menuShouldPortal: true,
+        value: (_a = query.granularity) === null || _a === void 0 ? void 0 : _a.value,
+        options: _types__WEBPACK_IMPORTED_MODULE_4__["granularities"],
+        onChange: this.onGranularityChange
+      })), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
+        style: query.top ? {
+          display: 'none'
+        } : {
+          display: 'block'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["InlineField"], {
+        label: "Alias"
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["Input"], {
+        value: query.alias || '',
+        onChange: this.onAliasChange
+      })))));
+    }
+  }]);
 
   return QueryEditor;
 }(react__WEBPACK_IMPORTED_MODULE_2__["PureComponent"]);
-
-
 
 /***/ }),
 
@@ -3151,22 +3209,46 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/runtime */ "@grafana/runtime");
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./types */ "./types.ts");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
 
 
 
 
-var DataSource =
-/** @class */
-function (_super) {
-  Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(DataSource, _super);
+var DataSource = /*#__PURE__*/function (_DataSourceApi) {
+  _inherits(DataSource, _DataSourceApi);
+
+  var _super = _createSuper(DataSource);
 
   function DataSource(instanceSettings) {
+    var _this;
+
+    _classCallCheck(this, DataSource);
+
     var _a;
 
-    var _this = _super.call(this, instanceSettings) || this;
-
+    _this = _super.call(this, instanceSettings);
     _this.data = [];
     _this.ipMetrics = [];
     _this.topMetrics = [];
@@ -3207,1073 +3289,1119 @@ function (_super) {
     return _this;
   }
 
-  DataSource.prototype.topngraphquery = function (target, start, end, granularity) {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var dataDef_groupBy, dataDef_topBy, dataDef_columns, tops, filterIN, result;
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            dataDef_topBy = [];
-            dataDef_columns = [];
-            dataDef_topBy = [{
-              "direction": "desc",
-              "id": target.currentTopMetric.value
-            }];
-
-            if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
-              dataDef_columns = ["app.id", "app.name"];
-              dataDef_groupBy = ["start_time", "app.id"];
-            } else if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
-              dataDef_columns = ["host_group.id", "host_group.name"];
-              dataDef_groupBy = ["start_time", "host_group.id"];
-            } else if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
-              dataDef_columns = ["app.id", "app.name"];
-              dataDef_groupBy = ["start_time", "app.id"];
-            } else if (target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip) {
-              dataDef_columns = ["tcp.ip", "tcp.dns"];
-              dataDef_groupBy = ["start_time", "tcp.ip"];
-            } else {
-              throw new Error("Unknown source group");
-            }
-
-            dataDef_columns.push(target.currentTopMetric.value);
-            tops = [];
-            filterIN = "";
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: "POST",
-              url: this.urls.instanceCreationSync,
-              data: {
-                "data_defs": [{
-                  "source": {
-                    "name": "aggregates"
-                  },
-                  "time": {
-                    "start": start.toString(),
-                    "end": end.toString(),
-                    "granularity": granularity.toString()
-                  },
-                  "top_by": dataDef_topBy,
-                  "columns": dataDef_columns,
-                  "limit": target.topN || 10
-                }]
-              }
-            }).then(function (response) {
-              var topNResponse;
-
-              if (response.data.data_defs[0].hasOwnProperty("data")) {
-                topNResponse = response.data.data_defs[0].data;
-              } else {
-                topNResponse = [];
-              }
-
-              for (var index = 0; index < topNResponse.length; index++) {
-                tops.push(topNResponse[index][1]);
-
-                if (index === topNResponse.length - 1) {
-                  filterIN += "'" + topNResponse[index][0] + "'";
-                } else {
-                  filterIN += "'" + topNResponse[index][0] + "', ";
-                }
-              }
-
-              return filterIN;
-            })];
-
-          case 1:
-            _a.sent(); // Insert 'start_time' into first index of columns.
-
-
-            dataDef_columns.unshift("start_time");
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: 'POST',
-              url: this.urls.instanceCreationSync,
-              data: {
-                "data_defs": [{
-                  "source": {
-                    "name": "aggregates"
-                  },
-                  "time": {
-                    "start": start.toString(),
-                    "end": end.toString(),
-                    "granularity": granularity.toString()
-                  },
-                  "group_by": dataDef_groupBy,
-                  "columns": dataDef_columns,
-                  "filters": [{
-                    "type": "STEELFILTER",
-                    "value": dataDef_columns[1] + " IN (" + filterIN + ")"
-                  }]
-                }]
-              }
-            }).then(function (response) {
-              if (response.data.data_defs[0].hasOwnProperty("data")) {
-                return response.data;
-              } else {
-                return [];
-              }
-            })];
-
-          case 2:
-            result = _a.sent();
-            return [2
-            /*return*/
-            , {
-              tops: tops,
-              result: result
-            }];
-        }
-      });
-    });
-  };
-
-  DataSource.prototype.query = function (options) {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, Promise, function () {
-      var range, to, from, end, start, dataDef_source, dataDef_groupBy, dataDef_columns, currentMetric, dataDef_filters, promises;
-
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        range = options.range;
-        to = range.to.valueOf();
-        from = range.from.valueOf();
-        dataDef_source = {};
-        dataDef_groupBy = {};
-        dataDef_columns = [];
-        dataDef_filters = [];
-        promises = options.targets.map(function (target) {
-          var _a, _b, _c, _d, _e, _f, _g, _h;
-
-          var query = lodash_defaults__WEBPACK_IMPORTED_MODULE_2___default()(target, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
-          end = new Date(to).getTime() / 1000;
-          start = new Date(from).getTime() / 1000;
-          dataDef_source = {
-            "name": "aggregates"
-          };
-
-          if (query.sourceGroup == _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
-            // For each datapoint, data are grouped by timestamp and id of hostgroup
-            dataDef_groupBy = ["start_time", "host_group.id"]; // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
-
-            dataDef_columns = ["start_time", "host_group.id", "host_group.name"]; // Metric request is filtered by hortgroup selected
-
-            dataDef_filters.push({
-              "type": "STEELFILTER",
-              "value": "host_group.id == " + ((_a = query.currentHostGroup) === null || _a === void 0 ? void 0 : _a.value)
-            });
-            dataDef_columns.push((_b = query.currentHostGroupMetric) === null || _b === void 0 ? void 0 : _b.value);
-            currentMetric = query.currentHostGroupMetric;
-          } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
-            dataDef_groupBy = ["start_time", "app.id"];
-            dataDef_columns = ["start_time", "app.id", "app.name"];
-            dataDef_filters.push({
-              "type": "STEELFILTER",
-              "value": "app.id == " + ((_c = query.currentApplication) === null || _c === void 0 ? void 0 : _c.value)
-            });
-            dataDef_columns.push((_d = query.currentApplicationMetric) === null || _d === void 0 ? void 0 : _d.value);
-            currentMetric = query.currentApplicationMetric;
-          } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip) {
-            dataDef_source = {
-              "name": "aggregates"
-            };
-            dataDef_groupBy = ["start_time"];
-            dataDef_columns = ["start_time", "tcp.ip", "tcp.dns"];
-            dataDef_filters.push({
-              "type": "STEELFILTER",
-              "value": "tcp.ip == " + query.currentIP
-            });
-            dataDef_columns.push((_e = query.currentIPMetric) === null || _e === void 0 ? void 0 : _e.value);
-            currentMetric = query.currentIPMetric;
-          } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
-            dataDef_groupBy = ["start_time", "app.id"];
-            dataDef_columns = ["start_time", "app.id", "app.name"];
-            dataDef_filters.push({
-              "type": "STEELFILTER",
-              "value": "app.id == " + ((_f = query.currentWebApp) === null || _f === void 0 ? void 0 : _f.value)
-            });
-            dataDef_columns.push((_g = query.currentWebAppMetric) === null || _g === void 0 ? void 0 : _g.value);
-            currentMetric = query.currentWebAppMetric;
-          } else {
-            throw new Error("Unknown source group");
-          }
-
-          var dataDef = {
-            'source': dataDef_source,
-            "time": {
-              "end": end.toString(),
-              "start": start.toString(),
-              'granularity': (_h = query.granularity) === null || _h === void 0 ? void 0 : _h.value.toString()
-            },
-            "group_by": dataDef_groupBy,
-            "columns": dataDef_columns
-          };
-
-          if (query.top) {
-            dataDef.limit = query.topN || 10;
-            dataDef.top_by = [{
-              "id": currentMetric === null || currentMetric === void 0 ? void 0 : currentMetric.value,
-              "direction": 'desc'
-            }];
-            dataDef.group_by = {}; // Remove start time.
-
-            dataDef.columns = dataDef.columns.slice(1); // Remove start time.
-
-            if (query.topGraph) {
-              return _this.topngraphquery(query, start, end, 0).then(function (data) {
-                var _a;
-
-                var name;
-                var tops = data.tops;
-                var result = data.result;
-                var dataDef = result.data_defs[0];
-
-                if (!dataDef.hasOwnProperty('data')) {
-                  dataDef.data = [];
-                }
-
-                if (query.alias !== undefined && query.alias.trim() !== '') {
-                  name = query.alias;
-                } else {
-                  name = (_a = query.currentTopMetric) === null || _a === void 0 ? void 0 : _a.label;
-                }
-
-                var fields = [{
-                  name: "Time",
-                  type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time,
-                  values: []
+  _createClass(DataSource, [{
+    key: "topngraphquery",
+    value: function topngraphquery(target, start, end, granularity) {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var dataDef_groupBy, dataDef_topBy, dataDef_columns, tops, filterIN, result;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                dataDef_topBy = [];
+                dataDef_columns = [];
+                dataDef_topBy = [{
+                  "direction": "desc",
+                  "id": target.currentTopMetric.value
                 }];
 
-                for (var index = 0; index < tops.length; index++) {
-                  fields.push({
-                    name: tops[index],
-                    type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number,
-                    values: []
-                  });
+                if (!(target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application)) {
+                  _context.next = 8;
+                  break;
                 }
 
-                var frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
-                  name: name,
-                  fields: fields,
-                  refId: query.refId
-                });
+                dataDef_columns = ["app.id", "app.name"];
+                dataDef_groupBy = ["start_time", "app.id"];
+                _context.next = 24;
+                break;
 
-                for (var i = 0; i < dataDef.data.length; i++) {
-                  var row = [];
-                  var datum = dataDef.data[i];
-                  row.push(new Date(datum[0] * 1000));
+              case 8:
+                if (!(target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup)) {
+                  _context.next = 13;
+                  break;
+                }
 
-                  for (var index = 0; index < tops.length; index++) {
-                    if (tops[index] === datum[2]) {
-                      row.push(datum[datum.length - 1]);
+                dataDef_columns = ["host_group.id", "host_group.name"];
+                dataDef_groupBy = ["start_time", "host_group.id"];
+                _context.next = 24;
+                break;
+
+              case 13:
+                if (!(target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp)) {
+                  _context.next = 18;
+                  break;
+                }
+
+                dataDef_columns = ["app.id", "app.name"];
+                dataDef_groupBy = ["start_time", "app.id"];
+                _context.next = 24;
+                break;
+
+              case 18:
+                if (!(target.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip)) {
+                  _context.next = 23;
+                  break;
+                }
+
+                dataDef_columns = ["tcp.ip", "tcp.dns"];
+                dataDef_groupBy = ["start_time", "tcp.ip"];
+                _context.next = 24;
+                break;
+
+              case 23:
+                throw new Error("Unknown source group");
+
+              case 24:
+                dataDef_columns.push(target.currentTopMetric.value);
+                tops = [];
+                filterIN = "";
+                _context.next = 29;
+                return this.doRequest({
+                  method: "POST",
+                  url: this.urls.instanceCreationSync,
+                  data: {
+                    "data_defs": [{
+                      "source": {
+                        "name": "aggregates"
+                      },
+                      "time": {
+                        "start": start.toString(),
+                        "end": end.toString(),
+                        "granularity": granularity.toString()
+                      },
+                      "top_by": dataDef_topBy,
+                      "columns": dataDef_columns,
+                      "limit": target.topN || 10
+                    }]
+                  }
+                }).then(function (response) {
+                  var topNResponse;
+
+                  if (response.data.data_defs[0].hasOwnProperty("data")) {
+                    topNResponse = response.data.data_defs[0].data;
+                  } else {
+                    topNResponse = [];
+                  }
+
+                  for (var index = 0; index < topNResponse.length; index++) {
+                    tops.push(topNResponse[index][1]);
+
+                    if (index === topNResponse.length - 1) {
+                      filterIN += "'".concat(topNResponse[index][0], "'");
                     } else {
-                      row.push(null);
+                      filterIN += "'".concat(topNResponse[index][0], "', ");
                     }
                   }
 
-                  frame.appendRow(row);
-                }
-
-                return frame;
-              });
-            }
-          } else {
-            dataDef.filters = dataDef_filters;
-          }
-
-          return _this.doRequest({
-            url: _this.urls.instanceCreationSync,
-            data: {
-              'data_defs': [dataDef]
-            },
-            method: 'POST'
-          }).then(function (response) {
-            var name;
-            var _dataDef = response.data.data_defs[0];
-
-            if (_dataDef.data === undefined) {
-              _dataDef.data = [];
-            }
-
-            if (query.alias !== undefined && query.alias.trim() !== '') {
-              name = query.alias;
-            } else {
-              name = currentMetric === null || currentMetric === void 0 ? void 0 : currentMetric.value;
-            }
-
-            var fields = [];
-            var frame;
-
-            if (query.top) {
-              var removeIndices = [];
-
-              for (var index = 0; index < _dataDef.columns.length; index++) {
-                var column = _dataDef.columns[index];
-
-                if (column.search('id') === -1) {
-                  fields.push({
-                    name: column,
-                    type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].other
-                  });
-                } else {
-                  removeIndices.push(index);
-                }
-              }
-
-              frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
-                refId: query.refId,
-                name: name,
-                fields: fields
-              });
-
-              var _loop_1 = function _loop_1(i) {
-                removeIndices.forEach(function (j) {
-                  _dataDef.data[i].splice(j, 1);
+                  return filterIN;
                 });
-                frame.appendRow(_dataDef.data[i]);
-              };
 
-              for (var i = 0; i < _dataDef.data.length; i++) {
-                _loop_1(i);
-              }
-            } else {
-              fields = [{
-                name: "Time",
-                type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time
-              }, {
-                name: "Value",
-                type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number
-              }];
-              frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
-                refId: query.refId,
-                name: name,
-                fields: fields
-              });
+              case 29:
+                // Insert 'start_time' into first index of columns.
+                dataDef_columns.unshift("start_time");
+                _context.next = 32;
+                return this.doRequest({
+                  method: 'POST',
+                  url: this.urls.instanceCreationSync,
+                  data: {
+                    "data_defs": [{
+                      "source": {
+                        "name": "aggregates"
+                      },
+                      "time": {
+                        "start": start.toString(),
+                        "end": end.toString(),
+                        "granularity": granularity.toString()
+                      },
+                      "group_by": dataDef_groupBy,
+                      "columns": dataDef_columns,
+                      "filters": [{
+                        "type": "STEELFILTER",
+                        "value": "".concat(dataDef_columns[1], " IN (").concat(filterIN, ")")
+                      }]
+                    }]
+                  }
+                }).then(function (response) {
+                  if (response.data.data_defs[0].hasOwnProperty("data")) {
+                    return response.data;
+                  } else {
+                    return [];
+                  }
+                });
 
-              for (var i = 0; i < _dataDef.data.length; i++) {
-                var row = _dataDef.data[i];
-                frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
-              }
-            } // Push data a variable for caching.
+              case 32:
+                result = _context.sent;
+                return _context.abrupt("return", {
+                  tops: tops,
+                  result: result
+                });
 
-
-            _this.data.push(frame);
-
-            return frame;
-          });
-        });
-        return [2
-        /*return*/
-        , Promise.all(promises).then(function (data) {
-          return {
-            data: data
-          };
-        })];
-      });
-    });
-  };
-
-  DataSource.prototype.testDatasource = function () {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        return [2
-        /*return*/
-        , Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__["getBackendSrv"])().datasourceRequest({
-          method: 'POST',
-          url: this.urls.auth,
-          headers: this.headers
-        }).then(function (response) {
-          if (response.ok === true) {
-            _this.settings.jsonData.token = response.data.access_token;
-            return {
-              status: 'success',
-              message: 'Data source is working'
-            };
-          } else {
-            return {
-              status: 'error',
-              message: 'Data source is not working'
-            };
+              case 34:
+              case "end":
+                return _context.stop();
+            }
           }
-        })["catch"](function (error) {
-          return {
-            status: 'error',
-            message: error.statusText
-          };
-        })];
-      });
-    });
-  };
-
-  DataSource.prototype.doRequest = function (options) {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            console.debug("[DataSource.doRequest] " + options.method + " " + options.url);
-            if (!(this.settings.jsonData.token === '' || this.settings.jsonData.token === undefined || this.settings.jsonData.token === null)) return [3
-            /*break*/
-            , 2];
-            console.debug("[DataSource.doRequest] No token.");
-            return [4
-            /*yield*/
-            , Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__["getBackendSrv"])().datasourceRequest({
-              method: 'POST',
-              url: this.urls.auth
-            }).then(function (response) {
-              _this.settings.jsonData.token = response.data.access_token;
-            })];
-
-          case 1:
-            _a.sent();
-
-            _a.label = 2;
-
-          case 2:
-            return [2
-            /*return*/
-            , Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__["getBackendSrv"])().datasourceRequest(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, options), {
-              headers: Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])(Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"])({}, this.headers), {
-                'Authorization': 'Bearer ' + this.settings.jsonData.token
-              })
-            }))];
-        }
-      });
-    });
-  };
-
-  DataSource.prototype.getHostGroups = function () {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_1;
-
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            console.debug('[DataSource.getHostGroups]');
-            result = [];
-            _a.label = 1;
-
-          case 1:
-            _a.trys.push([1, 3,, 4]);
-
-            if ((Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60 < this.optionsTimeout && this.hostGroups.length > 0) {
-              console.debug('[DataSource.getHostGroups] Cache hit.');
-              return [2
-              /*return*/
-              , this.hostGroups];
-            }
-
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: 'GET',
-              url: this.urls.hostGroup
-            }).then(function (response) {
-              _this.hostGroups = [];
-
-              if (typeof response !== 'undefined') {
-                for (var k in response.data.items) {
-                  if (response.data.items[k]["enabled"]) {
-                    var hostGroup = {
-                      'label': response.data.items[k]["name"],
-                      'value': response.data.items[k]["id"]
-                    };
-                    result.push(hostGroup);
-
-                    _this.hostGroups.push(hostGroup);
-                  }
-                }
-              }
-
-              _this.lastFetchHostGroups = new Date(Date.now());
-            })];
-
-          case 2:
-            _a.sent();
-
-            return [3
-            /*break*/
-            , 4];
-
-          case 3:
-            error_1 = _a.sent();
-            console.error(error_1);
-            return [3
-            /*break*/
-            , 4];
-
-          case 4:
-            return [2
-            /*return*/
-            , result];
-        }
-      });
-    });
-  };
-
-  DataSource.prototype.getApplications = function () {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_2;
-
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            result = [];
-            _a.label = 1;
-
-          case 1:
-            _a.trys.push([1, 3,, 4]);
-
-            if ((Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60 < this.optionsTimeout && this.applications.length > 0) {
-              console.debug('[DataSource.getApplications] Cache hit.');
-              return [2
-              /*return*/
-              , this.applications];
-            }
-
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: 'GET',
-              url: this.urls.application
-            }).then(function (response) {
-              if (typeof response !== 'undefined') {
-                _this.applications = [];
-
-                for (var k in response.data.items) {
-                  if (response.data.items[k]["enabled"]) {
-                    var application = {
-                      'label': response.data.items[k]["name"],
-                      'value': response.data.items[k]["id"]
-                    };
-                    result.push(application);
-
-                    _this.applications.push(application);
-                  }
-                }
-              }
-
-              _this.lastFetchApplications = new Date(Date.now());
-            })];
-
-          case 2:
-            _a.sent();
-
-            return [3
-            /*break*/
-            , 4];
-
-          case 3:
-            error_2 = _a.sent();
-            console.error(error_2);
-            return [3
-            /*break*/
-            , 4];
-
-          case 4:
-            return [2
-            /*return*/
-            , result];
-        }
-      });
-    });
-  };
-
-  DataSource.prototype.getWebApps = function () {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_3;
-
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            result = [];
-            _a.label = 1;
-
-          case 1:
-            _a.trys.push([1, 3,, 4]);
-
-            if ((Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60 < this.optionsTimeout && this.webApps.length > 0) {
-              console.debug('[DataSource.getWebApps] Cache hit.');
-              return [2
-              /*return*/
-              , this.webApps];
-            }
-
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: 'GET',
-              url: this.urls.webApp
-            }).then(function (response) {
-              if (typeof response !== 'undefined') {
-                _this.webApps = [];
-
-                for (var k in response.data.items) {
-                  if (response.data.items[k]["enabled"]) {
-                    var webApp = {
-                      'label': response.data.items[k]["name"],
-                      'value': response.data.items[k]["id"]
-                    };
-                    result.push(webApp);
-
-                    _this.webApps.push(webApp);
-                  }
-                }
-              }
-
-              _this.lastFetchWebApps = new Date(Date.now());
-            })];
-
-          case 2:
-            _a.sent();
-
-            return [3
-            /*break*/
-            , 4];
-
-          case 3:
-            error_3 = _a.sent();
-            console.error(error_3);
-            return [3
-            /*break*/
-            , 4];
-
-          case 4:
-            return [2
-            /*return*/
-            , result];
-        }
-      });
-    });
-  };
-
-  DataSource.prototype.getTopMetrics = function (sourceGroup) {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var _a, _b, _c, _d;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_e) {
-        switch (_e.label) {
-          case 0:
-            if (!(sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application)) return [3
-            /*break*/
-            , 2];
-            _a = this;
-            return [4
-            /*yield*/
-            , this.getApplicationMetrics()];
-
-          case 1:
-            _a.topMetrics = _e.sent();
-            return [3
-            /*break*/
-            , 9];
-
-          case 2:
-            if (!(sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup)) return [3
-            /*break*/
-            , 4];
-            _b = this;
-            return [4
-            /*yield*/
-            , this.getHostGroupMetrics()];
-
-          case 3:
-            _b.topMetrics = _e.sent();
-            return [3
-            /*break*/
-            , 9];
-
-          case 4:
-            if (!(sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp)) return [3
-            /*break*/
-            , 6];
-            _c = this;
-            return [4
-            /*yield*/
-            , this.getWebAppMetrics()];
-
-          case 5:
-            _c.topMetrics = _e.sent();
-            return [3
-            /*break*/
-            , 9];
-
-          case 6:
-            if (!(sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip)) return [3
-            /*break*/
-            , 8];
-            _d = this;
-            return [4
-            /*yield*/
-            , this.getIPMetrics()];
-
-          case 7:
-            _d.topMetrics = _e.sent();
-            return [3
-            /*break*/
-            , 9];
-
-          case 8:
-            throw new Error('Unknown source group');
-
-          case 9:
-            return [2
-            /*return*/
-            , this.topMetrics];
-        }
-      });
-    });
-  };
-
-  DataSource.prototype.getApplicationMetrics = function () {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_4;
-
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            result = [];
-            _a.label = 1;
-
-          case 1:
-            _a.trys.push([1, 3,, 4]);
-
-            if ((Date.now() - this.lastFetchApplicationMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.applicationMetrics.length > 0) {
-              console.debug('[DataSource.getApplicationMetrics] Cache hit.');
-              return [2
-              /*return*/
-              , this.applicationMetrics];
-            }
-
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: 'GET',
-              url: this.urls.metric
-            }).then(function (response) {
-              if (typeof response !== 'undefined') {
-                _this.applicationMetrics = [];
-
-                for (var k in response.data.columns) {
-                  var id = response.data.columns[k].id;
-                  var unit = response.data.columns[k].unit;
-                  var rate = response.data.columns[k].rate;
-                  var label = response.data.columns[k].label;
-
-                  if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                    if (typeof rate !== 'undefined' && unit !== 'none') {
-                      label = label + " (" + unit + "/" + rate + ")";
-                    } else if (typeof rate !== 'undefined') {
-                      label = label + " (" + rate + ")";
-                    }
-
-                    var metric = {
-                      'value': id,
-                      'label': label
-                    };
-
-                    if (!id.includes('p2m') && !id.includes('m2p') && !id.includes('web') && !id.includes('_db.') && !id.includes('cxa')) {
-                      result.push(metric);
-
-                      _this.applicationMetrics.push(metric);
+        }, _callee, this);
+      }));
+    }
+  }, {
+    key: "query",
+    value: function query(options) {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var _this2 = this;
+
+        var range, to, from, end, start, granularity, dataDef_source, dataDef_groupBy, dataDef_columns, currentMetric, dataDef_filters, promises;
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                range = options.range;
+                to = range.to.valueOf();
+                from = range.from.valueOf();
+                dataDef_source = {};
+                dataDef_groupBy = {};
+                dataDef_columns = [];
+                dataDef_filters = [];
+                promises = options.targets.map(function (target) {
+                  var _a, _b, _c, _d, _e, _f, _g;
+
+                  var query = lodash_defaults__WEBPACK_IMPORTED_MODULE_2___default()(target, _types__WEBPACK_IMPORTED_MODULE_4__["defaultQuery"]);
+                  end = new Date(to).getTime() / 1000;
+                  start = new Date(from).getTime() / 1000;
+                  granularity = query.granularity;
+
+                  if ((granularity === null || granularity === void 0 ? void 0 : granularity.value) === 0) {
+                    // Means Auto
+                    var timeDiff = (end - start) / 60; // In minutes 
+
+                    if (timeDiff < 60) {
+                      granularity = _types__WEBPACK_IMPORTED_MODULE_4__["granularities"][1];
+                    } else if (timeDiff < 60 * 6) {
+                      granularity = _types__WEBPACK_IMPORTED_MODULE_4__["granularities"][2];
+                    } else if (timeDiff < 60 * 24 * 5) {
+                      granularity = _types__WEBPACK_IMPORTED_MODULE_4__["granularities"][3];
+                    } else if (timeDiff < 60 * 24 * 60) {
+                      granularity = _types__WEBPACK_IMPORTED_MODULE_4__["granularities"][4];
+                    } else {
+                      granularity = _types__WEBPACK_IMPORTED_MODULE_4__["granularities"][5];
                     }
                   }
-                }
-              }
 
-              _this.lastFetchApplicationMetrics = new Date(Date.now());
-            })];
+                  dataDef_source = {
+                    "name": "aggregates"
+                  };
 
-          case 2:
-            _a.sent();
+                  if (query.sourceGroup == _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup) {
+                    // For each datapoint, data are grouped by timestamp and id of hostgroup
+                    dataDef_groupBy = ["start_time", "host_group.id"]; // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
 
-            return [3
-            /*break*/
-            , 4];
+                    dataDef_columns = ["start_time", "host_group.id", "host_group.name"]; // Metric request is filtered by hortgroup selected
 
-          case 3:
-            error_4 = _a.sent();
-            console.error(error_4);
-            return [3
-            /*break*/
-            , 4];
+                    dataDef_filters.push({
+                      "type": "STEELFILTER",
+                      "value": "host_group.id == " + ((_a = query.currentHostGroup) === null || _a === void 0 ? void 0 : _a.value)
+                    });
+                    dataDef_columns.push((_b = query.currentHostGroupMetric) === null || _b === void 0 ? void 0 : _b.value);
+                    currentMetric = query.currentHostGroupMetric;
+                  } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application) {
+                    dataDef_groupBy = ["start_time", "app.id"];
+                    dataDef_columns = ["start_time", "app.id", "app.name"];
+                    dataDef_filters.push({
+                      "type": "STEELFILTER",
+                      "value": "app.id == " + ((_c = query.currentApplication) === null || _c === void 0 ? void 0 : _c.value)
+                    });
+                    dataDef_columns.push((_d = query.currentApplicationMetric) === null || _d === void 0 ? void 0 : _d.value);
+                    currentMetric = query.currentApplicationMetric;
+                  } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip) {
+                    dataDef_source = {
+                      "name": "aggregates"
+                    };
+                    dataDef_groupBy = ["start_time"];
+                    dataDef_columns = ["start_time", "tcp.ip", "tcp.dns"];
+                    dataDef_filters.push({
+                      "type": "STEELFILTER",
+                      "value": "tcp.ip == " + query.currentIP
+                    });
+                    dataDef_columns.push((_e = query.currentIPMetric) === null || _e === void 0 ? void 0 : _e.value);
+                    currentMetric = query.currentIPMetric;
+                  } else if (query.sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp) {
+                    dataDef_groupBy = ["start_time", "app.id"];
+                    dataDef_columns = ["start_time", "app.id", "app.name"];
+                    dataDef_filters.push({
+                      "type": "STEELFILTER",
+                      "value": "app.id == " + ((_f = query.currentWebApp) === null || _f === void 0 ? void 0 : _f.value)
+                    });
+                    dataDef_columns.push((_g = query.currentWebAppMetric) === null || _g === void 0 ? void 0 : _g.value);
+                    currentMetric = query.currentWebAppMetric;
+                  } else {
+                    throw new Error("Unknown source group");
+                  }
 
-          case 4:
-            return [2
-            /*return*/
-            , result];
-        }
-      });
-    });
-  };
+                  var dataDef = {
+                    'source': dataDef_source,
+                    "time": {
+                      "end": end.toString(),
+                      "start": start.toString(),
+                      'granularity': granularity === null || granularity === void 0 ? void 0 : granularity.value.toString()
+                    },
+                    "group_by": dataDef_groupBy,
+                    "columns": dataDef_columns
+                  };
 
-  DataSource.prototype.getIPMetrics = function () {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_5;
+                  if (query.top) {
+                    dataDef.limit = query.topN || 10;
+                    dataDef.top_by = [{
+                      "id": currentMetric === null || currentMetric === void 0 ? void 0 : currentMetric.value,
+                      "direction": 'desc'
+                    }];
+                    dataDef.group_by = {}; // Remove start time.
 
-      var _this = this;
+                    dataDef.columns = dataDef.columns.slice(1); // Remove start time.
 
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            result = [];
-            _a.label = 1;
+                    if (query.topGraph) {
+                      return _this2.topngraphquery(query, start, end, 0).then(function (data) {
+                        var _a;
 
-          case 1:
-            _a.trys.push([1, 3,, 4]);
+                        var name;
+                        var tops = data.tops;
+                        var result = data.result;
+                        var dataDef = result.data_defs[0];
 
-            if ((Date.now() - this.lastFetchIPMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.ipMetrics.length > 0) {
-              console.debug('[DataSource.getIPMetrics] Cache hit.');
-              return [2
-              /*return*/
-              , this.ipMetrics];
-            }
+                        if (!dataDef.hasOwnProperty('data')) {
+                          dataDef.data = [];
+                        }
 
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: 'GET',
-              url: this.urls.metric
-            }).then(function (response) {
-              if (typeof response !== 'undefined') {
-                _this.ipMetrics = [];
+                        if (query.alias !== undefined && query.alias.trim() !== '') {
+                          name = query.alias;
+                        } else {
+                          name = (_a = query.currentTopMetric) === null || _a === void 0 ? void 0 : _a.label;
+                        }
 
-                for (var k in response.data.columns) {
-                  var id = response.data.columns[k].id;
-                  var unit = response.data.columns[k].unit;
-                  var rate = response.data.columns[k].rate;
-                  var label = response.data.columns[k].label;
+                        var fields = [{
+                          name: "Time",
+                          type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time,
+                          values: []
+                        }];
 
-                  if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                    if (typeof rate !== 'undefined' && unit !== 'none') {
-                      label = label + " (" + unit + "/" + rate + ")";
-                    } else if (typeof rate !== 'undefined') {
-                      label = label + " (" + rate + ")";
+                        for (var index = 0; index < tops.length; index++) {
+                          fields.push({
+                            name: tops[index],
+                            type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number,
+                            values: []
+                          });
+                        }
+
+                        var frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
+                          name: name,
+                          fields: fields,
+                          refId: query.refId
+                        });
+
+                        for (var i = 0; i < dataDef.data.length; i++) {
+                          var row = [];
+                          var datum = dataDef.data[i];
+                          row.push(new Date(datum[0] * 1000));
+
+                          for (var _index = 0; _index < tops.length; _index++) {
+                            if (tops[_index] === datum[2]) {
+                              row.push(datum[datum.length - 1]);
+                            } else {
+                              row.push(null);
+                            }
+                          }
+
+                          frame.appendRow(row);
+                        }
+
+                        return frame;
+                      });
+                    }
+                  } else {
+                    dataDef.filters = dataDef_filters;
+                  }
+
+                  return _this2.doRequest({
+                    url: _this2.urls.instanceCreationSync,
+                    data: {
+                      'data_defs': [dataDef]
+                    },
+                    method: 'POST'
+                  }).then(function (response) {
+                    var name;
+                    var _dataDef = response.data.data_defs[0];
+
+                    if (_dataDef.data === undefined) {
+                      _dataDef.data = [];
                     }
 
-                    var metric = {
-                      'value': id,
-                      'label': label
+                    if (query.alias !== undefined && query.alias.trim() !== '') {
+                      name = query.alias;
+                    } else {
+                      name = currentMetric === null || currentMetric === void 0 ? void 0 : currentMetric.value;
+                    }
+
+                    var fields = [];
+                    var frame;
+
+                    if (query.top) {
+                      var removeIndices = [];
+
+                      for (var index = 0; index < _dataDef.columns.length; index++) {
+                        var column = _dataDef.columns[index];
+
+                        if (column.search('id') === -1) {
+                          fields.push({
+                            name: column,
+                            type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].other
+                          });
+                        } else {
+                          removeIndices.push(index);
+                        }
+                      }
+
+                      frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
+                        refId: query.refId,
+                        name: name,
+                        fields: fields
+                      });
+
+                      var _loop = function _loop(i) {
+                        removeIndices.forEach(function (j) {
+                          _dataDef.data[i].splice(j, 1);
+                        });
+                        frame.appendRow(_dataDef.data[i]);
+                      };
+
+                      for (var i = 0; i < _dataDef.data.length; i++) {
+                        _loop(i);
+                      }
+                    } else {
+                      fields = [{
+                        name: "Time",
+                        type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time
+                      }, {
+                        name: "Value",
+                        type: _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number
+                      }];
+                      frame = new _grafana_data__WEBPACK_IMPORTED_MODULE_1__["MutableDataFrame"]({
+                        refId: query.refId,
+                        name: name,
+                        fields: fields
+                      });
+
+                      for (var _i = 0; _i < _dataDef.data.length; _i++) {
+                        var row = _dataDef.data[_i];
+                        frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
+                      }
+                    } // Push data a variable for caching.
+
+
+                    _this2.data.push(frame);
+
+                    return frame;
+                  });
+                });
+                return _context2.abrupt("return", Promise.all(promises).then(function (data) {
+                  return {
+                    data: data
+                  };
+                }));
+
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+    }
+  }, {
+    key: "testDatasource",
+    value: function testDatasource() {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+        var _this3 = this;
+
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                return _context3.abrupt("return", Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__["getBackendSrv"])().datasourceRequest({
+                  method: 'POST',
+                  url: this.urls.auth,
+                  headers: this.headers
+                }).then(function (response) {
+                  if (response.ok === true) {
+                    _this3.settings.jsonData.token = response.data.access_token;
+                    return {
+                      status: 'success',
+                      message: 'Data source is working'
                     };
+                  } else {
+                    return {
+                      status: 'error',
+                      message: 'Data source is not working'
+                    };
+                  }
+                })["catch"](function (error) {
+                  return {
+                    status: 'error',
+                    message: error.statusText
+                  };
+                }));
 
-                    if (!id.includes('p2m') && !id.includes('m2p') && !id.includes('web') && !id.includes('_db.') && !id.includes('cxa')) {
-                      result.push(metric);
+              case 1:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+    }
+  }, {
+    key: "doRequest",
+    value: function doRequest(options) {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+        var _this4 = this;
 
-                      _this.ipMetrics.push(metric);
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                console.debug("[DataSource.doRequest] ".concat(options.method, " ").concat(options.url));
+
+                if (!(this.settings.jsonData.token === '' || this.settings.jsonData.token === undefined || this.settings.jsonData.token === null)) {
+                  _context4.next = 5;
+                  break;
+                }
+
+                console.debug("[DataSource.doRequest] No token.");
+                _context4.next = 5;
+                return Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__["getBackendSrv"])().datasourceRequest({
+                  method: 'POST',
+                  url: this.urls.auth
+                }).then(function (response) {
+                  _this4.settings.jsonData.token = response.data.access_token;
+                });
+
+              case 5:
+                return _context4.abrupt("return", Object(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__["getBackendSrv"])().datasourceRequest(Object.assign(Object.assign({}, options), {
+                  headers: Object.assign(Object.assign({}, this.headers), {
+                    'Authorization': 'Bearer ' + this.settings.jsonData.token
+                  })
+                })));
+
+              case 6:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+    }
+  }, {
+    key: "getHostGroups",
+    value: function getHostGroups() {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+        var _this5 = this;
+
+        var result;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                console.debug('[DataSource.getHostGroups]');
+                result = [];
+                _context5.prev = 2;
+
+                if (!((Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60 < this.optionsTimeout && this.hostGroups.length > 0)) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                console.debug('[DataSource.getHostGroups] Cache hit.');
+                return _context5.abrupt("return", this.hostGroups);
+
+              case 6:
+                _context5.next = 8;
+                return this.doRequest({
+                  method: 'GET',
+                  url: this.urls.hostGroup
+                }).then(function (response) {
+                  _this5.hostGroups = [];
+
+                  if (typeof response !== 'undefined') {
+                    for (var k in response.data.items) {
+                      if (response.data.items[k]["enabled"]) {
+                        var hostGroup = {
+                          'label': response.data.items[k]["name"],
+                          'value': response.data.items[k]["id"]
+                        };
+                        result.push(hostGroup);
+
+                        _this5.hostGroups.push(hostGroup);
+                      }
                     }
                   }
-                }
-              }
 
-              _this.lastFetchIPMetrics = new Date(Date.now());
-            })];
+                  _this5.lastFetchHostGroups = new Date(Date.now());
+                });
 
-          case 2:
-            _a.sent();
+              case 8:
+                _context5.next = 13;
+                break;
 
-            return [3
-            /*break*/
-            , 4];
+              case 10:
+                _context5.prev = 10;
+                _context5.t0 = _context5["catch"](2);
+                console.error(_context5.t0);
 
-          case 3:
-            error_5 = _a.sent();
-            console.error(error_5);
-            return [3
-            /*break*/
-            , 4];
+              case 13:
+                return _context5.abrupt("return", result);
 
-          case 4:
-            return [2
-            /*return*/
-            , result];
-        }
-      });
-    });
-  };
-
-  DataSource.prototype.getHostGroupMetrics = function () {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_6;
-
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            result = [];
-            _a.label = 1;
-
-          case 1:
-            _a.trys.push([1, 3,, 4]);
-
-            if ((Date.now() - this.lastFetchHostGroupMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.hostGroupMetrics.length > 0) {
-              console.debug('[DataSource.getHostGroupMetrics] Cache hit.');
-              return [2
-              /*return*/
-              , this.hostGroupMetrics];
+              case 14:
+              case "end":
+                return _context5.stop();
             }
+          }
+        }, _callee5, this, [[2, 10]]);
+      }));
+    }
+  }, {
+    key: "getApplications",
+    value: function getApplications() {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+        var _this6 = this;
 
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: 'GET',
-              url: this.urls.metric
-            }).then(function (response) {
-              if (typeof response !== 'undefined') {
-                _this.hostGroupMetrics = [];
+        var result;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                result = [];
+                _context6.prev = 1;
 
-                for (var k in response.data.columns) {
-                  var id = response.data.columns[k].id;
-                  var unit = response.data.columns[k].unit;
-                  var rate = response.data.columns[k].rate;
-                  var label = response.data.columns[k].label;
-
-                  if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                    if (typeof rate !== 'undefined' && unit !== 'none') {
-                      label = label + " (" + unit + "/" + rate + ")";
-                    } else if (typeof rate !== 'undefined') {
-                      label = label + " (" + rate + ")";
-                    }
-
-                    var metric = {
-                      'value': id,
-                      'label': label
-                    };
-                    result.push(metric);
-
-                    _this.hostGroupMetrics.push(metric);
-                  }
+                if (!((Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60 < this.optionsTimeout && this.applications.length > 0)) {
+                  _context6.next = 5;
+                  break;
                 }
-              }
 
-              _this.lastFetchHostGroupMetrics = new Date(Date.now());
-            })];
+                console.debug('[DataSource.getApplications] Cache hit.');
+                return _context6.abrupt("return", this.applications);
 
-          case 2:
-            _a.sent();
+              case 5:
+                _context6.next = 7;
+                return this.doRequest({
+                  method: 'GET',
+                  url: this.urls.application
+                }).then(function (response) {
+                  if (typeof response !== 'undefined') {
+                    _this6.applications = [];
 
-            return [3
-            /*break*/
-            , 4];
+                    for (var k in response.data.items) {
+                      if (response.data.items[k]["enabled"]) {
+                        var application = {
+                          'label': response.data.items[k]["name"],
+                          'value': response.data.items[k]["id"]
+                        };
+                        result.push(application);
 
-          case 3:
-            error_6 = _a.sent();
-            console.error(error_6);
-            return [3
-            /*break*/
-            , 4];
-
-          case 4:
-            return [2
-            /*return*/
-            , result];
-        }
-      });
-    });
-  };
-
-  DataSource.prototype.getWebAppMetrics = function () {
-    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
-      var result, error_7;
-
-      var _this = this;
-
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            result = [];
-            _a.label = 1;
-
-          case 1:
-            _a.trys.push([1, 3,, 4]);
-
-            if ((Date.now() - this.lastFetchWebAppMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.webAppMetrics.length > 0) {
-              console.debug('[DataSource.getWebAppMetrics] Cache hit.');
-              return [2
-              /*return*/
-              , this.webAppMetrics];
-            }
-
-            return [4
-            /*yield*/
-            , this.doRequest({
-              method: 'GET',
-              url: this.urls.metric
-            }).then(function (response) {
-              if (typeof response !== 'undefined') {
-                _this.webAppMetrics = [];
-
-                for (var k in response.data.columns) {
-                  var id = response.data.columns[k].id;
-                  var unit = response.data.columns[k].unit;
-                  var rate = response.data.columns[k].rate;
-                  var label = response.data.columns[k].label;
-
-                  if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
-                    if (typeof rate !== 'undefined' && unit !== 'none') {
-                      label = label + " (" + unit + "/" + rate + ")";
-                    } else if (typeof rate !== 'undefined') {
-                      label = label + " (" + rate + ")";
-                    }
-
-                    var metric = {
-                      'value': id,
-                      'label': label
-                    };
-
-                    if (id.includes('_web.')) {
-                      result.push(metric);
-
-                      _this.webAppMetrics.push(metric);
+                        _this6.applications.push(application);
+                      }
                     }
                   }
+
+                  _this6.lastFetchApplications = new Date(Date.now());
+                });
+
+              case 7:
+                _context6.next = 12;
+                break;
+
+              case 9:
+                _context6.prev = 9;
+                _context6.t0 = _context6["catch"](1);
+                console.error(_context6.t0);
+
+              case 12:
+                return _context6.abrupt("return", result);
+
+              case 13:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this, [[1, 9]]);
+      }));
+    }
+  }, {
+    key: "getWebApps",
+    value: function getWebApps() {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+        var _this7 = this;
+
+        var result;
+        return regeneratorRuntime.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                result = [];
+                _context7.prev = 1;
+
+                if (!((Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60 < this.optionsTimeout && this.webApps.length > 0)) {
+                  _context7.next = 5;
+                  break;
                 }
-              }
 
-              _this.lastFetchWebAppMetrics = new Date(Date.now());
-            })];
+                console.debug('[DataSource.getWebApps] Cache hit.');
+                return _context7.abrupt("return", this.webApps);
 
-          case 2:
-            _a.sent();
+              case 5:
+                _context7.next = 7;
+                return this.doRequest({
+                  method: 'GET',
+                  url: this.urls.webApp
+                }).then(function (response) {
+                  if (typeof response !== 'undefined') {
+                    _this7.webApps = [];
 
-            return [3
-            /*break*/
-            , 4];
+                    for (var k in response.data.items) {
+                      if (response.data.items[k]["enabled"]) {
+                        var webApp = {
+                          'label': response.data.items[k]["name"],
+                          'value': response.data.items[k]["id"]
+                        };
+                        result.push(webApp);
 
-          case 3:
-            error_7 = _a.sent();
-            console.error(error_7);
-            return [3
-            /*break*/
-            , 4];
+                        _this7.webApps.push(webApp);
+                      }
+                    }
+                  }
 
-          case 4:
-            return [2
-            /*return*/
-            , result];
-        }
-      });
-    });
-  };
+                  _this7.lastFetchWebApps = new Date(Date.now());
+                });
+
+              case 7:
+                _context7.next = 12;
+                break;
+
+              case 9:
+                _context7.prev = 9;
+                _context7.t0 = _context7["catch"](1);
+                console.error(_context7.t0);
+
+              case 12:
+                return _context7.abrupt("return", result);
+
+              case 13:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this, [[1, 9]]);
+      }));
+    }
+  }, {
+    key: "getTopMetrics",
+    value: function getTopMetrics(sourceGroup) {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+        return regeneratorRuntime.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                if (!(sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].application)) {
+                  _context8.next = 6;
+                  break;
+                }
+
+                _context8.next = 3;
+                return this.getApplicationMetrics();
+
+              case 3:
+                this.topMetrics = _context8.sent;
+                _context8.next = 25;
+                break;
+
+              case 6:
+                if (!(sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].hostGroup)) {
+                  _context8.next = 12;
+                  break;
+                }
+
+                _context8.next = 9;
+                return this.getHostGroupMetrics();
+
+              case 9:
+                this.topMetrics = _context8.sent;
+                _context8.next = 25;
+                break;
+
+              case 12:
+                if (!(sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].webApp)) {
+                  _context8.next = 18;
+                  break;
+                }
+
+                _context8.next = 15;
+                return this.getWebAppMetrics();
+
+              case 15:
+                this.topMetrics = _context8.sent;
+                _context8.next = 25;
+                break;
+
+              case 18:
+                if (!(sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].ip)) {
+                  _context8.next = 24;
+                  break;
+                }
+
+                _context8.next = 21;
+                return this.getIPMetrics();
+
+              case 21:
+                this.topMetrics = _context8.sent;
+                _context8.next = 25;
+                break;
+
+              case 24:
+                throw new Error('Unknown source group');
+
+              case 25:
+                return _context8.abrupt("return", this.topMetrics);
+
+              case 26:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, this);
+      }));
+    }
+  }, {
+    key: "getApplicationMetrics",
+    value: function getApplicationMetrics() {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+        var _this8 = this;
+
+        var result;
+        return regeneratorRuntime.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                result = [];
+                _context9.prev = 1;
+
+                if (!((Date.now() - this.lastFetchApplicationMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.applicationMetrics.length > 0)) {
+                  _context9.next = 5;
+                  break;
+                }
+
+                console.debug('[DataSource.getApplicationMetrics] Cache hit.');
+                return _context9.abrupt("return", this.applicationMetrics);
+
+              case 5:
+                _context9.next = 7;
+                return this.doRequest({
+                  method: 'GET',
+                  url: this.urls.metric
+                }).then(function (response) {
+                  if (typeof response !== 'undefined') {
+                    _this8.applicationMetrics = [];
+
+                    for (var k in response.data.columns) {
+                      var id = response.data.columns[k].id;
+                      var unit = response.data.columns[k].unit;
+                      var rate = response.data.columns[k].rate;
+                      var label = response.data.columns[k].label;
+
+                      if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
+                        if (typeof rate !== 'undefined' && unit !== 'none') {
+                          label = "".concat(label, " (").concat(unit, "/").concat(rate, ")");
+                        } else if (typeof rate !== 'undefined') {
+                          label = "".concat(label, " (").concat(rate, ")");
+                        }
+
+                        var metric = {
+                          'value': id,
+                          'label': label
+                        };
+
+                        if (!id.includes('p2m') && !id.includes('m2p') && !id.includes('web') && !id.includes('_db.') && !id.includes('cxa')) {
+                          result.push(metric);
+
+                          _this8.applicationMetrics.push(metric);
+                        }
+                      }
+                    }
+                  }
+
+                  _this8.lastFetchApplicationMetrics = new Date(Date.now());
+                });
+
+              case 7:
+                _context9.next = 12;
+                break;
+
+              case 9:
+                _context9.prev = 9;
+                _context9.t0 = _context9["catch"](1);
+                console.error(_context9.t0);
+
+              case 12:
+                return _context9.abrupt("return", result);
+
+              case 13:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, this, [[1, 9]]);
+      }));
+    }
+  }, {
+    key: "getIPMetrics",
+    value: function getIPMetrics() {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+        var _this9 = this;
+
+        var result;
+        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
+              case 0:
+                result = [];
+                _context10.prev = 1;
+
+                if (!((Date.now() - this.lastFetchIPMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.ipMetrics.length > 0)) {
+                  _context10.next = 5;
+                  break;
+                }
+
+                console.debug('[DataSource.getIPMetrics] Cache hit.');
+                return _context10.abrupt("return", this.ipMetrics);
+
+              case 5:
+                _context10.next = 7;
+                return this.doRequest({
+                  method: 'GET',
+                  url: this.urls.metric
+                }).then(function (response) {
+                  if (typeof response !== 'undefined') {
+                    _this9.ipMetrics = [];
+
+                    for (var k in response.data.columns) {
+                      var id = response.data.columns[k].id;
+                      var unit = response.data.columns[k].unit;
+                      var rate = response.data.columns[k].rate;
+                      var label = response.data.columns[k].label;
+
+                      if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
+                        if (typeof rate !== 'undefined' && unit !== 'none') {
+                          label = "".concat(label, " (").concat(unit, "/").concat(rate, ")");
+                        } else if (typeof rate !== 'undefined') {
+                          label = "".concat(label, " (").concat(rate, ")");
+                        }
+
+                        var metric = {
+                          'value': id,
+                          'label': label
+                        };
+
+                        if (!id.includes('p2m') && !id.includes('m2p') && !id.includes('web') && !id.includes('_db.') && !id.includes('cxa')) {
+                          result.push(metric);
+
+                          _this9.ipMetrics.push(metric);
+                        }
+                      }
+                    }
+                  }
+
+                  _this9.lastFetchIPMetrics = new Date(Date.now());
+                });
+
+              case 7:
+                _context10.next = 12;
+                break;
+
+              case 9:
+                _context10.prev = 9;
+                _context10.t0 = _context10["catch"](1);
+                console.error(_context10.t0);
+
+              case 12:
+                return _context10.abrupt("return", result);
+
+              case 13:
+              case "end":
+                return _context10.stop();
+            }
+          }
+        }, _callee10, this, [[1, 9]]);
+      }));
+    }
+  }, {
+    key: "getHostGroupMetrics",
+    value: function getHostGroupMetrics() {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+        var _this10 = this;
+
+        var result;
+        return regeneratorRuntime.wrap(function _callee11$(_context11) {
+          while (1) {
+            switch (_context11.prev = _context11.next) {
+              case 0:
+                result = [];
+                _context11.prev = 1;
+
+                if (!((Date.now() - this.lastFetchHostGroupMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.hostGroupMetrics.length > 0)) {
+                  _context11.next = 5;
+                  break;
+                }
+
+                console.debug('[DataSource.getHostGroupMetrics] Cache hit.');
+                return _context11.abrupt("return", this.hostGroupMetrics);
+
+              case 5:
+                _context11.next = 7;
+                return this.doRequest({
+                  method: 'GET',
+                  url: this.urls.metric
+                }).then(function (response) {
+                  if (typeof response !== 'undefined') {
+                    _this10.hostGroupMetrics = [];
+
+                    for (var k in response.data.columns) {
+                      var id = response.data.columns[k].id;
+                      var unit = response.data.columns[k].unit;
+                      var rate = response.data.columns[k].rate;
+                      var label = response.data.columns[k].label;
+
+                      if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
+                        if (typeof rate !== 'undefined' && unit !== 'none') {
+                          label = "".concat(label, " (").concat(unit, "/").concat(rate, ")");
+                        } else if (typeof rate !== 'undefined') {
+                          label = "".concat(label, " (").concat(rate, ")");
+                        }
+
+                        var metric = {
+                          'value': id,
+                          'label': label
+                        };
+                        result.push(metric);
+
+                        _this10.hostGroupMetrics.push(metric);
+                      }
+                    }
+                  }
+
+                  _this10.lastFetchHostGroupMetrics = new Date(Date.now());
+                });
+
+              case 7:
+                _context11.next = 12;
+                break;
+
+              case 9:
+                _context11.prev = 9;
+                _context11.t0 = _context11["catch"](1);
+                console.error(_context11.t0);
+
+              case 12:
+                return _context11.abrupt("return", result);
+
+              case 13:
+              case "end":
+                return _context11.stop();
+            }
+          }
+        }, _callee11, this, [[1, 9]]);
+      }));
+    }
+  }, {
+    key: "getWebAppMetrics",
+    value: function getWebAppMetrics() {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+        var _this11 = this;
+
+        var result;
+        return regeneratorRuntime.wrap(function _callee12$(_context12) {
+          while (1) {
+            switch (_context12.prev = _context12.next) {
+              case 0:
+                result = [];
+                _context12.prev = 1;
+
+                if (!((Date.now() - this.lastFetchWebAppMetrics.getTime()) / 1000 / 60 < this.optionsTimeout && this.webAppMetrics.length > 0)) {
+                  _context12.next = 5;
+                  break;
+                }
+
+                console.debug('[DataSource.getWebAppMetrics] Cache hit.');
+                return _context12.abrupt("return", this.webAppMetrics);
+
+              case 5:
+                _context12.next = 7;
+                return this.doRequest({
+                  method: 'GET',
+                  url: this.urls.metric
+                }).then(function (response) {
+                  if (typeof response !== 'undefined') {
+                    _this11.webAppMetrics = [];
+
+                    for (var k in response.data.columns) {
+                      var id = response.data.columns[k].id;
+                      var unit = response.data.columns[k].unit;
+                      var rate = response.data.columns[k].rate;
+                      var label = response.data.columns[k].label;
+
+                      if (!id.endsWith('.id') && !id.endsWith('_id') && !id.endsWith('.id') && !id.endsWith('.name') && !id.endsWith('_name') && !id.endsWith('.ip') && !id.endsWith('_ip') && !id.endsWith('.url') && !id.endsWith('_url') && !id.endsWith('.type') && !id.endsWith('_type') && !id.endsWith('.dns') && !id.endsWith('_dns') && !id.endsWith('start_time') && !id.endsWith('end_time') && !id.includes('rtp')) {
+                        if (typeof rate !== 'undefined' && unit !== 'none') {
+                          label = "".concat(label, " (").concat(unit, "/").concat(rate, ")");
+                        } else if (typeof rate !== 'undefined') {
+                          label = "".concat(label, " (").concat(rate, ")");
+                        }
+
+                        var metric = {
+                          'value': id,
+                          'label': label
+                        };
+
+                        if (id.includes('_web.')) {
+                          result.push(metric);
+
+                          _this11.webAppMetrics.push(metric);
+                        }
+                      }
+                    }
+                  }
+
+                  _this11.lastFetchWebAppMetrics = new Date(Date.now());
+                });
+
+              case 7:
+                _context12.next = 12;
+                break;
+
+              case 9:
+                _context12.prev = 9;
+                _context12.t0 = _context12["catch"](1);
+                console.error(_context12.t0);
+
+              case 12:
+                return _context12.abrupt("return", result);
+
+              case 13:
+              case "end":
+                return _context12.stop();
+            }
+          }
+        }, _callee12, this, [[1, 9]]);
+      }));
+    }
+  }]);
 
   return DataSource;
 }(_grafana_data__WEBPACK_IMPORTED_MODULE_1__["DataSourceApi"]);
-
-
 
 /***/ }),
 
@@ -4338,6 +4466,9 @@ var sourceGroups = [{
   value: SourceGroup.ip
 }];
 var granularities = [{
+  "value": 0,
+  "label": "Auto"
+}, {
   "value": 60,
   "label": "60 seconds"
 }, {
