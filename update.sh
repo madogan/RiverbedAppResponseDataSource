@@ -29,8 +29,8 @@ pluginsDir="${pluginsDir}/riverbed-appresponse-datasource/"
 # Remove old artifacts.
 rm -rf dist
 
-# Build frontend.
-yarn dev
+# Build frontend. (For development use `yarn dev`)
+yarn build  
 
 # Build backend.
 mage -v
