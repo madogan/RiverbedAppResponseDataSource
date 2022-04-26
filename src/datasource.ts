@@ -10,7 +10,7 @@ import {
 import _ from 'lodash';
 import defaults from 'lodash/defaults';
 import { getBackendSrv } from "@grafana/runtime";
-import { AppResponseDataSourceOptions, defaultQuery, AppResponseURLs, SourceGroup, AppResponseQuery } from './types';
+import { AppResponseDataSourceOptions, defaultQuery, AppResponseURLs, SourceGroup, AppResponseQuery, granularities } from './types';
 
 
 export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataSourceOptions> {
@@ -207,6 +207,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
     let end;
     let start;
+    let granularity;
     let dataDef_source = {};
     let dataDef_groupBy = {};
     let dataDef_columns: string[] = [];
@@ -217,6 +218,24 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       const query = defaults(target, defaultQuery);
       end = ((new Date(to)).getTime()) / 1000;
       start = ((new Date(from)).getTime()) / 1000;
+
+      granularity = query.granularity;
+
+      if (granularity?.value === 0) { // Means Auto
+        const timeDiff = (end - start) / 60; // In minutes 
+
+        if (timeDiff < 60) {
+          granularity = granularities[1];
+        } else if (timeDiff < 60 * 6) {
+          granularity = granularities[2];
+        } else if (timeDiff < 60 * 24 * 5) {
+          granularity = granularities[3];
+        } else if (timeDiff < 60 * 24 * 60) {
+          granularity = granularities[4];
+        } else {
+          granularity = granularities[5];
+        }
+      }
 
       dataDef_source = { "name": "aggregates" };
       if (query.sourceGroup == SourceGroup.hostGroup) {
@@ -276,7 +295,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         "time": {
           "end": end.toString(),
           "start": start.toString(),
-          'granularity': query.granularity?.value.toString(),
+          'granularity': granularity?.value.toString(),
         },
         "group_by": dataDef_groupBy,
         "columns": dataDef_columns,

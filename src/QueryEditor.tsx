@@ -328,11 +328,11 @@ export class QueryEditor extends PureComponent<Props> {
   }
 
   onGranularityChange = (v: any) => {
-    console.debug(`[QueryEditor.onGranularityChange] ${v.target.value}`);
+    console.debug(`[QueryEditor.onGranularityChange] ${JSON.stringify(v)}`);
     const { query, onChange, onRunQuery } = this.props;
     onChange({
       ...query,
-      granularity: v.value,
+      granularity: v,
     });
     onRunQuery();
   }

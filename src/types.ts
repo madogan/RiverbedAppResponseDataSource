@@ -16,6 +16,7 @@ export const sourceGroups = [
 ];
 
 export const granularities = [
+  { "value": 0, "label": "Auto" },
   { "value": 60, "label": "60 seconds" },
   { "value": 300, "label": "5 minutes" },
   { "value": 3600, "label": "1 hour" },
