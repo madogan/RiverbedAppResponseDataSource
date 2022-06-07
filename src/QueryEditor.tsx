@@ -2,8 +2,8 @@ import { DataSource } from './datasource';
 import { defaults, toInteger } from 'lodash';
 import React, { PureComponent } from 'react';
 import { QueryEditorProps } from '@grafana/data';
-import { Select, InlineFieldRow, InlineField, Input, Switch } from '@grafana/ui';
-import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities } from './types';
+import { Select, InlineFieldRow, InlineField, Input, Switch, MultiSelect } from '@grafana/ui';
+import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities, sslKeyColumns } from './types';
 
 
 type Props = QueryEditorProps<DataSource, AppResponseQuery, AppResponseDataSourceOptions>;
@@ -337,6 +337,17 @@ export class QueryEditor extends PureComponent<Props> {
     onRunQuery();
   }
 
+  onSSLColumnsChange = (v: any) => {
+    console.debug("[QueryEditor.onSSLColumnsChange]");
+    console.debug(v);
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      currentSSLKeyColumns: v,
+    });
+    onRunQuery();
+  }
+
   render() {
     console.debug('[QueryEditor.render]');
 
@@ -346,93 +357,34 @@ export class QueryEditor extends PureComponent<Props> {
 
     return (
       <div style={{ width: '100%' }}>
-        <InlineFieldRow>
-          <div style={query.top ? { display: 'none' } : { display: 'block' }}>
-            <InlineField label="Top">
-              <div style={{ marginTop: '8px' }}>
-                <Switch
-                  value={query.top}
-                  checked={query.top}
-                  onChange={this.onTopChange}
+        {/* If source group is Host Group. */}
+        <div style={query.sourceGroup === SourceGroup.hostGroup ? { display: 'block' } : { display: 'none' }}>
+          <InlineFieldRow>
+            <InlineField label="Source Group">
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={sourceGroups}
+                value={query.sourceGroup}
+                onChange={this.onSourceGroupChange}
+              />
+            </InlineField>
+
+            <div style={query.top ? { display: 'none' } : { display: 'block' }}>
+              <InlineField
+                label={query.sourceGroup}
+                onLoadStart={this.getHostGroups}
+              >
+                <Select
+                  width='auto'
+                  menuShouldPortal
+                  value={query.currentHostGroup}
+                  options={query.hostGroups}
+                  onChange={this.onHostGroupChange}
                 />
-              </div>
-            </InlineField>
-          </div>
+              </InlineField>
+            </div>
 
-          <InlineField label="Source Group">
-            <Select
-              width='auto'
-              menuShouldPortal
-              options={sourceGroups}
-              value={query.sourceGroup}
-              onChange={this.onSourceGroupChange}
-            />
-          </InlineField>
-
-          <div style={query.sourceGroup === SourceGroup.hostGroup && !query.top ? { display: 'block' } : { display: 'none' }}>
-            <InlineField
-              label={query.sourceGroup}
-              onLoadStart={this.getHostGroups}
-            >
-              <Select
-                width='auto'
-                menuShouldPortal
-                value={query.currentHostGroup}
-                options={query.hostGroups}
-                onChange={this.onHostGroupChange}
-              />
-            </InlineField>
-          </div>
-
-          <div style={query.sourceGroup === SourceGroup.application && !query.top ? { display: 'block' } : { display: 'none' }}>
-            <InlineField
-              label={query.sourceGroup}
-              onLoadStart={this.getApplications}
-            >
-              <Select
-                width='auto'
-                menuShouldPortal
-                value={query.currentApplication}
-                options={query.applications}
-                onChange={this.onApplicationChange}
-              />
-            </InlineField>
-          </div>
-
-          <div style={query.sourceGroup === SourceGroup.webApp && !query.top ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label={query.sourceGroup} onLoadStart={this.getWebApps}>
-              <Select
-                width='auto'
-                menuShouldPortal
-                value={query.currentWebApp}
-                options={query.webApps}
-                onChange={this.onWebAppChange}
-              />
-            </InlineField>
-          </div>
-
-          <div style={query.sourceGroup === SourceGroup.ip && !query.top ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label={query.sourceGroup}>
-              <Input
-                value={query.currentIP}
-                onChange={this.onIPChange}
-              />
-            </InlineField>
-          </div>
-
-          <div style={query.sourceGroup === SourceGroup.application ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label="Metric" onLoadStart={() => this.getApplicationMetrics()}>
-              <Select
-                width='auto'
-                menuShouldPortal
-                options={query.applicationMetrics}
-                value={query.currentApplicationMetric}
-                onChange={this.onApplicationMetricChange}
-              />
-            </InlineField>
-          </div>
-
-          <div style={query.sourceGroup === SourceGroup.hostGroup ? { display: 'block' } : { display: 'none' }}>
             <InlineField label="Metric" onLoadStart={() => this.getHostGroupMetrics()}>
               <Select
                 width='auto'
@@ -442,35 +394,9 @@ export class QueryEditor extends PureComponent<Props> {
                 onChange={this.onHostGroupMetricChange}
               />
             </InlineField>
-          </div>
+          </InlineFieldRow>
 
-          <div style={query.sourceGroup === SourceGroup.webApp ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label="Metric" onLoadStart={() => this.getWebAppMetrics()}>
-              <Select
-                width='auto'
-                menuShouldPortal
-                options={query.webAppMetrics}
-                value={query.currentWebAppMetric}
-                onChange={this.onWebAppMetricChange}
-              />
-            </InlineField>
-          </div>
-
-          <div style={query.sourceGroup === SourceGroup.ip ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label="Metric" onLoadStart={() => this.getIPMetrics()}>
-              <Select
-                width='auto'
-                menuShouldPortal
-                options={query.ipMetrics}
-                value={query.currentIPMetric}
-                onChange={this.onIPMetricChange}
-              />
-            </InlineField>
-          </div>
-        </InlineFieldRow>
-
-        <InlineFieldRow>
-          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
+          <InlineFieldRow>
             <InlineField label="Top">
               <div style={{ marginTop: '8px' }}>
                 <Switch
@@ -480,62 +406,376 @@ export class QueryEditor extends PureComponent<Props> {
                 />
               </div>
             </InlineField>
-          </div>
 
-          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label="N">
+            <InlineField disabled={!query.top} label="N">
               <Input
+                disabled={!query.top}
                 width={16}
                 value={query.topN || 0}
                 onChange={this.onTopNChange}
               />
             </InlineField>
-          </div>
 
-          <div style={query.top ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label="Graph">
+            <InlineField disabled={!query.top} label="Graph">
               <div style={{ marginTop: '8px' }}>
                 <Switch
+                  disabled={!query.top}
                   value={query.topGraph}
                   checked={query.topGraph}
                   onChange={this.onTopGraphChange}
                 />
               </div>
             </InlineField>
-          </div>
 
-          <div style={query.top && query.topGraph ? { display: 'block' } : { display: 'none' }}>
-            <InlineField label="Top Metric" onLoadStart={() => this.getTopMetrics()}>
+            <InlineField disabled={!(query.top && query.topGraph)} label="Top Metric" onLoadStart={() => this.getTopMetrics()}>
               <Select
                 width='auto'
                 menuShouldPortal
                 options={query.topMetrics}
                 value={query.currentTopMetric}
                 onChange={this.onTopMetricChange}
+                disabled={!(query.top && query.topGraph)}
               />
             </InlineField>
-          </div>
-        </InlineFieldRow>
+          </InlineFieldRow>
 
-        <InlineFieldRow>
-          <InlineField label="Granularity">
-            <Select
-              menuShouldPortal
-              value={query.granularity?.value}
-              options={granularities}
-              onChange={this.onGranularityChange}
-            />
-          </InlineField>
+          <InlineFieldRow>
+            <InlineField label="Granularity">
+              <Select
+                menuShouldPortal
+                value={query.granularity?.value}
+                options={granularities}
+                onChange={this.onGranularityChange}
+              />
+            </InlineField>
 
-          <div style={query.top ? { display: 'none' } : { display: 'block' }}>
             <InlineField label="Alias">
               <Input
                 value={query.alias || ''}
                 onChange={this.onAliasChange}
               ></Input>
             </InlineField>
-          </div>
-        </InlineFieldRow>
+          </InlineFieldRow>
+        </div>
+
+        {/* If source group is Application. */}
+        <div style={query.sourceGroup === SourceGroup.application ? { display: 'block' } : { display: 'none' }}>
+          <InlineFieldRow>
+            <InlineField label="Source Group">
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={sourceGroups}
+                value={query.sourceGroup}
+                onChange={this.onSourceGroupChange}
+              />
+            </InlineField>
+
+            <div style={query.top ? { display: 'none' } : { display: 'block' }}>
+              <InlineField
+                label={query.sourceGroup}
+                onLoadStart={this.getApplications}
+              >
+                <Select
+                  width='auto'
+                  menuShouldPortal
+                  value={query.currentApplication}
+                  options={query.applications}
+                  onChange={this.onApplicationChange}
+                />
+              </InlineField>
+            </div>
+
+            <InlineField label="Metric" onLoadStart={() => this.getApplicationMetrics()}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={query.applicationMetrics}
+                value={query.currentApplicationMetric}
+                onChange={this.onApplicationMetricChange}
+              />
+            </InlineField>
+          </InlineFieldRow>
+
+          <InlineFieldRow>
+            <InlineField label="Top">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  value={query.top}
+                  checked={query.top}
+                  onChange={this.onTopChange}
+                />
+              </div>
+            </InlineField>
+
+            <InlineField disabled={!query.top} label="N">
+              <Input
+                disabled={!query.top}
+                width={16}
+                value={query.topN || 0}
+                onChange={this.onTopNChange}
+              />
+            </InlineField>
+
+            <InlineField disabled={!query.top} label="Graph">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  disabled={!query.top}
+                  value={query.topGraph}
+                  checked={query.topGraph}
+                  onChange={this.onTopGraphChange}
+                />
+              </div>
+            </InlineField>
+
+            <InlineField disabled={!(query.top && query.topGraph)} label="Top Metric" onLoadStart={() => this.getTopMetrics()}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={query.topMetrics}
+                value={query.currentTopMetric}
+                onChange={this.onTopMetricChange}
+                disabled={!(query.top && query.topGraph)}
+              />
+            </InlineField>
+          </InlineFieldRow>
+
+          <InlineFieldRow>
+            <InlineField label="Granularity">
+              <Select
+                menuShouldPortal
+                value={query.granularity?.value}
+                options={granularities}
+                onChange={this.onGranularityChange}
+              />
+            </InlineField>
+
+            <InlineField label="Alias">
+              <Input
+                value={query.alias || ''}
+                onChange={this.onAliasChange}
+              ></Input>
+            </InlineField>
+          </InlineFieldRow>
+        </div>
+
+        {/* If source group is Web Application. */}
+        <div style={query.sourceGroup === SourceGroup.webApp ? { display: 'block' } : { display: 'none' }}>
+          <InlineFieldRow>
+            <InlineField label="Source Group">
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={sourceGroups}
+                value={query.sourceGroup}
+                onChange={this.onSourceGroupChange}
+              />
+            </InlineField>
+
+            <div style={query.top ? { display: 'none' } : { display: 'block' }}>
+              <InlineField label={query.sourceGroup} onLoadStart={this.getWebApps}>
+                <Select
+                  width='auto'
+                  menuShouldPortal
+                  value={query.currentWebApp}
+                  options={query.webApps}
+                  onChange={this.onWebAppChange}
+                />
+              </InlineField>
+            </div>
+
+            <InlineField label="Metric" onLoadStart={() => this.getWebAppMetrics()}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={query.webAppMetrics}
+                value={query.currentWebAppMetric}
+                onChange={this.onWebAppMetricChange}
+              />
+            </InlineField>
+          </InlineFieldRow>
+
+          <InlineFieldRow>
+            <InlineField label="Top">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  value={query.top}
+                  checked={query.top}
+                  onChange={this.onTopChange}
+                />
+              </div>
+            </InlineField>
+
+            <InlineField disabled={!query.top} label="N">
+              <Input
+                disabled={!query.top}
+                width={16}
+                value={query.topN || 0}
+                onChange={this.onTopNChange}
+              />
+            </InlineField>
+
+            <InlineField disabled={!query.top} label="Graph">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  disabled={!query.top}
+                  value={query.topGraph}
+                  checked={query.topGraph}
+                  onChange={this.onTopGraphChange}
+                />
+              </div>
+            </InlineField>
+
+            <InlineField disabled={!(query.top && query.topGraph)} label="Top Metric" onLoadStart={() => this.getTopMetrics()}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={query.topMetrics}
+                value={query.currentTopMetric}
+                onChange={this.onTopMetricChange}
+                disabled={!(query.top && query.topGraph)}
+              />
+            </InlineField>
+          </InlineFieldRow>
+
+          <InlineFieldRow>
+            <InlineField label="Granularity">
+              <Select
+                menuShouldPortal
+                value={query.granularity?.value}
+                options={granularities}
+                onChange={this.onGranularityChange}
+              />
+            </InlineField>
+
+            <InlineField label="Alias">
+              <Input
+                value={query.alias || ''}
+                onChange={this.onAliasChange}
+              ></Input>
+            </InlineField>
+          </InlineFieldRow>
+        </div>
+
+        {/* If source group is IP. */}
+        <div style={query.sourceGroup === SourceGroup.ip ? { display: 'block' } : { display: 'none' }}>
+          <InlineFieldRow>
+            <InlineField label="Source Group">
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={sourceGroups}
+                value={query.sourceGroup}
+                onChange={this.onSourceGroupChange}
+              />
+            </InlineField>
+
+            <div style={query.top ? { display: 'none' } : { display: 'block' }}>
+              <InlineField label={query.sourceGroup}>
+                <Input
+                  value={query.currentIP}
+                  onChange={this.onIPChange}
+                />
+              </InlineField>
+            </div>
+
+            <InlineField label="Metric" onLoadStart={() => this.getIPMetrics()}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={query.ipMetrics}
+                value={query.currentIPMetric}
+                onChange={this.onIPMetricChange}
+              />
+            </InlineField>
+          </InlineFieldRow>
+
+          <InlineFieldRow>
+            <InlineField disabled={!query.top} label="Top">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  value={query.top}
+                  checked={query.top}
+                  onChange={this.onTopChange}
+                />
+              </div>
+            </InlineField>
+
+            <InlineField disabled={!query.top} label="N">
+              <Input
+                disabled={!query.top}
+                width={16}
+                value={query.topN || 0}
+                onChange={this.onTopNChange}
+              />
+            </InlineField>
+
+            <InlineField disabled={!query.top} label="Graph">
+              <div style={{ marginTop: '8px' }}>
+                <Switch
+                  disabled={!query.top}
+                  value={query.topGraph}
+                  checked={query.topGraph}
+                  onChange={this.onTopGraphChange}
+                />
+              </div>
+            </InlineField>
+
+            <InlineField disabled={!(query.top && query.topGraph)} label="Top Metric" onLoadStart={() => this.getTopMetrics()}>
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={query.topMetrics}
+                value={query.currentTopMetric}
+                onChange={this.onTopMetricChange}
+                disabled={!(query.top && query.topGraph)}
+              />
+            </InlineField>
+          </InlineFieldRow>
+
+          <InlineFieldRow>
+            <InlineField label="Granularity">
+              <Select
+                menuShouldPortal
+                value={query.granularity?.value}
+                options={granularities}
+                onChange={this.onGranularityChange}
+              />
+            </InlineField>
+
+            <InlineField label="Alias">
+              <Input
+                value={query.alias || ''}
+                onChange={this.onAliasChange}
+              ></Input>
+            </InlineField>
+          </InlineFieldRow>
+        </div>
+
+        {/* If source group is SSL. */}
+        <div style={query.sourceGroup === SourceGroup.ssl ? { display: 'block' } : { display: 'none' }}>
+          <InlineFieldRow>
+            <InlineField label="Source Group">
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={sourceGroups}
+                value={query.sourceGroup}
+                onChange={this.onSourceGroupChange}
+              />
+            </InlineField>
+
+            <InlineField label="Columns">
+              <MultiSelect
+                width='auto'
+                menuShouldPortal
+                options={sslKeyColumns}
+                value={query.currentSSLKeyColumns}
+                onChange={this.onSSLColumnsChange}
+              />
+            </InlineField>
+          </InlineFieldRow>
+        </div>
       </div >
     );
   }

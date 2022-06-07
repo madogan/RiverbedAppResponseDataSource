@@ -1,4 +1,4 @@
-import { DataQuery, DataSourceJsonData, SelectableValue } from '@grafana/data';
+import { DataQuery, DataSourceJsonData, FieldType, SelectableValue } from '@grafana/data';
 
 
 export enum SourceGroup {
@@ -6,6 +6,7 @@ export enum SourceGroup {
   webApp = 'Web App',
   hostGroup = 'Host Group',
   application = 'Application',
+  ssl = 'SSL',
 };
 
 export const sourceGroups = [
@@ -13,6 +14,7 @@ export const sourceGroups = [
   { label: 'Host Group', value: SourceGroup.hostGroup },
   { label: 'Web App', value: SourceGroup.webApp },
   { label: 'IP', value: SourceGroup.ip },
+  { label: 'SSL', value: SourceGroup.ssl },
 ];
 
 export const granularities = [
@@ -22,6 +24,19 @@ export const granularities = [
   { "value": 3600, "label": "1 hour" },
   { "value": 21600, "label": "6 hours" },
   { "value": 86400, "label": "1 day" }
+];
+
+export const sslKeyColumns = [
+  { "label": "Status", "value": "status", "type": FieldType.string },
+  { "label": "Subject Common Name", "value": "subject.common_name", "type": FieldType.string },
+  { "label": "Subject Organization", "value": "subject.organization", "type": FieldType.string },
+  { "label": "Issuer Common Name", "value": "issuer.common_name", "type": FieldType.string },
+  { "label": "Issuer Organization", "value": "issuer.organization", "type": FieldType.string },
+  { "label": "Serial Number", "value": "serial_number", "type": FieldType.string },
+  { "label": "Valid From", "value": "valid_from", "type": FieldType.time },
+  { "label": "Valid To", "value": "valid_to", "type": FieldType.time },
+  { "label": "First Seen", "value": "first_seen", "type": FieldType.time },
+  { "label": "Last Seen", "value": "last_seen", "type": FieldType.time },
 ];
 
 export const findGranularity = (t: string) => {
@@ -41,6 +56,9 @@ export interface AppResponseQuery extends DataQuery {
   topGraph?: boolean;
   topMetrics: SelectableValue[];
   currentTopMetric: SelectableValue;
+
+  sslKeys: SelectableValue[];
+  currentSSLKeyColumns: SelectableValue[];
 
   currentIP: string;
   currentWebApp: SelectableValue;
@@ -72,6 +90,9 @@ export const defaultQuery: Partial<AppResponseQuery> = {
   topN: 10,
   topGraph: false,
 
+  sslKeys: [],
+  currentSSLKeyColumns: sslKeyColumns,
+
   webApps: [],
   webAppMetrics: [],
 
@@ -97,6 +118,7 @@ export interface AppResponseSecureJsonData {
 export interface AppResponseURLs {
   base: string;
   auth: string;
+  ssl: string;
   metric: string;
   webApp: string;
   hostGroup: string;

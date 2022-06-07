@@ -21,6 +21,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   settings: DataSourceInstanceSettings<AppResponseDataSourceOptions>;
 
   data: any = [];
+  sslKeys: SelectableValue[] = [];
   ipMetrics: SelectableValue[] = [];
   topMetrics: SelectableValue[] = [];
   webApps: SelectableValue[] = [];
@@ -39,6 +40,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   lastFetchApplications: Date;
   lastFetchApplicationMetrics: Date;
   lastFetchIPMetrics: Date;
+  lastFetchSSLKeys: Date;
 
   queryTimeout: Number = 60;  // In seconds
   optionsTimeout: Number = 15;  // In minutes
@@ -53,6 +55,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     this.urls = {
       base: this.url + '/base',
       auth: this.url + '/auth',
+      ssl: this.url + '/ssl',
       webApp: this.url + '/webapps',
       metric: this.url + '/aggregates',
       hostGroup: this.url + '/hostgroups',
@@ -75,6 +78,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     this.lastFetchApplications = new Date();
     this.lastFetchApplicationMetrics = new Date();
     this.lastFetchIPMetrics = new Date();
+
+    this.lastFetchSSLKeys = new Date();
   }
 
   async topngraphquery(target: AppResponseQuery, start: Number, end: Number, granularity: Number) {
@@ -205,8 +210,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     const to = range!.to.valueOf();
     const from = range!.from.valueOf();
 
-    let end;
-    let start;
+    let end: number;
+    let start: number;
     let granularity;
     let dataDef_source = {};
     let dataDef_groupBy = {};
@@ -216,6 +221,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
     const promises = options.targets.map((target) => {
       const query = defaults(target, defaultQuery);
+
       end = ((new Date(to)).getTime()) / 1000;
       start = ((new Date(from)).getTime()) / 1000;
 
@@ -238,7 +244,40 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       }
 
       dataDef_source = { "name": "aggregates" };
-      if (query.sourceGroup == SourceGroup.hostGroup) {
+      if (query.sourceGroup == SourceGroup.ssl) {
+        return this.getSSLKeys().then(
+          (items) => {
+            let frame;
+            let fields: any = [];
+
+            for (let index = 0; index < query.currentSSLKeyColumns.length; index++) {
+              fields.push({
+                type: query.currentSSLKeyColumns[index].type,
+                name: query.currentSSLKeyColumns[index].label,
+                value: query.currentSSLKeyColumns[index].value,
+              });
+            }
+
+            frame = new MutableDataFrame({
+              fields: fields,
+              name: 'SSL Keys',
+              refId: query.refId,
+            });
+
+            for (let i = 0; i < items.length; i++) {
+              let row = [];
+              let item = items[i];
+              for (let index = 0; index < fields.length; index++) {
+                row.push(item[fields[index].value]);
+              }
+              frame.appendRow(row);
+            }
+
+            return frame;
+          }
+        );
+      }
+      else if (query.sourceGroup == SourceGroup.hostGroup) {
         // For each datapoint, data are grouped by timestamp and id of hostgroup
         dataDef_groupBy = ["start_time", "host_group.id"];
         // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
@@ -341,7 +380,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
                 row.push(new Date(datum[0] * 1000));
 
                 for (let index = 0; index < tops.length; index++) {
-                  if (tops[index] === datum[2]){
+                  if (tops[index] === datum[2]) {
                     row.push(datum[datum.length - 1]);
                   } else {
                     row.push(null);
@@ -884,6 +923,55 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             }
           }
           this.lastFetchWebAppMetrics = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getSSLKeys() {
+    let result: SelectableValue<any>[] = [];
+
+    try {
+      console.info('[DataSource.getSSLKeys]');
+      if (
+        ((Date.now() - this.lastFetchSSLKeys.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.sslKeys.length > 0
+      ) {
+        console.debug('[DataSource.getSSLKeys] Cache hit.');
+        return this.sslKeys;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.ssl,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.sslKeys = [];
+
+            for (let index = 0; index < response.data.items.length; index++) {
+              const item = response.data.items[index];
+              const sslKey = {
+                "status": item.status,
+                "subject.common_name": item.subject.common_name,
+                "subject.organization": item.subject.organization,
+                "issuer.common_name": item.issuer.common_name,
+                "issuer.organization": item.issuer.organization,
+                "serial_number": item.serial_number.toString(),
+                "valid_from": new Date(item.valid_from * 1000),
+                "valid_to": new Date(item.valid_to * 1000),
+                "first_seen": new Date(item.first_seen * 1000),
+                "last_seen": new Date(item.last_seen * 1000),
+              };
+              result.push(sslKey);
+              this.sslKeys.push(sslKey);
+            }
+          }
+          this.lastFetchSSLKeys = new Date(Date.now());
         }
       )
     } catch (error) {
