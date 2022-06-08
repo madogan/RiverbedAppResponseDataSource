@@ -24,7 +24,7 @@ while getopts ":p:" opt; do
 done
 
 # Exact path to the directory where the plugins are stored.
-pluginsDir="${pluginsDir}/riverbed-appresponse-datasource/"
+pluginsDir="${pluginsDir}\\riverbed-appresponse-datasource\\"
 
 # Remove old artifacts.
 rm -rf dist
