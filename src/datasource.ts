@@ -267,10 +267,23 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
             for (let i = 0; i < items.length; i++) {
               let row = [];
               let item = items[i];
-              for (let index = 0; index < fields.length; index++) {
-                row.push(item[fields[index].value]);
+
+              if (item["valid_from"] >= new Date(start * 1000) && item["valid_to"] <= new Date(end * 1000)) {
+                item["expiration_time"] = parseInt(((item["valid_to"].getTime() - new Date().getTime()) / (1000 * 3600 * 24)).toString(), 10);
+                if (query.expirationTime > -1) {
+                  if (item["expiration_time"] < query.expirationTime) {
+                    for (let index = 0; index < fields.length; index++) {
+                      row.push(item[fields[index].value]);
+                    }
+                    frame.appendRow(row);
+                  }
+                } else {
+                  for (let index = 0; index < fields.length; index++) {
+                    row.push(item[fields[index].value]);
+                  }
+                  frame.appendRow(row);
+                }
               }
-              frame.appendRow(row);
             }
 
             return frame;

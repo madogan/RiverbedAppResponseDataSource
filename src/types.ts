@@ -32,11 +32,11 @@ export const sslKeyColumns = [
   { "label": "Subject Organization", "value": "subject.organization", "type": FieldType.string },
   { "label": "Issuer Common Name", "value": "issuer.common_name", "type": FieldType.string },
   { "label": "Issuer Organization", "value": "issuer.organization", "type": FieldType.string },
-  { "label": "Serial Number", "value": "serial_number", "type": FieldType.string },
   { "label": "Valid From", "value": "valid_from", "type": FieldType.time },
   { "label": "Valid To", "value": "valid_to", "type": FieldType.time },
   { "label": "First Seen", "value": "first_seen", "type": FieldType.time },
   { "label": "Last Seen", "value": "last_seen", "type": FieldType.time },
+  { "label": "Expiration Time", "value": "expiration_time", "type": FieldType.number },
 ];
 
 export const findGranularity = (t: string) => {
@@ -59,6 +59,7 @@ export interface AppResponseQuery extends DataQuery {
 
   sslKeys: SelectableValue[];
   currentSSLKeyColumns: SelectableValue[];
+  expirationTime: number;
 
   currentIP: string;
   currentWebApp: SelectableValue;
@@ -89,9 +90,10 @@ export const defaultQuery: Partial<AppResponseQuery> = {
   top: false,
   topN: 10,
   topGraph: false,
-
+  
   sslKeys: [],
   currentSSLKeyColumns: sslKeyColumns,
+  expirationTime: -1,
 
   webApps: [],
   webAppMetrics: [],

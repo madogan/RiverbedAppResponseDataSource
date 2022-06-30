@@ -262,6 +262,16 @@ export class QueryEditor extends PureComponent<Props> {
     }
   }
 
+  onExpirationTimeChange = (e: any) => {
+    console.debug(`[QueryEditor.onExpirationTimeChange] ${e.target.value}`);
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      expirationTime: e.target.value,
+    });
+    onRunQuery();
+  }
+
   onTopMetricChange = (v: any) => {
     console.debug(`[QueryEditor.onTopMetricChange] ${v.label}, ${v.value}`);
     const { onChange, query, onRunQuery } = this.props;
@@ -339,7 +349,6 @@ export class QueryEditor extends PureComponent<Props> {
 
   onSSLColumnsChange = (v: any) => {
     console.debug("[QueryEditor.onSSLColumnsChange]");
-    console.debug(v);
     const { onChange, query, onRunQuery } = this.props;
     onChange({
       ...query,
@@ -765,6 +774,15 @@ export class QueryEditor extends PureComponent<Props> {
               />
             </InlineField>
 
+            <InlineField label="If expiration time is less than" tooltip="Write -1 for all">
+              <Input
+                value={query.expirationTime}
+                onChange={this.onExpirationTimeChange}
+              />
+            </InlineField>
+
+          </InlineFieldRow>
+          <InlineFieldRow>
             <InlineField label="Columns">
               <MultiSelect
                 width='auto'
