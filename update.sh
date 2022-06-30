@@ -30,8 +30,8 @@ pluginsDir="${pluginsDir}\\riverbed-appresponse-datasource\\"
 rm -rf dist
 
 # Build frontend. (For development use `yarn dev`)
-# yarn build  
-yarn dev
+yarn build  
+# yarn dev
 
 # Build backend.
 mage -v
