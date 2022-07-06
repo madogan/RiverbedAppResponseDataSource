@@ -1,8 +1,8 @@
-import React, { PureComponent, ChangeEvent } from 'react';
-import { InlineField, InlineFieldRow, InlineFormLabel, InlineSwitch } from '@grafana/ui';
-import { DataSourcePluginOptionsEditorProps, DataSourceSettings } from '@grafana/data';
-import { AppResponseDataSourceOptions, AppResponseSecureJsonData } from './types';
 import { LegacyForms } from '@grafana/ui';
+import React, { PureComponent, ChangeEvent } from 'react';
+import { AppResponseDataSourceOptions, AppResponseSecureJsonData } from './types';
+import { DataSourcePluginOptionsEditorProps, DataSourceSettings } from '@grafana/data';
+import { InlineField, InlineFieldRow, InlineFormLabel, InlineSwitch } from '@grafana/ui';
 
 interface Props extends DataSourcePluginOptionsEditorProps<AppResponseDataSourceOptions> { }
 
