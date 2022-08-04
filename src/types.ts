@@ -7,6 +7,7 @@ export enum SourceGroup {
   hostGroup = 'Host Group',
   application = 'Application',
   ssl = 'SSL',
+  alerts = 'Alerts',
 };
 
 export const sourceGroups = [
@@ -15,6 +16,7 @@ export const sourceGroups = [
   { label: 'Web App', value: SourceGroup.webApp },
   { label: 'IP', value: SourceGroup.ip },
   { label: 'SSL', value: SourceGroup.ssl },
+  { label: 'Alerts', value: SourceGroup.alerts },
 ];
 
 export const granularities = [
