@@ -30,6 +30,10 @@
       }
     },
     {
+      "path": "sources",
+      "url": "{{ .JsonData.path }}/api/npm.reports.sources/1.0/sources"
+    },
+    {
       "path": "hostgroups",
       "url": "{{ .JsonData.path }}/api/npm.classification/2.0/hostgroups"
     },
