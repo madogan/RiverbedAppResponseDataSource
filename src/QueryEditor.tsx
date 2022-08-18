@@ -3,7 +3,7 @@ import { defaults, toInteger } from 'lodash';
 import React, { PureComponent } from 'react';
 import { QueryEditorProps } from '@grafana/data';
 import { Select, InlineFieldRow, InlineField, Input, Switch, MultiSelect } from '@grafana/ui';
-import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities, sslKeyColumns } from './types';
+import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities, sslKeyColumns, alertColums } from './types';
 
 
 type Props = QueryEditorProps<DataSource, AppResponseQuery, AppResponseDataSourceOptions>;
@@ -353,6 +353,26 @@ export class QueryEditor extends PureComponent<Props> {
     onChange({
       ...query,
       currentSSLKeyColumns: v,
+    });
+    onRunQuery();
+  }
+
+  onAlertsColumnsChange = (v: any) => {
+    console.debug("[QueryEditor.onAlertsColumnsChange]");
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      currentAlertsColumns: v,
+    });
+    onRunQuery();
+  }
+
+  onAlertLimitChange = (e: any) => {
+    console.debug(`[QueryEditor.onAlertLimitChange] ${e.target.value}`);
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      alertLimit: e.target.value,
     });
     onRunQuery();
   }
@@ -790,6 +810,37 @@ export class QueryEditor extends PureComponent<Props> {
                 options={sslKeyColumns}
                 value={query.currentSSLKeyColumns}
                 onChange={this.onSSLColumnsChange}
+              />
+            </InlineField>
+          </InlineFieldRow>
+        </div>
+        {/* If source group is Alerts. */}
+        <div style={query.sourceGroup === SourceGroup.alerts ? { display: 'block' } : { display: 'none' }}>
+          <InlineFieldRow>
+            <InlineField label="Source Group">
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={sourceGroups}
+                value={query.sourceGroup}
+                onChange={this.onSourceGroupChange}
+              />
+            </InlineField>
+            <InlineField label="Limit" tooltip="Max. number of alert to get">
+              <Input
+                value={query.alertLimit}
+                onChange={this.onAlertLimitChange}
+              />
+            </InlineField>
+          </InlineFieldRow>
+          <InlineFieldRow>
+            <InlineField label="Columns">
+              <MultiSelect
+                width='auto'
+                menuShouldPortal
+                options={alertColums}
+                value={query.currentAlertsColumns}
+                onChange={this.onAlertsColumnsChange}
               />
             </InlineField>
           </InlineFieldRow>
