@@ -998,17 +998,21 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
   async getAlerts(columns: any, startTime: number, endTime: number, granularity: number, limit: number = 10) {
     console.log('[DataSource.getAlerts]');
+    console.log(`[DataSource.getAlerts] columns: ${columns.map((c: any) => { return c.value; }).join(', ')}`);
+    console.log(`[DataSource.getAlerts] startTime: ${startTime} endTime: ${endTime} granularity: ${granularity} limit: ${limit}`);
 
     let result = <any>[];
 
     try {
       if (
-        ((Date.now() - this.lastFetchAlerts.getTime()) / 1000 / 60) < this.optionsTimeout
+        ((Date.now() - this.lastFetchAlerts.getTime()) / 1000) < 10  // 10 seconds
         && this.alerts.length > 0
       ) {
         console.debug('[DataSource.getAlerts] Cache hit.');
         return this.alerts;
       }
+
+      console.debug('[DataSource.getAlerts] Fething data...');
 
       await this.doRequest({
         method: 'POST',
@@ -1019,19 +1023,20 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
               "source": {
                 "name": "alert_list"
               },
+              "limit": Number.parseInt(limit.toString()),
               "time": {
                 "start": startTime.toString(),
                 "end": endTime.toString(),
                 "granularity": granularity.toString(),
               },
               "columns": columns.map((e: any) => { return e.value; }),
-              "limit": limit,
             }
           ]
         },
       }).then(
         (response) => {
           if (typeof response !== 'undefined') {
+            console.log('[DataSource.getAlerts] Fetched data. Response is not undefined!');
             this.alerts = [];
             for (let k in response.data.data_defs[0].data) {
               const row = response.data.data_defs[0].data[k];
@@ -1039,6 +1044,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
               for (let i = 0; i < response.data.data_defs[0].columns.length; i++) {
                 alert[response.data.data_defs[0].columns[i]] = row[i];
               }
+              console.log(alert);
               result.push(alert);
               this.alerts.push(alert);
             }
@@ -1050,6 +1056,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       console.error(error);
     }
 
+    console.log('[DataSource.getAlerts] Fetched data.');
     return result;
   }
 
