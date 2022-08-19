@@ -29,10 +29,7 @@
         "generate_refresh_token": false
       }
     },
-    {
-      "path": "sources",
-      "url": "{{ .JsonData.path }}/api/npm.reports.sources/1.0/sources"
-    },
+    
     {
       "path": "hostgroups",
       "url": "{{ .JsonData.path }}/api/npm.classification/2.0/hostgroups"
@@ -56,6 +53,10 @@
     {
       "path": "instancecreationsync",
       "url": "{{ .JsonData.path }}/api/npm.reports/1.0/instances/sync"
+    },
+    {
+      "path": "alerts",
+      "url": "{{ .JsonData.path }}/api/npm.reports.sources/1.0/sources/items/alert_list"
     }
   ],
   "info": {

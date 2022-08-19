@@ -2611,26 +2611,26 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       }));
     };
 
-    _this.getTopMetrics = function () {
+    _this.getAlertColumns = function () {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
-        var _e, _this$props8, query, datasource, onChange, topMetrics;
+        var _this$props8, query, datasource, onChange, alertColumns;
 
         return regeneratorRuntime.wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                console.debug('[QueryEditor.getTopMetrics]');
+                console.debug('[QueryEditor.getAlertColumns]');
                 _this$props8 = this.props, query = _this$props8.query, datasource = _this$props8.datasource, onChange = _this$props8.onChange;
                 _context8.next = 4;
-                return datasource.getTopMetrics(query.sourceGroup);
+                return datasource.getAlertColumns();
 
               case 4:
-                topMetrics = _context8.sent;
+                alertColumns = _context8.sent;
 
-                if (topMetrics.length !== (((_e = query.topMetrics) === null || _e === void 0 ? void 0 : _e.length) || 0)) {
-                  console.debug('topMetrics changed');
+                if (alertColumns.length !== (query.alertColumns.length || 0)) {
+                  console.debug('applications changed');
                   onChange(Object.assign(Object.assign({}, query), {
-                    topMetrics: topMetrics
+                    alertColumns: alertColumns
                   }));
                 }
 
@@ -2643,11 +2643,45 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       }));
     };
 
-    _this.getMetrics = function () {
+    _this.getTopMetrics = function () {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+        var _e, _this$props9, query, datasource, onChange, topMetrics;
+
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
           while (1) {
             switch (_context9.prev = _context9.next) {
+              case 0:
+                console.debug('[QueryEditor.getTopMetrics]');
+                _this$props9 = this.props, query = _this$props9.query, datasource = _this$props9.datasource, onChange = _this$props9.onChange;
+                _context9.next = 4;
+                return datasource.getTopMetrics(query.sourceGroup);
+
+              case 4:
+                topMetrics = _context9.sent;
+
+                if (query.top) {
+                  if (topMetrics.length !== (((_e = query.topMetrics) === null || _e === void 0 ? void 0 : _e.length) || 0)) {
+                    console.debug('topMetrics changed');
+                    onChange(Object.assign(Object.assign({}, query), {
+                      topMetrics: topMetrics
+                    }));
+                  }
+                }
+
+              case 6:
+              case "end":
+                return _context9.stop();
+            }
+          }
+        }, _callee9, this);
+      }));
+    };
+
+    _this.getMetrics = function () {
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(_assertThisInitialized(_this), void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+        return regeneratorRuntime.wrap(function _callee10$(_context10) {
+          while (1) {
+            switch (_context10.prev = _context10.next) {
               case 0:
                 console.debug('[QueryEditor.getMetrics]');
                 this.getApplicationMetrics();
@@ -2658,10 +2692,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
               case 6:
               case "end":
-                return _context9.stop();
+                return _context10.stop();
             }
           }
-        }, _callee9, this);
+        }, _callee10, this);
       }));
     };
 
@@ -2690,18 +2724,25 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
         _this.getIPMetrics();
       }
 
+      if (sourceGroup === _types__WEBPACK_IMPORTED_MODULE_4__["SourceGroup"].alerts) {
+        _this.getAlertColumns();
+      }
+
       _this.getTopMetrics();
     };
 
     _this.onSourceGroupChange = function (v) {
       console.debug("[QueryEditor.onSourceGroupChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props9 = _this.props,
-          onChange = _this$props9.onChange,
-          query = _this$props9.query,
-          onRunQuery = _this$props9.onRunQuery;
+      var _this$props10 = _this.props,
+          onChange = _this$props10.onChange,
+          query = _this$props10.query,
+          onRunQuery = _this$props10.onRunQuery;
 
       if (v.value !== query.sourceGroup) {
         console.debug('sourceGroup changed');
+
+        _this.getOptions(v.value);
+
         onChange(Object.assign(Object.assign({}, query), {
           sourceGroup: v.value
         }));
@@ -2713,10 +2754,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       var _a;
 
       console.debug("[QueryEditor.onHostGroupChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props10 = _this.props,
-          onChange = _this$props10.onChange,
-          query = _this$props10.query,
-          onRunQuery = _this$props10.onRunQuery;
+      var _this$props11 = _this.props,
+          onChange = _this$props11.onChange,
+          query = _this$props11.query,
+          onRunQuery = _this$props11.onRunQuery;
 
       if (v.value !== ((_a = query.currentHostGroup) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentHostGroup changed');
@@ -2731,10 +2772,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       var _a;
 
       console.debug("[QueryEditor.onApplicationChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props11 = _this.props,
-          onChange = _this$props11.onChange,
-          query = _this$props11.query,
-          onRunQuery = _this$props11.onRunQuery;
+      var _this$props12 = _this.props,
+          onChange = _this$props12.onChange,
+          query = _this$props12.query,
+          onRunQuery = _this$props12.onRunQuery;
 
       if (v.value !== ((_a = query.currentApplication) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentApplication changed');
@@ -2749,10 +2790,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       var _a;
 
       console.debug("[QueryEditor.onWebAppChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props12 = _this.props,
-          onChange = _this$props12.onChange,
-          query = _this$props12.query,
-          onRunQuery = _this$props12.onRunQuery;
+      var _this$props13 = _this.props,
+          onChange = _this$props13.onChange,
+          query = _this$props13.query,
+          onRunQuery = _this$props13.onRunQuery;
 
       if (v.value !== ((_a = query.currentWebApp) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('currentWebApp changed');
@@ -2766,10 +2807,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
     _this.onIPChange = function (e) {
       console.debug("[QueryEditor.onIPChange] ".concat(e.target.value));
       console.debug(e);
-      var _this$props13 = _this.props,
-          onChange = _this$props13.onChange,
-          query = _this$props13.query,
-          onRunQuery = _this$props13.onRunQuery;
+      var _this$props14 = _this.props,
+          onChange = _this$props14.onChange,
+          query = _this$props14.query,
+          onRunQuery = _this$props14.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         currentIP: e.target.value
       }));
@@ -2780,10 +2821,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       var _a;
 
       console.debug("[QueryEditor.onApplicationMetricChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props14 = _this.props,
-          onChange = _this$props14.onChange,
-          query = _this$props14.query,
-          onRunQuery = _this$props14.onRunQuery;
+      var _this$props15 = _this.props,
+          onChange = _this$props15.onChange,
+          query = _this$props15.query,
+          onRunQuery = _this$props15.onRunQuery;
 
       if (v.value !== ((_a = query.currentApplicationMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onApplicationMetricChange] currentApplicationMetric changed');
@@ -2798,10 +2839,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       var _a;
 
       console.debug("[QueryEditor.onHostGroupMetricChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props15 = _this.props,
-          onChange = _this$props15.onChange,
-          query = _this$props15.query,
-          onRunQuery = _this$props15.onRunQuery;
+      var _this$props16 = _this.props,
+          onChange = _this$props16.onChange,
+          query = _this$props16.query,
+          onRunQuery = _this$props16.onRunQuery;
 
       if (v.value !== ((_a = query.currentHostGroupMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onHostGroupMetricChange] currentHostGroupMetric changed.');
@@ -2816,10 +2857,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       var _a;
 
       console.debug("[QueryEditor.onWebAppMetricChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props16 = _this.props,
-          onChange = _this$props16.onChange,
-          query = _this$props16.query,
-          onRunQuery = _this$props16.onRunQuery;
+      var _this$props17 = _this.props,
+          onChange = _this$props17.onChange,
+          query = _this$props17.query,
+          onRunQuery = _this$props17.onRunQuery;
 
       if (v.value !== ((_a = query.currentWebAppMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onWebAppMetricChange] currentWebAppMetric changed.');
@@ -2834,10 +2875,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       var _a;
 
       console.debug("[QueryEditor.onIPMetricChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props17 = _this.props,
-          onChange = _this$props17.onChange,
-          query = _this$props17.query,
-          onRunQuery = _this$props17.onRunQuery;
+      var _this$props18 = _this.props,
+          onChange = _this$props18.onChange,
+          query = _this$props18.query,
+          onRunQuery = _this$props18.onRunQuery;
 
       if (v.value !== ((_a = query.currentIPMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onIPMetricChange] currentIPMetric changed.');
@@ -2850,10 +2891,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onExpirationTimeChange = function (e) {
       console.debug("[QueryEditor.onExpirationTimeChange] ".concat(e.target.value));
-      var _this$props18 = _this.props,
-          onChange = _this$props18.onChange,
-          query = _this$props18.query,
-          onRunQuery = _this$props18.onRunQuery;
+      var _this$props19 = _this.props,
+          onChange = _this$props19.onChange,
+          query = _this$props19.query,
+          onRunQuery = _this$props19.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         expirationTime: e.target.value
       }));
@@ -2864,10 +2905,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       var _a;
 
       console.debug("[QueryEditor.onTopMetricChange] ".concat(v.label, ", ").concat(v.value));
-      var _this$props19 = _this.props,
-          onChange = _this$props19.onChange,
-          query = _this$props19.query,
-          onRunQuery = _this$props19.onRunQuery;
+      var _this$props20 = _this.props,
+          onChange = _this$props20.onChange,
+          query = _this$props20.query,
+          onRunQuery = _this$props20.onRunQuery;
 
       if (v.value !== ((_a = query.currentTopMetric) === null || _a === void 0 ? void 0 : _a.value)) {
         console.debug('[QueryEditor.onTopMetricChange] currentTopMetric changed.');
@@ -2880,10 +2921,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onTopChange = function (e) {
       console.debug("[QueryEditor.onTopChange] ".concat(e.currentTarget.checked));
-      var _this$props20 = _this.props,
-          onChange = _this$props20.onChange,
-          query = _this$props20.query,
-          onRunQuery = _this$props20.onRunQuery;
+      var _this$props21 = _this.props,
+          onChange = _this$props21.onChange,
+          query = _this$props21.query,
+          onRunQuery = _this$props21.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         top: e.currentTarget.checked
       }));
@@ -2892,10 +2933,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onTopGraphChange = function (e) {
       console.debug("[QueryEditor.onTopGraphChange] ".concat(e.currentTarget.checked));
-      var _this$props21 = _this.props,
-          onChange = _this$props21.onChange,
-          query = _this$props21.query,
-          onRunQuery = _this$props21.onRunQuery;
+      var _this$props22 = _this.props,
+          onChange = _this$props22.onChange,
+          query = _this$props22.query,
+          onRunQuery = _this$props22.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         topGraph: e.currentTarget.checked
       }));
@@ -2904,10 +2945,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onTopNChange = function (e) {
       console.debug("[QueryEditor.onTopNChange] ".concat(e.currentTarget.value));
-      var _this$props22 = _this.props,
-          onChange = _this$props22.onChange,
-          query = _this$props22.query,
-          onRunQuery = _this$props22.onRunQuery;
+      var _this$props23 = _this.props,
+          onChange = _this$props23.onChange,
+          query = _this$props23.query,
+          onRunQuery = _this$props23.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         topN: Object(lodash__WEBPACK_IMPORTED_MODULE_1__["toInteger"])(e.currentTarget.value)
       }));
@@ -2916,10 +2957,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onAliasChange = function (v) {
       console.debug("[QueryEditor.onAliasChange] ".concat(v.target.value));
-      var _this$props23 = _this.props,
-          onChange = _this$props23.onChange,
-          query = _this$props23.query,
-          onRunQuery = _this$props23.onRunQuery;
+      var _this$props24 = _this.props,
+          onChange = _this$props24.onChange,
+          query = _this$props24.query,
+          onRunQuery = _this$props24.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         alias: v.target.value
       }));
@@ -2928,10 +2969,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onTimeshiftChange = function (v) {
       console.debug("[QueryEditor.onTimeshiftChange] ".concat(v.target.value));
-      var _this$props24 = _this.props,
-          onChange = _this$props24.onChange,
-          query = _this$props24.query,
-          onRunQuery = _this$props24.onRunQuery;
+      var _this$props25 = _this.props,
+          onChange = _this$props25.onChange,
+          query = _this$props25.query,
+          onRunQuery = _this$props25.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         timeshift: v.target.value
       }));
@@ -2940,10 +2981,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onGranularityChange = function (v) {
       console.debug("[QueryEditor.onGranularityChange] ".concat(JSON.stringify(v)));
-      var _this$props25 = _this.props,
-          query = _this$props25.query,
-          onChange = _this$props25.onChange,
-          onRunQuery = _this$props25.onRunQuery;
+      var _this$props26 = _this.props,
+          query = _this$props26.query,
+          onChange = _this$props26.onChange,
+          onRunQuery = _this$props26.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         granularity: v
       }));
@@ -2952,10 +2993,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onSSLColumnsChange = function (v) {
       console.debug("[QueryEditor.onSSLColumnsChange]");
-      var _this$props26 = _this.props,
-          onChange = _this$props26.onChange,
-          query = _this$props26.query,
-          onRunQuery = _this$props26.onRunQuery;
+      var _this$props27 = _this.props,
+          onChange = _this$props27.onChange,
+          query = _this$props27.query,
+          onRunQuery = _this$props27.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         currentSSLKeyColumns: v
       }));
@@ -2964,10 +3005,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onAlertsColumnsChange = function (v) {
       console.debug("[QueryEditor.onAlertsColumnsChange]");
-      var _this$props27 = _this.props,
-          onChange = _this$props27.onChange,
-          query = _this$props27.query,
-          onRunQuery = _this$props27.onRunQuery;
+      var _this$props28 = _this.props,
+          onChange = _this$props28.onChange,
+          query = _this$props28.query,
+          onRunQuery = _this$props28.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         currentAlertsColumns: v
       }));
@@ -2976,10 +3017,10 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
 
     _this.onAlertLimitChange = function (e) {
       console.debug("[QueryEditor.onAlertLimitChange] ".concat(e.target.value));
-      var _this$props28 = _this.props,
-          onChange = _this$props28.onChange,
-          query = _this$props28.query,
-          onRunQuery = _this$props28.onRunQuery;
+      var _this$props29 = _this.props,
+          onChange = _this$props29.onChange,
+          query = _this$props29.query,
+          onRunQuery = _this$props29.onRunQuery;
       onChange(Object.assign(Object.assign({}, query), {
         alertLimit: e.target.value
       }));
@@ -3433,7 +3474,7 @@ var QueryEditor = /*#__PURE__*/function (_PureComponent) {
       }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(_grafana_ui__WEBPACK_IMPORTED_MODULE_3__["MultiSelect"], {
         width: 'auto',
         menuShouldPortal: true,
-        options: _types__WEBPACK_IMPORTED_MODULE_4__["alertColums"],
+        options: query.alertColumns,
         value: query.currentAlertsColumns,
         onChange: this.onAlertsColumnsChange
       })))));
@@ -3463,6 +3504,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @grafana/runtime */ "@grafana/runtime");
 /* harmony import */ var _grafana_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_grafana_runtime__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _types__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./types */ "./types.ts");
+/* harmony import */ var utils__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! utils */ "./utils.tsx");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3484,6 +3526,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 
 
 
@@ -3531,7 +3574,7 @@ var DataSource = /*#__PURE__*/function (_DataSourceApi) {
       hostGroup: _this.url + '/hostgroups',
       application: _this.url + '/applications',
       instanceCreationSync: _this.url + '/instancecreationsync',
-      sources: _this.url + '/sources'
+      alerts: _this.url + '/alerts'
     };
     _this.headers = {
       'Content-Type': 'application/json'
@@ -3547,6 +3590,7 @@ var DataSource = /*#__PURE__*/function (_DataSourceApi) {
     _this.lastFetchIPMetrics = new Date();
     _this.lastFetchSSLKeys = new Date();
     _this.lastFetchAlerts = new Date();
+    _this.lastFetchAlertColumns = new Date();
     return _this;
   }
 
@@ -4741,20 +4785,8 @@ var DataSource = /*#__PURE__*/function (_DataSourceApi) {
       }));
     }
   }, {
-    key: "getFieldType",
-    value: function getFieldType(type) {
-      if (type === 'timestamp') {
-        return _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].time;
-      } else if (type === 'integer') {
-        return _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].number;
-      }
-
-      return _grafana_data__WEBPACK_IMPORTED_MODULE_1__["FieldType"].string;
-    }
-  }, {
-    key: "getAlerts",
-    value: function getAlerts(columns, startTime, endTime, granularity) {
-      var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 10;
+    key: "getAlertColumns",
+    value: function getAlertColumns() {
       return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee13() {
         var _this12 = this;
 
@@ -4763,26 +4795,103 @@ var DataSource = /*#__PURE__*/function (_DataSourceApi) {
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
+                console.log('[DataSource.getAlertColumns]');
+                result = [];
+                _context13.prev = 2;
+
+                if (!((Date.now() - this.lastFetchAlertColumns.getTime()) / 1000 / 60 < this.optionsTimeout && this.alertColumns.length > 0)) {
+                  _context13.next = 6;
+                  break;
+                }
+
+                console.debug('[DataSource.getAlertColumns] Cache hit.');
+                return _context13.abrupt("return", this.alertColumns);
+
+              case 6:
+                _context13.next = 8;
+                return this.doRequest({
+                  method: 'GET',
+                  url: this.urls.alerts + '/columns'
+                }).then(function (response) {
+                  if (typeof response !== 'undefined') {
+                    _this12.alertColumns = [];
+
+                    for (var k in response.data.items) {
+                      var item = response.data.items[k];
+                      var name = '';
+
+                      if (item.unit !== 'none') {
+                        name = "".concat(item.label, " (").concat(item.unit, ")");
+                      } else {
+                        name = item.label;
+                      }
+
+                      var alertColumn = {
+                        'value': item.id,
+                        'label': item.label,
+                        'name': name,
+                        'type': Object(utils__WEBPACK_IMPORTED_MODULE_5__["getFieldType"])(item.type)
+                      };
+                      console.log(alertColumn);
+                      result.push(alertColumn);
+
+                      _this12.alertColumns.push(alertColumn);
+                    }
+                  }
+                });
+
+              case 8:
+                _context13.next = 13;
+                break;
+
+              case 10:
+                _context13.prev = 10;
+                _context13.t0 = _context13["catch"](2);
+                console.error(_context13.t0);
+
+              case 13:
+                return _context13.abrupt("return", result);
+
+              case 14:
+              case "end":
+                return _context13.stop();
+            }
+          }
+        }, _callee13, this, [[2, 10]]);
+      }));
+    }
+  }, {
+    key: "getAlerts",
+    value: function getAlerts(columns, startTime, endTime, granularity) {
+      var limit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 10;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
+        var _this13 = this;
+
+        var result;
+        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+          while (1) {
+            switch (_context14.prev = _context14.next) {
+              case 0:
                 console.log('[DataSource.getAlerts]');
                 console.log("[DataSource.getAlerts] columns: ".concat(columns.map(function (c) {
                   return c.value;
                 }).join(', ')));
                 console.log("[DataSource.getAlerts] startTime: ".concat(startTime, " endTime: ").concat(endTime, " granularity: ").concat(granularity, " limit: ").concat(limit));
                 result = [];
-                _context13.prev = 4;
+                _context14.prev = 4;
 
                 if (!((Date.now() - this.lastFetchAlerts.getTime()) / 1000 < 10 // 10 seconds
                 && this.alerts.length > 0)) {
-                  _context13.next = 8;
+                  _context14.next = 8;
                   break;
                 }
 
                 console.debug('[DataSource.getAlerts] Cache hit.');
-                return _context13.abrupt("return", this.alerts);
+                return _context14.abrupt("return", this.alerts);
 
               case 8:
                 console.debug('[DataSource.getAlerts] Fething data...');
-                _context13.next = 11;
+                _context14.next = 11;
                 return this.doRequest({
                   method: 'POST',
                   url: this.urls.instanceCreationSync,
@@ -4805,78 +4914,85 @@ var DataSource = /*#__PURE__*/function (_DataSourceApi) {
                 }).then(function (response) {
                   if (typeof response !== 'undefined') {
                     console.log('[DataSource.getAlerts] Fetched data. Response is not undefined!');
-                    _this12.alerts = [];
+                    _this13.alerts = [];
 
                     for (var k in response.data.data_defs[0].data) {
                       var row = response.data.data_defs[0].data[k];
                       var alert = {};
 
                       for (var i = 0; i < response.data.data_defs[0].columns.length; i++) {
-                        alert[response.data.data_defs[0].columns[i]] = row[i];
+                        var datum = row[i];
+                        var column = response.data.data_defs[0].columns[i];
+
+                        if (column.includes('time')) {
+                          datum = new Date(Number.parseFloat(datum) * 1000);
+                        }
+
+                        alert[column] = datum;
                       }
 
                       console.log(alert);
                       result.push(alert);
 
-                      _this12.alerts.push(alert);
+                      _this13.alerts.push(alert);
                     }
                   }
 
-                  _this12.lastFetchAlerts = new Date(Date.now());
+                  _this13.lastFetchAlerts = new Date(Date.now());
                 });
 
               case 11:
-                _context13.next = 16;
+                _context14.next = 16;
                 break;
 
               case 13:
-                _context13.prev = 13;
-                _context13.t0 = _context13["catch"](4);
-                console.error(_context13.t0);
+                _context14.prev = 13;
+                _context14.t0 = _context14["catch"](4);
+                console.error(_context14.t0);
 
               case 16:
                 console.log('[DataSource.getAlerts] Fetched data.');
-                return _context13.abrupt("return", result);
+                return _context14.abrupt("return", result);
 
               case 18:
               case "end":
-                return _context13.stop();
+                return _context14.stop();
             }
           }
-        }, _callee13, this, [[4, 13]]);
+        }, _callee14, this, [[4, 13]]);
       }));
     }
   }, {
     key: "getSSLKeys",
     value: function getSSLKeys() {
-      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee14() {
-        var _this13 = this;
+      return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee15() {
+        var _this14 = this;
 
         var result;
-        return regeneratorRuntime.wrap(function _callee14$(_context14) {
+        return regeneratorRuntime.wrap(function _callee15$(_context15) {
           while (1) {
-            switch (_context14.prev = _context14.next) {
+            switch (_context15.prev = _context15.next) {
               case 0:
                 result = [];
-                _context14.prev = 1;
+                _context15.prev = 1;
                 console.info('[DataSource.getSSLKeys]');
 
                 if (!((Date.now() - this.lastFetchSSLKeys.getTime()) / 1000 / 60 < this.optionsTimeout && this.sslKeys.length > 0)) {
-                  _context14.next = 6;
+                  _context15.next = 6;
                   break;
                 }
 
                 console.debug('[DataSource.getSSLKeys] Cache hit.');
-                return _context14.abrupt("return", this.sslKeys);
+                return _context15.abrupt("return", this.sslKeys);
 
               case 6:
-                _context14.next = 8;
+                _context15.next = 8;
                 return this.doRequest({
                   method: 'GET',
                   url: this.urls.ssl
                 }).then(function (response) {
                   if (typeof response !== 'undefined') {
-                    _this13.sslKeys = [];
+                    _this14.sslKeys = [];
 
                     for (var index = 0; index < response.data.items.length; index++) {
                       var item = response.data.items[index];
@@ -4894,31 +5010,31 @@ var DataSource = /*#__PURE__*/function (_DataSourceApi) {
                       };
                       result.push(sslKey);
 
-                      _this13.sslKeys.push(sslKey);
+                      _this14.sslKeys.push(sslKey);
                     }
                   }
 
-                  _this13.lastFetchSSLKeys = new Date(Date.now());
+                  _this14.lastFetchSSLKeys = new Date(Date.now());
                 });
 
               case 8:
-                _context14.next = 13;
+                _context15.next = 13;
                 break;
 
               case 10:
-                _context14.prev = 10;
-                _context14.t0 = _context14["catch"](1);
-                console.error(_context14.t0);
+                _context15.prev = 10;
+                _context15.t0 = _context15["catch"](1);
+                console.error(_context15.t0);
 
               case 13:
-                return _context14.abrupt("return", result);
+                return _context15.abrupt("return", result);
 
               case 14:
               case "end":
-                return _context14.stop();
+                return _context15.stop();
             }
           }
-        }, _callee14, this, [[1, 10]]);
+        }, _callee15, this, [[1, 10]]);
       }));
     }
   }]);
@@ -4955,7 +5071,7 @@ var plugin = new _grafana_data__WEBPACK_IMPORTED_MODULE_0__["DataSourcePlugin"](
 /*!******************!*\
   !*** ./types.ts ***!
   \******************/
-/*! exports provided: SourceGroup, sourceGroups, granularities, sslKeyColumns, alertColumnsSelected, alertColums, findGranularity, defaultQuery */
+/*! exports provided: SourceGroup, sourceGroups, granularities, sslKeyColumns, alertColumnsSelected, findGranularity, defaultQuery */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4965,7 +5081,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "granularities", function() { return granularities; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sslKeyColumns", function() { return sslKeyColumns; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "alertColumnsSelected", function() { return alertColumnsSelected; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "alertColums", function() { return alertColums; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findGranularity", function() { return findGranularity; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "defaultQuery", function() { return defaultQuery; });
 /* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
@@ -5108,167 +5223,6 @@ var alertColumnsSelected = [{
   value: 'alert.end_time',
   type: 'time'
 }];
-var alertColums = [{
-  name: 'ID',
-  label: 'ID',
-  value: 'alert.id',
-  type: 'number'
-}, {
-  name: 'Alert Ongoing',
-  label: 'Alert Ongoing',
-  value: 'alert.ongoing_name',
-  type: 'string'
-}, {
-  name: 'Alert Ongoing Flag',
-  label: 'Alert Ongoing Flag',
-  value: 'alert.ongoing',
-  type: 'string'
-}, {
-  name: 'Policy Type',
-  label: 'Policy Type',
-  value: 'alert.policy_type_name',
-  type: 'string'
-}, {
-  name: 'Policy Type Value',
-  label: 'Policy Type Value',
-  value: 'alert.policy_type',
-  type: 'number'
-}, {
-  name: 'Severity Value',
-  label: 'Severity Value',
-  value: 'alert.severity',
-  type: 'number'
-}, {
-  name: 'Severity',
-  label: 'Severity',
-  value: 'alert.severity_level_name',
-  type: 'string'
-}, {
-  name: 'Severity',
-  label: 'Severity',
-  value: 'alert.severity_level',
-  type: 'number'
-}, {
-  name: 'Maximum Severity Value',
-  label: 'Maximum Severity Value',
-  value: 'alert.max_severity',
-  type: 'number'
-}, {
-  name: 'Maximum Severity',
-  label: 'Maximum Severity',
-  value: 'alert.max_severity_level_name',
-  type: 'string'
-}, {
-  name: 'Maximum Severity',
-  label: 'Maximum Severity',
-  value: 'alert.max_severity_level',
-  type: 'number'
-}, {
-  name: 'Policy Name',
-  label: 'Policy Name',
-  value: 'alert.policy_name',
-  type: 'string'
-}, {
-  name: 'Policy ID',
-  label: 'Policy ID',
-  value: 'alert.policy_id',
-  type: 'number'
-}, {
-  name: 'Policy Definition',
-  label: 'Policy Definition',
-  value: 'alert.policy_definition',
-  type: 'string'
-}, {
-  name: 'Policy Description',
-  label: 'Policy Description',
-  value: 'alert.policy_description',
-  type: 'string'
-}, {
-  name: 'Policy Last N',
-  label: 'Policy Last N',
-  value: 'alert.policy_last_N',
-  type: 'number'
-}, {
-  name: 'Policy Last M',
-  label: 'Policy Last M',
-  value: 'alert.policy_last_M',
-  type: 'number'
-}, {
-  name: 'Policy Evaluation Period',
-  label: 'Policy Evaluation Period',
-  value: 'alert.policy_eval_period',
-  type: 'string'
-}, {
-  name: 'Alert Violations Preview',
-  label: 'Alert Violations Preview',
-  value: 'alert.violations_preview',
-  type: 'string'
-}, {
-  name: 'Alert Violations Preview (Resolved)',
-  label: 'Alert Violations Preview (Resolved)',
-  value: 'alert.violations_preview_resolved',
-  type: 'string'
-}, {
-  name: 'Duration',
-  label: 'Duration',
-  value: 'alert.duration',
-  type: 'string'
-}, {
-  name: 'Details Insight',
-  label: 'Details Insight',
-  value: 'alert.details_insight',
-  type: 'string'
-}, {
-  name: 'Minor Violations Count',
-  label: 'Minor Violations Count',
-  value: 'alert.low_violations_count',
-  type: 'number'
-}, {
-  name: 'Major Violations Count',
-  label: 'Major Violations Count',
-  value: 'alert.medium_violations_count',
-  type: 'number'
-}, {
-  name: 'Critical Violations Count',
-  label: 'Critical Violations Count',
-  value: 'alert.high_violations_count',
-  type: 'number'
-}, {
-  name: 'Violation Severity Value',
-  label: 'Violation Severity Value',
-  value: 'violations.severity',
-  type: 'number'
-}, {
-  name: 'Violation Severity Level',
-  label: 'Violation Severity Level',
-  value: 'violations.severity_level_name',
-  type: 'string'
-}, {
-  name: 'Violation Severity Level',
-  label: 'Violation Severity Level',
-  value: 'violations.severity_level',
-  type: 'number'
-}, {
-  name: 'Alert Count',
-  label: 'Alert Count',
-  value: 'violations.count',
-  type: 'number'
-}, {
-  name: 'Last Update',
-  label: 'Last Update',
-  value: 'violations.last_update_ts',
-  type: 'time'
-}, {
-  name: 'Alert Start Time',
-  label: 'Start Time',
-  value: 'alert.start_time',
-  type: 'time'
-}, {
-  name: 'Alert End time',
-  label: 'Alert End time',
-  value: 'alert.end_time',
-  type: 'time'
-}];
 var findGranularity = function findGranularity(t) {
   return granularities.find(function (g) {
     return g.value.toString() === t;
@@ -5291,8 +5245,34 @@ var defaultQuery = {
   applications: [],
   applicationMetrics: [],
   alertLimit: 10,
+  alertColumns: alertColumnsSelected,
   currentAlertsColumns: alertColumnsSelected
 };
+
+/***/ }),
+
+/***/ "./utils.tsx":
+/*!*******************!*\
+  !*** ./utils.tsx ***!
+  \*******************/
+/*! exports provided: getFieldType */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getFieldType", function() { return getFieldType; });
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @grafana/data */ "@grafana/data");
+/* harmony import */ var _grafana_data__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_grafana_data__WEBPACK_IMPORTED_MODULE_0__);
+
+function getFieldType(type) {
+  if (type === 'timestamp') {
+    return _grafana_data__WEBPACK_IMPORTED_MODULE_0__["FieldType"].time;
+  } else if (type === 'integer') {
+    return _grafana_data__WEBPACK_IMPORTED_MODULE_0__["FieldType"].number;
+  }
+
+  return _grafana_data__WEBPACK_IMPORTED_MODULE_0__["FieldType"].string;
+}
 
 /***/ }),
 

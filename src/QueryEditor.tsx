@@ -3,7 +3,7 @@ import { defaults, toInteger } from 'lodash';
 import React, { PureComponent } from 'react';
 import { QueryEditorProps } from '@grafana/data';
 import { Select, InlineFieldRow, InlineField, Input, Switch, MultiSelect } from '@grafana/ui';
-import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities, sslKeyColumns, alertColums } from './types';
+import { AppResponseDataSourceOptions, AppResponseQuery, sourceGroups, SourceGroup, defaultQuery, granularities, sslKeyColumns } from './types';
 
 
 type Props = QueryEditorProps<DataSource, AppResponseQuery, AppResponseDataSourceOptions>;
@@ -100,16 +100,31 @@ export class QueryEditor extends PureComponent<Props> {
     }
   }
 
+  getAlertColumns = async () => {
+    console.debug('[QueryEditor.getAlertColumns]');
+    const { query, datasource, onChange } = this.props;
+    const alertColumns = await datasource.getAlertColumns();
+    if (alertColumns.length !== (query.alertColumns.length || 0)) {
+      console.debug('applications changed');
+      onChange({
+        ...query,
+        alertColumns: alertColumns,
+      });
+    }
+  }
+
   getTopMetrics = async () => {
     console.debug('[QueryEditor.getTopMetrics]');
     const { query, datasource, onChange } = this.props;
     const topMetrics = await datasource.getTopMetrics(query.sourceGroup);
-    if (topMetrics.length !== (query.topMetrics?.length || 0)) {
-      console.debug('topMetrics changed');
-      onChange({
-        ...query,
-        topMetrics: topMetrics,
-      });
+    if (query.top) {
+      if (topMetrics.length !== (query.topMetrics?.length || 0)) {
+        console.debug('topMetrics changed');
+        onChange({
+          ...query,
+          topMetrics: topMetrics,
+        });
+      }
     }
   }
 
@@ -144,6 +159,10 @@ export class QueryEditor extends PureComponent<Props> {
       this.getIPMetrics();
     }
 
+    if (sourceGroup === SourceGroup.alerts) {
+      this.getAlertColumns();
+    }
+
     this.getTopMetrics();
   }
 
@@ -152,6 +171,7 @@ export class QueryEditor extends PureComponent<Props> {
     const { onChange, query, onRunQuery } = this.props;
     if (v.value !== query.sourceGroup) {
       console.debug('sourceGroup changed');
+      this.getOptions(v.value);
       onChange({
         ...query,
         sourceGroup: v.value as SourceGroup,
@@ -838,7 +858,7 @@ export class QueryEditor extends PureComponent<Props> {
               <MultiSelect
                 width='auto'
                 menuShouldPortal
-                options={alertColums}
+                options={query.alertColumns}
                 value={query.currentAlertsColumns}
                 onChange={this.onAlertsColumnsChange}
               />
