@@ -6,6 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 
 password
+deploy*
 
 node_modules/
 grafana/
