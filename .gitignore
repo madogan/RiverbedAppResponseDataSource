@@ -31,3 +31,5 @@ e2e-results/
 
 # Editor
 .idea
+
+id_rsa.pub
