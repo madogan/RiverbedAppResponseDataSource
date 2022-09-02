@@ -5,7 +5,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+deploy*
+
 node_modules/
+grafana/
 
 # Runtime data
 pids

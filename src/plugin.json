@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
   "name": "Riverbed AppResponse",
-  "id": "riverbed-appresponse-datasource",
+  "id": "madogan-riverbedappresponse-datasource",
   "metrics": true,
   "backend": true,
   "executable": "gpx_riverbed-appresponse-datasource",
@@ -29,6 +29,7 @@
         "generate_refresh_token": false
       }
     },
+    
     {
       "path": "hostgroups",
       "url": "{{ .JsonData.path }}/api/npm.classification/2.0/hostgroups"
@@ -52,6 +53,10 @@
     {
       "path": "instancecreationsync",
       "url": "{{ .JsonData.path }}/api/npm.reports/1.0/instances/sync"
+    },
+    {
+      "path": "alerts",
+      "url": "{{ .JsonData.path }}/api/npm.reports.sources/1.0/sources/items/alert_list"
     }
   ],
   "info": {
@@ -80,7 +85,7 @@
       }
     ],
     "screenshots": [],
-    "version": "1.1.0",
+    "version": "1.2.0",
     "updated": "%TODAY%"
   },
   "dependencies": {

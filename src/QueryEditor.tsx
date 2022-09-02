@@ -100,16 +100,31 @@ export class QueryEditor extends PureComponent<Props> {
     }
   }
 
+  getAlertColumns = async () => {
+    console.debug('[QueryEditor.getAlertColumns]');
+    const { query, datasource, onChange } = this.props;
+    const alertColumns = await datasource.getAlertColumns();
+    if (alertColumns.length !== (query.alertColumns.length || 0)) {
+      console.debug('applications changed');
+      onChange({
+        ...query,
+        alertColumns: alertColumns,
+      });
+    }
+  }
+
   getTopMetrics = async () => {
     console.debug('[QueryEditor.getTopMetrics]');
     const { query, datasource, onChange } = this.props;
     const topMetrics = await datasource.getTopMetrics(query.sourceGroup);
-    if (topMetrics.length !== (query.topMetrics?.length || 0)) {
-      console.debug('topMetrics changed');
-      onChange({
-        ...query,
-        topMetrics: topMetrics,
-      });
+    if (query.top) {
+      if (topMetrics.length !== (query.topMetrics?.length || 0)) {
+        console.debug('topMetrics changed');
+        onChange({
+          ...query,
+          topMetrics: topMetrics,
+        });
+      }
     }
   }
 
@@ -144,6 +159,10 @@ export class QueryEditor extends PureComponent<Props> {
       this.getIPMetrics();
     }
 
+    if (sourceGroup === SourceGroup.alerts) {
+      this.getAlertColumns();
+    }
+
     this.getTopMetrics();
   }
 
@@ -152,6 +171,7 @@ export class QueryEditor extends PureComponent<Props> {
     const { onChange, query, onRunQuery } = this.props;
     if (v.value !== query.sourceGroup) {
       console.debug('sourceGroup changed');
+      this.getOptions(v.value);
       onChange({
         ...query,
         sourceGroup: v.value as SourceGroup,
@@ -353,6 +373,26 @@ export class QueryEditor extends PureComponent<Props> {
     onChange({
       ...query,
       currentSSLKeyColumns: v,
+    });
+    onRunQuery();
+  }
+
+  onAlertsColumnsChange = (v: any) => {
+    console.debug("[QueryEditor.onAlertsColumnsChange]");
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      currentAlertsColumns: v,
+    });
+    onRunQuery();
+  }
+
+  onAlertLimitChange = (e: any) => {
+    console.debug(`[QueryEditor.onAlertLimitChange] ${e.target.value}`);
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({
+      ...query,
+      alertLimit: e.target.value,
     });
     onRunQuery();
   }
@@ -790,6 +830,37 @@ export class QueryEditor extends PureComponent<Props> {
                 options={sslKeyColumns}
                 value={query.currentSSLKeyColumns}
                 onChange={this.onSSLColumnsChange}
+              />
+            </InlineField>
+          </InlineFieldRow>
+        </div>
+        {/* If source group is Alerts. */}
+        <div style={query.sourceGroup === SourceGroup.alerts ? { display: 'block' } : { display: 'none' }}>
+          <InlineFieldRow>
+            <InlineField label="Source Group">
+              <Select
+                width='auto'
+                menuShouldPortal
+                options={sourceGroups}
+                value={query.sourceGroup}
+                onChange={this.onSourceGroupChange}
+              />
+            </InlineField>
+            <InlineField label="Limit" tooltip="Max. number of alert to get">
+              <Input
+                value={query.alertLimit}
+                onChange={this.onAlertLimitChange}
+              />
+            </InlineField>
+          </InlineFieldRow>
+          <InlineFieldRow>
+            <InlineField label="Columns">
+              <MultiSelect
+                width='auto'
+                menuShouldPortal
+                options={query.alertColumns}
+                value={query.currentAlertsColumns}
+                onChange={this.onAlertsColumnsChange}
               />
             </InlineField>
           </InlineFieldRow>

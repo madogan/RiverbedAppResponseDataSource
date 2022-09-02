@@ -11,6 +11,7 @@ import _ from 'lodash';
 import defaults from 'lodash/defaults';
 import { getBackendSrv } from "@grafana/runtime";
 import { AppResponseDataSourceOptions, defaultQuery, AppResponseURLs, SourceGroup, AppResponseQuery, granularities } from './types';
+import { getFieldType } from 'utils';
 
 
 export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataSourceOptions> {
@@ -30,6 +31,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   hostGroupMetrics: SelectableValue[] = [];
   applications: SelectableValue[] = [];
   applicationMetrics: SelectableValue[] = [];
+  alerts: SelectableValue[] = [];
 
   lastFetchQuery: Date;
   lastFetchMetrics: Date;
@@ -41,6 +43,10 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   lastFetchApplicationMetrics: Date;
   lastFetchIPMetrics: Date;
   lastFetchSSLKeys: Date;
+  lastFetchAlerts: Date;
+  lastFetchAlertColumns: Date;
+
+  alertColumns: any = [];
 
   queryTimeout: Number = 60;  // In seconds
   optionsTimeout: Number = 15;  // In minutes
@@ -61,6 +67,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       hostGroup: this.url + '/hostgroups',
       application: this.url + '/applications',
       instanceCreationSync: this.url + '/instancecreationsync',
+      alerts: this.url + '/alerts',
     };
 
     this.headers = { 'Content-Type': 'application/json' };
@@ -80,6 +87,9 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     this.lastFetchIPMetrics = new Date();
 
     this.lastFetchSSLKeys = new Date();
+
+    this.lastFetchAlerts = new Date();
+    this.lastFetchAlertColumns = new Date();
   }
 
   async topngraphquery(target: AppResponseQuery, start: Number, end: Number, granularity: Number) {
@@ -244,7 +254,41 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       }
 
       dataDef_source = { "name": "aggregates" };
-      if (query.sourceGroup == SourceGroup.ssl) {
+      if (query.sourceGroup == SourceGroup.alerts) {
+        console.log(`Current Alerts Columns: ${query.currentAlertsColumns.map(c => c.value)}`);
+
+        return this.getAlerts(query.currentAlertsColumns, start, end, granularity?.value, query.alertLimit).then(
+          (items) => {
+            let frame;
+            let fields: any = [];
+
+            for (let index = 0; index < query.currentAlertsColumns.length; index++) {
+              fields.push({
+                type: query.currentAlertsColumns[index].type,
+                name: query.currentAlertsColumns[index].label,
+                value: query.currentAlertsColumns[index].value,
+              });
+            }
+
+            frame = new MutableDataFrame({
+              fields: fields,
+              name: 'Alerts',
+              refId: query.refId,
+            });
+
+            for (let i = 0; i < items.length; i++) {
+              let row = [];
+              let item = items[i];
+              for (let index = 0; index < fields.length; index++) {
+                row.push(item[fields[index].value]);
+              }
+              frame.appendRow(row);
+            }
+            return frame;
+          }
+        );
+      }
+      else if (query.sourceGroup == SourceGroup.ssl) {
         return this.getSSLKeys().then(
           (items) => {
             let frame;
@@ -263,6 +307,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
               name: 'SSL Keys',
               refId: query.refId,
             });
+
 
             for (let i = 0; i < items.length; i++) {
               let row = [];
@@ -942,6 +987,126 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       console.error(error);
     }
 
+    return result;
+  }
+
+  async getAlertColumns() {
+    console.log('[DataSource.getAlertColumns]');
+
+    let result = <any>[];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchAlertColumns.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.alertColumns.length > 0
+      ) {
+        console.debug('[DataSource.getAlertColumns] Cache hit.');
+        return this.alertColumns;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.alerts + '/columns',
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.alertColumns = [];
+            for (let k in response.data.items) {
+              const item = response.data.items[k];
+              let name = '';
+              if (item.unit !== 'none') {
+                name = `${item.label} (${item.unit})`;
+              } else {
+                name = item.label;
+              }
+              let alertColumn = {
+                'value': item.id,
+                'label': item.label,
+                'name': name,
+                'type': getFieldType(item.type),
+              };
+              console.log(alertColumn);
+              result.push(alertColumn);
+              this.alertColumns.push(alertColumn);
+            }
+          }
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getAlerts(columns: any, startTime: number, endTime: number, granularity: number, limit: number = 10) {
+    console.log('[DataSource.getAlerts]');
+    console.log(`[DataSource.getAlerts] columns: ${columns.map((c: any) => { return c.value; }).join(', ')}`);
+    console.log(`[DataSource.getAlerts] startTime: ${startTime} endTime: ${endTime} granularity: ${granularity} limit: ${limit}`);
+
+    let result = <any>[];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchAlerts.getTime()) / 1000) < 10  // 10 seconds
+        && this.alerts.length > 0
+      ) {
+        console.debug('[DataSource.getAlerts] Cache hit.');
+        return this.alerts;
+      }
+
+      console.debug('[DataSource.getAlerts] Fething data...');
+
+      await this.doRequest({
+        method: 'POST',
+        url: this.urls.instanceCreationSync,
+        data: {
+          "data_defs": [
+            {
+              "source": {
+                "name": "alert_list"
+              },
+              "limit": Number.parseInt(limit.toString()),
+              "time": {
+                "start": startTime.toString(),
+                "end": endTime.toString(),
+                "granularity": granularity.toString(),
+              },
+              "columns": columns.map((e: any) => { return e.value; }),
+            }
+          ]
+        },
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            console.log('[DataSource.getAlerts] Fetched data. Response is not undefined!');
+            this.alerts = [];
+            for (let k in response.data.data_defs[0].data) {
+              const row = response.data.data_defs[0].data[k];
+              let alert = {} as any;
+              for (let i = 0; i < response.data.data_defs[0].columns.length; i++) {
+                let datum = row[i];
+                const column = response.data.data_defs[0].columns[i];
+
+                if (column.includes('time')) {
+                  datum = new Date(Number.parseFloat(datum) * 1000);
+                }
+
+                alert[column] = datum;
+              }
+              console.log(alert);
+              result.push(alert);
+              this.alerts.push(alert);
+            }
+          }
+          this.lastFetchAlerts = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    console.log('[DataSource.getAlerts] Fetched data.');
     return result;
   }
 

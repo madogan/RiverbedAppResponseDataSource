@@ -7,6 +7,7 @@ export enum SourceGroup {
   hostGroup = 'Host Group',
   application = 'Application',
   ssl = 'SSL',
+  alerts = 'Alerts',
 };
 
 export const sourceGroups = [
@@ -15,6 +16,7 @@ export const sourceGroups = [
   { label: 'Web App', value: SourceGroup.webApp },
   { label: 'IP', value: SourceGroup.ip },
   { label: 'SSL', value: SourceGroup.ssl },
+  { label: 'Alerts', value: SourceGroup.alerts },
 ];
 
 export const granularities = [
@@ -37,6 +39,18 @@ export const sslKeyColumns = [
   { "label": "First Seen", "value": "first_seen", "type": FieldType.time },
   { "label": "Last Seen", "value": "last_seen", "type": FieldType.time },
   { "label": "Expiration Time", "value": "expiration_time", "type": FieldType.number },
+];
+
+export const alertColumnsSelected = [
+  { name: 'Severity', label: 'Severity', value: 'alert.severity_level_name', type: 'string' },
+  { name: 'Alert Ongoing', label: 'Alert Ongoing', value: 'alert.ongoing_name', type: 'string' },
+  { name: 'Policy Name', label: 'Policy Name', value: 'alert.policy_name', type: 'string' },
+  { name: 'Policy Description', label: 'Policy Description', value: 'alert.policy_description', type: 'string' },
+  { name: 'Policy Type', label: 'Policy Type', value: 'alert.policy_type_name', type: 'string' },
+  { name: 'Alert Violations Preview (Resolved)', label: 'Alert Violations Preview (Resolved)', value: 'alert.violations_preview_resolved', type: 'string' },
+  { name: 'Duration', label: 'Duration', value: 'alert.duration', type: 'string' },
+  { name: 'Alert Start Time', label: 'Start Time', value: 'alert.start_time', type: 'time' },
+  { name: 'Alert End time', label: 'Alert End time', value: 'alert.end_time', type: 'time' },
 ];
 
 export const findGranularity = (t: string) => {
@@ -80,6 +94,11 @@ export interface AppResponseQuery extends DataQuery {
   hostGroups: SelectableValue[];
   hostGroupMetrics: SelectableValue[];
   currentHostGroupMetric: SelectableValue;
+
+  alerts: SelectableValue[];
+  alertLimit: number;
+  alertColumns: SelectableValue[];
+  currentAlertsColumns: SelectableValue[];
 }
 
 export const defaultQuery: Partial<AppResponseQuery> = {
@@ -90,7 +109,7 @@ export const defaultQuery: Partial<AppResponseQuery> = {
   top: false,
   topN: 10,
   topGraph: false,
-  
+
   sslKeys: [],
   currentSSLKeyColumns: sslKeyColumns,
   expirationTime: -1,
@@ -103,6 +122,10 @@ export const defaultQuery: Partial<AppResponseQuery> = {
 
   applications: [],
   applicationMetrics: [],
+
+  alertLimit: 10,
+  alertColumns: alertColumnsSelected,
+  currentAlertsColumns: alertColumnsSelected,
 };
 
 export interface AppResponseDataSourceOptions extends DataSourceJsonData {
@@ -126,4 +149,5 @@ export interface AppResponseURLs {
   hostGroup: string;
   application: string;
   instanceCreationSync: string;
+  alerts: string;
 }
