@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
   "name": "Riverbed AppResponse",
-  "id": "alidogan-riverbedappresponse-datasource",
+  "id": "alidogan-appresponse-datasource",
   "metrics": true,
   "backend": true,
   "executable": "gpx_riverbed-appresponse-datasource",
