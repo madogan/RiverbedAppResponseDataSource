@@ -1,0 +1,43 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "private",
+  "signedByOrg": "alidogan",
+  "signedByOrgName": "Destel",
+  "rootUrls": [
+    "https://github.com/madogan/RiverbedAppResponseDataSource/releases"
+  ],
+  "plugin": "riverbed-appresponse-datasource",
+  "version": "1.2.0",
+  "time": 1663147635677,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "CHANGELOG.md": "65b243d61e410b055ad3984a979fee25df47b24529bc2bcb35b8d95ca3dbd550",
+    "gpx_riverbed-appresponse-datasource_darwin_amd64": "b9ff37df02c370c75ffd6145c22afaba3a2e1c6425f87ec9d7f0e8cd76aba9bc",
+    "gpx_riverbed-appresponse-datasource_darwin_arm64": "6bd3e4abd0a1540278fa04d4bdbbfdf383a8056f40f982f57e8ba4fad834f9eb",
+    "gpx_riverbed-appresponse-datasource_linux_amd64": "76dcadc0d5391f04e65eb7317e2952e2ba40fd9d42dbac5ff1a0c75d44c09a53",
+    "gpx_riverbed-appresponse-datasource_linux_arm": "cea4bda4d6191a334e2a777096c7f176f7aa3de0552abdd9b323e9545b15d7eb",
+    "gpx_riverbed-appresponse-datasource_linux_arm64": "70e496f05d850639630dd825df1e867bbe68f93b29c2536923a2bfc5e8425112",
+    "gpx_riverbed-appresponse-datasource_windows_amd64.exe": "775eafa0e717f3ba768f5ff529735b603b9100d88f1e87b1fa4f01ca5a737edb",
+    "img/logo.svg": "3bb19ba6caa746eae14b92e1f9c281dc09af534387bd7e6ffb4d7e12563c0018",
+    "LICENSE": "1eb85fc97224598dad1852b5d6483bbcf0aa8608790dcc657a5a2a761ae9c8c6",
+    "module.js": "4ef2430e41d8cf71b160e5792e3eb88da28466ce87bbbb68b3d53189363c988c",
+    "module.js.map": "36ff3f8d0e5f7d9281c6724ceffeb79543facd27bb8d93494b3448a5d67aace3",
+    "plugin.json": "97e6b7399a09f4ea7efd68ade55a46166e60a2c3083da9ec7d457ae52319849b",
+    "README.md": "ec04df047e720feeb371002fffbbf4a08fee0ad6d38eb401bcc622cd95030f22"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.10
+Comment: https://openpgpjs.org
+
+wrgEARMKAAYFAmMhnnMAIQkQfk0ManCIZucWIQTzOyW2kQdOhGNlcPN+TQxq
+cIhm50pqAgdDSFep7cO/j+/pOE7CjfH7cNQQTkWgQU7K77y0p5YJA4TlQ7D5
+7GjQW/rgY1vnPJCl4ZCzWLFcgrOqkHw8k7eGUAIJAcpR4WdDnpDObtuB3MyI
+poPs81yvMtsDiTAV0gw/nkMFALxJu5e/O0EI+tK7CiCKiPighugvHJKZfqpv
+8p+VqwEW
+=Msvh
+-----END PGP SIGNATURE-----
