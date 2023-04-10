@@ -13,17 +13,17 @@
   "author": "madogan",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "latest",
-    "@grafana/runtime": "^8.5.0",
-    "@grafana/toolkit": "^8.5.0",
-    "@grafana/ui": "^8.5.0",
-    "@types/lodash": "latest"
+    "@grafana/data": "^9.4.7",
+    "@grafana/runtime": "^9.4.7",
+    "@grafana/toolkit": "^9.4.7",
+    "@grafana/ui": "^9.4.7",
+    "@types/lodash": "latest",
+    "@typescript-eslint/eslint-plugin": "^5.56.0"
   },
   "resolutions": {
     "rxjs": "7.5.1"
   },
   "engines": {
     "node": ">=14"
-  },
-  "dependencies": {}
+  }
 }

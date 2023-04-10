@@ -48,15 +48,14 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
 
   alertColumns: any = [];
 
-  queryTimeout: Number = 60;  // In seconds
-  optionsTimeout: Number = 15;  // In minutes
+  queryTimeout: number = 60;  // In seconds
+  optionsTimeout: number = 15;  // In minutes
 
   constructor(instanceSettings: DataSourceInstanceSettings<AppResponseDataSourceOptions>) {
     super(instanceSettings);
 
     this.settings = instanceSettings;
     this.url = this.settings.url || '';
-    this.token = instanceSettings.jsonData.token ?? '';
 
     this.urls = {
       base: this.url + '/base',
@@ -92,7 +91,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     this.lastFetchAlertColumns = new Date();
   }
 
-  async topngraphquery(target: AppResponseQuery, start: Number, end: Number, granularity: Number) {
+  async topngraphquery(target: AppResponseQuery, start: number, end: number, granularity: number) {
     let dataDef_groupBy;
     let dataDef_topBy: any = [];
     let dataDef_columns: any = [];
@@ -133,7 +132,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     dataDef_columns.push(target.currentTopMetric.value);
 
     let tops: any = [];
-    let filterIN: string = "";
+    let filterIN = "";
 
     await this.doRequest({
       method: "POST",
@@ -227,7 +226,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     let dataDef_groupBy = {};
     let dataDef_columns: string[] = [];
     let currentMetric: SelectableValue;
-    let dataDef_filters: { type: string; value: string; }[] = [];
+    let dataDef_filters: Array<{ type: string; value: string; }> = [];
 
     const promises = options.targets.map((target) => {
       const query = defaults(target, defaultQuery);
@@ -254,7 +253,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       }
 
       dataDef_source = { "name": "aggregates" };
-      if (query.sourceGroup == SourceGroup.alerts) {
+      if (query.sourceGroup === SourceGroup.alerts) {
         console.log(`Current Alerts Columns: ${query.currentAlertsColumns.map(c => c.value)}`);
 
         return this.getAlerts(query.currentAlertsColumns, start, end, granularity?.value, query.alertLimit).then(
@@ -288,7 +287,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           }
         );
       }
-      else if (query.sourceGroup == SourceGroup.ssl) {
+      else if (query.sourceGroup === SourceGroup.ssl) {
         return this.getSSLKeys().then(
           (items) => {
             let frame;
@@ -335,7 +334,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
           }
         );
       }
-      else if (query.sourceGroup == SourceGroup.hostGroup) {
+      else if (query.sourceGroup === SourceGroup.hostGroup) {
         // For each datapoint, data are grouped by timestamp and id of hostgroup
         dataDef_groupBy = ["start_time", "host_group.id"];
         // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
@@ -464,7 +463,8 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
       }).then(
         (response) => {
           let name;
-          let _dataDef = response.data.data_defs[0];
+
+          let _dataDef = response?.data.data_defs[0];
 
           if (_dataDef.data === undefined) {
             _dataDef.data = [];
@@ -557,22 +557,21 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     }
     );
   }
+  async authRequest() {
+    await getBackendSrv().datasourceRequest({
+      method: 'POST',
+      url: this.urls.auth,
+    }).then((response) => {
+      this.settings.jsonData.token = response.data.access_token;
+    });
+  }
 
-  async doRequest(options: any) {
+  async doRequest(options: any): Promise<any> {
     console.debug(`[DataSource.doRequest] ${options.method} ${options.url}`);
 
-    if (
-      this.settings.jsonData.token === ''
-      || this.settings.jsonData.token === undefined
-      || this.settings.jsonData.token === null
-    ) {
+    if (!this.settings.jsonData.token) {
       console.debug(`[DataSource.doRequest] No token.`);
-      await getBackendSrv().datasourceRequest({
-        method: 'POST',
-        url: this.urls.auth,
-      }).then((response) => {
-        this.settings.jsonData.token = response.data.access_token;
-      });
+      await this.authRequest();
     }
 
     return getBackendSrv().datasourceRequest({
@@ -581,13 +580,21 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
         ...this.headers,
         'Authorization': 'Bearer ' + this.settings.jsonData.token
       }
+    }).catch((e) => {
+      if (e.data.message.includes('Authentication to data source failed')) {
+        this.settings.jsonData.token = '';
+        console.debug(`[DataSource.doRequest] Retrying after auth error.`);
+        return this.doRequest(options); // call doRequest recursively
+      } else {
+        throw e; // throw the error to the caller
+      }
     });
   }
 
   async getHostGroups() {
     console.debug('[DataSource.getHostGroups]');
 
-    let result: SelectableValue<any>[] = [];
+    let result: Array<SelectableValue<any>> = [];
     try {
       if (
         ((Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60) < this.optionsTimeout
@@ -629,7 +636,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getApplications() {
-    let result: SelectableValue<any>[] = [];
+    let result: Array<SelectableValue<any>> = [];
 
     try {
       if (
@@ -671,7 +678,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getWebApps() {
-    let result: SelectableValue<any>[] = [];
+    let result: Array<SelectableValue<any>> = [];
 
     try {
       if (
@@ -729,7 +736,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getApplicationMetrics() {
-    let result: SelectableValue<any>[] = [];
+    let result: Array<SelectableValue<any>> = [];
 
     try {
       if (
@@ -797,7 +804,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getIPMetrics() {
-    let result: SelectableValue<any>[] = [];
+    let result: Array<SelectableValue<any>> = [];
 
     try {
       if (
@@ -865,7 +872,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getHostGroupMetrics() {
-    let result: SelectableValue<any>[] = [];
+    let result: Array<SelectableValue<any>> = [];
 
     try {
       if (
@@ -927,7 +934,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getWebAppMetrics() {
-    let result: SelectableValue<any>[] = [];
+    let result: Array<SelectableValue<any>> = [];
 
     try {
       if (
@@ -1039,7 +1046,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
     return result;
   }
 
-  async getAlerts(columns: any, startTime: number, endTime: number, granularity: number, limit: number = 10) {
+  async getAlerts(columns: any, startTime: number, endTime: number, granularity: number, limit = 10) {
     console.log('[DataSource.getAlerts]');
     console.log(`[DataSource.getAlerts] columns: ${columns.map((c: any) => { return c.value; }).join(', ')}`);
     console.log(`[DataSource.getAlerts] startTime: ${startTime} endTime: ${endTime} granularity: ${granularity} limit: ${limit}`);
@@ -1066,7 +1073,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
               "source": {
                 "name": "alert_list"
               },
-              "limit": Number.parseInt(limit.toString()),
+              "limit": Number.parseInt(limit.toString(), 10),
               "time": {
                 "start": startTime.toString(),
                 "end": endTime.toString(),
@@ -1111,7 +1118,7 @@ export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataS
   }
 
   async getSSLKeys() {
-    let result: SelectableValue<any>[] = [];
+    let result: Array<SelectableValue<any>> = [];
 
     try {
       console.info('[DataSource.getSSLKeys]');

@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
   "type": "datasource",
   "name": "Riverbed AppResponse",
-  "id": "riverbed-appresponse-datasource",
+  "id": "alidogan-appresponse-datasource",
   "metrics": true,
   "backend": true,
   "executable": "gpx_riverbed-appresponse-datasource",
@@ -62,8 +62,8 @@
   "info": {
     "description": "",
     "author": {
-      "name": "madogan",
-      "url": "https://github.com/madogan"
+      "name": "destel",
+      "url": "https://destel.com.tr"
     },
     "keywords": [
       "apm",
@@ -77,16 +77,16 @@
     "links": [
       {
         "name": "Website",
-        "url": "https://github.com/grafana/grafana-starter-datasource-backend"
+        "url": "https://github.com/madogan/RiverbedAppResponseDataSource"
       },
       {
         "name": "License",
-        "url": "https://github.com/grafana/grafana-starter-datasource-backend/blob/master/LICENSE"
+        "url": "https://github.com/madogan/RiverbedAppResponseDataSource/blob/main/LICENSE"
       }
     ],
     "screenshots": [],
     "version": "1.2.0",
-    "updated": "2022-09-02"
+    "updated": "2023-04-10"
   },
   "dependencies": {
     "grafanaDependency": ">=7.5.0",
