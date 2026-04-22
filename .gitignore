@@ -30,3 +30,10 @@ e2e-results/
 
 # Editor
 .idea
+
+# Generated backend binaries in dist
+dist/gpx_riverbed-appresponse-datasource_*
+dist/*.exe
+
+# Generated docs copied into dist during build
+dist/README.md
