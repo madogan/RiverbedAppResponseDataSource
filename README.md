@@ -1,73 +1,125 @@
-# Grafana Riverbed AppResponse Data Source Backend Plugin 
+# Riverbed AppResponse Data Source for Grafana
 
-[![Build](https://github.com/grafana/grafana-starter-datasource-backend/workflows/CI/badge.svg)](https://github.com/grafana/grafana-datasource-backend/actions?query=workflow%3A%22CI%22)
+Turkce dokumantasyon: [README.tr.md](README.tr.md)
 
-## What is Grafana Data Source Backend Plugin?
+## Overview
 
-Grafana supports a wide range of data sources, including Prometheus, MySQL, and even Datadog. We didn't find a plugin for Riverbed's AppResponse. There was [a plugin](https://github.com/Crinon/grafana-riverbed-appresponse) which is developed for Grafana 3.x.x and they do not maintain. We've inspired Crinon's plugin and built this plugin which is developed for Grafana 7.x.x and latest versions. 
+This repository contains a Grafana data source plugin for Riverbed AppResponse.
+It includes:
 
-For more information about backend plugins, refer to the documentation on [Backend plugins](https://grafana.com/docs/grafana/latest/developers/plugins/backend/).
+- A **frontend query editor** (TypeScript/React)
+- A **backend binary** (Go, Grafana Plugin SDK)
+- A **proxy-based integration model** using datasource routes in `plugin.json`
+- A **Docker-based local validation setup** for Grafana 12.x and 13.x
 
-## Getting started
+The plugin is currently aligned for Grafana 12/13 compatibility.
 
-A data source backend plugin consists of both frontend and backend components.
+## Features
 
-### Frontend
+- Query Riverbed AppResponse APIs through Grafana datasource proxy routes
+- Support for multiple source groups in the query editor:
+  - Application
+  - Host Group
+  - Web App
+  - IP
+  - SSL
+  - Alerts
+- Configurable datasource settings:
+  - Base path
+  - Username
+  - Password (secure field)
+  - TLS skip verify option
+- Backend health check endpoint for datasource validation
 
-1. Install dependencies
+## Compatibility
 
-   ```bash
-   yarn install
-   ```
+- Grafana dependency range: `>=12.0.0 <14.0.0`
+- Tested locally against:
+  - Grafana `12.3.6`
+  - Grafana `13.0.x`
+- Plugin signature in local dev: **unsigned** (allowed via Grafana setting)
 
-2. Build plugin in development mode or run in watch mode
+## Project Structure
 
-   ```bash
-   yarn dev
-   ```
+- `src/` frontend plugin code (`module.ts`, query/config editors, datasource logic)
+- `pkg/` Go backend plugin entrypoint and health/query handlers
+- `dist/` built plugin artifacts (frontend + backend binaries)
+- `docker/` local Grafana provisioning and config files
+- `.github/workflows/` CI and release pipelines
 
-   or
+## Development
 
-   ```bash
-   yarn watch
-   ```
+### Prerequisites
 
-3. Build plugin in production mode
+- Node.js (LTS, modern npm)
+- Go toolchain
+- Docker + Docker Compose
 
-   ```bash
-   yarn build
-   ```
+### Install dependencies
 
-### Backend
+```bash
+npm install
+go mod tidy
+```
 
-1. Update [Grafana plugin SDK for Go](https://grafana.com/docs/grafana/latest/developers/plugins/backend/grafana-plugin-sdk-for-go/) dependency to the latest minor version:
+### Frontend commands
 
-   ```bash
-   go get -u github.com/grafana/grafana-plugin-sdk-go
-   go mod tidy
-   ```
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run typecheck
+npm test
+```
 
-2. Build backend plugin binaries for Linux, Windows and Darwin:
+### Backend commands
 
-   ```bash
-   mage -v
-   ```
+```bash
+go run github.com/magefile/mage@latest buildAll
+go test ./pkg/...
+go build ./pkg/...
+```
 
-3. List all available Mage targets for additional commands:
+## Local Grafana Validation (12 + 13)
 
-   ```bash
-   mage -l
-   ```
+Start both versions:
 
-### Contributors
-<!-- prettier-ignore -->
-<table border="0">
-  <tr>
-    <td align="center"><a href="https://www.linkedin.com/in/cancihanhircin"><img
-        src="https://media-exp1.licdn.com/dms/image/C4D03AQH_TCvtbY1tsg/profile-displayphoto-shrink_400_400/0/1516884661634?e=1654128000&v=beta&t=9ScpFD9OPFjVU_FX0ghb9fO0G4q0BUz7v9LA4WK1ZYg" width="100px;"
-        alt="https://www.linkedin.com/in/cancihanhircin"/><br><sub><b>Can Cihan Hırçın</b></sub></a><br></td>
-    <td align="center"><a href="https://www.linkedin.com/in/madogan/"><img
-        src="https://media-exp1.licdn.com/dms/image/C4D03AQFfCmD3e-gnKQ/profile-displayphoto-shrink_400_400/0/1559579240964?e=1654128000&v=beta&t=oeq58CcbzMBaUqa8KWlgwb-yheBz03TIiKpynSEkSM0" width="100px;"
-        alt="https://www.linkedin.com/in/madogan/"/><br><sub><b>Muhammed Ali Doğan</b></sub></a><br></td>
-  </tr>
-</table>
+```bash
+docker compose up -d
+```
+
+Access:
+
+- Grafana 12: <http://localhost:3001>
+- Grafana 13: <http://localhost:3002>
+- Default credentials: `admin / admin`
+
+Stop:
+
+```bash
+docker compose down
+```
+
+The compose setup binds:
+
+- plugin artifacts from `./dist`
+- provisioning from `./docker/provisioning`
+- Grafana config from `./docker/grafana/grafana.ini`
+
+Unsigned plugin loading is enabled for `alidogan-appresponse-datasource`.
+
+## Signing
+
+For distribution, sign the plugin:
+
+```bash
+npm run sign
+```
+
+Required environment variable:
+
+- `GRAFANA_ACCESS_POLICY_TOKEN`
+
+## License
+
+Apache-2.0
