@@ -1,0 +1,95 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/master/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "datasource",
+  "name": "Riverbed AppResponse",
+  "id": "alidogan-appresponse-datasource",
+  "metrics": true,
+  "backend": true,
+  "executable": "gpx_riverbed-appresponse-datasource",
+  "alerting": true,
+  "routes": [
+    {
+      "path": "base",
+      "url": "{{ .JsonData.path }}",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json"
+        }
+      ]
+    },
+    {
+      "path": "auth",
+      "url": "{{ .JsonData.path }}/api/mgmt.aaa/1.0/token",
+      "body": {
+        "user_credentials": {
+          "username": "{{ .JsonData.username }}",
+          "password": "{{ .SecureJsonData.password }}"
+        },
+        "generate_refresh_token": false
+      }
+    },
+    
+    {
+      "path": "hostgroups",
+      "url": "{{ .JsonData.path }}/api/npm.classification/2.0/hostgroups"
+    },
+    {
+      "path": "aggregates",
+      "url": "{{ .JsonData.path }}/api/npm.reports.sources/1.0/sources/items/aggregates"
+    },
+    {
+      "path": "applications",
+      "url": "{{ .JsonData.path }}/api/npm.classification/2.0/applications"
+    },
+    {
+      "path": "webapps",
+      "url": "{{ .JsonData.path }}/api/npm.wta_config/1.0/wta_webapps"
+    },
+    {
+      "path": "ssl",
+      "url": "{{ .JsonData.path }}/api/npm.ssl_module/1.0/latest_certificates"
+    },
+    {
+      "path": "instancecreationsync",
+      "url": "{{ .JsonData.path }}/api/npm.reports/1.0/instances/sync"
+    },
+    {
+      "path": "alerts",
+      "url": "{{ .JsonData.path }}/api/npm.reports.sources/1.0/sources/items/alert_list"
+    }
+  ],
+  "info": {
+    "description": "",
+    "author": {
+      "name": "destel",
+      "url": "https://destel.com.tr"
+    },
+    "keywords": [
+      "apm",
+      "riverbed",
+      "appresponse"
+    ],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/madogan/RiverbedAppResponseDataSource"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/madogan/RiverbedAppResponseDataSource/blob/main/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "1.2.0",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=12.0.0 <14.0.0",
+    "plugins": []
+  }
+}

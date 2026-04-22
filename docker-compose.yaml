@@ -1,0 +1,34 @@
+services:
+  grafana12:
+    image: ${GRAFANA12_IMAGE:-grafana/grafana:12.3.6}
+    container_name: riverbed-grafana12
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: alidogan-appresponse-datasource
+    volumes:
+      - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./docker/provisioning:/etc/grafana/provisioning:ro
+      - ./dist:/var/lib/grafana/plugins/alidogan-appresponse-datasource:ro
+      - grafana12_data:/var/lib/grafana
+
+  grafana13:
+    image: ${GRAFANA13_IMAGE:-grafana/grafana:13.0}
+    container_name: riverbed-grafana13
+    ports:
+      - "3002:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: alidogan-appresponse-datasource
+    volumes:
+      - ./docker/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./docker/provisioning:/etc/grafana/provisioning:ro
+      - ./dist:/var/lib/grafana/plugins/alidogan-appresponse-datasource:ro
+      - grafana13_data:/var/lib/grafana
+
+volumes:
+  grafana12_data:
+  grafana13_data:

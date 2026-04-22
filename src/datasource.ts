@@ -1,0 +1,1164 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
+import {
+  FieldType,
+  DataSourceApi,
+  SelectableValue,
+  DataQueryRequest,
+  MutableDataFrame,
+  DataQueryResponse,
+  DataSourceInstanceSettings,
+} from '@grafana/data';
+import _ from 'lodash';
+import defaults from 'lodash/defaults';
+import { getBackendSrv } from "@grafana/runtime";
+import { AppResponseDataSourceOptions, defaultQuery, AppResponseURLs, SourceGroup, AppResponseQuery, granularities } from './types';
+import { getFieldType } from 'utils';
+
+
+export class DataSource extends DataSourceApi<AppResponseQuery, AppResponseDataSourceOptions> {
+  token: any;
+  url: string;
+  headers: any;
+  urls: AppResponseURLs;
+  settings: DataSourceInstanceSettings<AppResponseDataSourceOptions>;
+
+  data: any = [];
+  sslKeys: SelectableValue[] = [];
+  ipMetrics: SelectableValue[] = [];
+  topMetrics: SelectableValue[] = [];
+  webApps: SelectableValue[] = [];
+  webAppMetrics: SelectableValue[] = [];
+  hostGroups: SelectableValue[] = [];
+  hostGroupMetrics: SelectableValue[] = [];
+  applications: SelectableValue[] = [];
+  applicationMetrics: SelectableValue[] = [];
+  alerts: SelectableValue[] = [];
+
+  lastFetchQuery: Date;
+  lastFetchMetrics: Date;
+  lastFetchWebApps: Date;
+  lastFetchWebAppMetrics: Date;
+  lastFetchHostGroups: Date;
+  lastFetchHostGroupMetrics: Date;
+  lastFetchApplications: Date;
+  lastFetchApplicationMetrics: Date;
+  lastFetchIPMetrics: Date;
+  lastFetchSSLKeys: Date;
+  lastFetchAlerts: Date;
+  lastFetchAlertColumns: Date;
+
+  alertColumns: any = [];
+
+  queryTimeout = 60;  // In seconds
+  optionsTimeout = 15;  // In minutes
+
+  constructor(instanceSettings: DataSourceInstanceSettings<AppResponseDataSourceOptions>) {
+    super(instanceSettings);
+
+    this.settings = instanceSettings;
+    this.url = this.settings.url || '';
+
+    this.urls = {
+      base: this.url + '/base',
+      auth: this.url + '/auth',
+      ssl: this.url + '/ssl',
+      webApp: this.url + '/webapps',
+      metric: this.url + '/aggregates',
+      hostGroup: this.url + '/hostgroups',
+      application: this.url + '/applications',
+      instanceCreationSync: this.url + '/instancecreationsync',
+      alerts: this.url + '/alerts',
+    };
+
+    this.headers = { 'Content-Type': 'application/json' };
+
+    this.lastFetchQuery = new Date();
+
+    this.lastFetchMetrics = new Date();
+
+    this.lastFetchWebApps = new Date();
+    this.lastFetchWebAppMetrics = new Date();
+
+    this.lastFetchHostGroups = new Date();
+    this.lastFetchHostGroupMetrics = new Date();
+
+    this.lastFetchApplications = new Date();
+    this.lastFetchApplicationMetrics = new Date();
+    this.lastFetchIPMetrics = new Date();
+
+    this.lastFetchSSLKeys = new Date();
+
+    this.lastFetchAlerts = new Date();
+    this.lastFetchAlertColumns = new Date();
+  }
+
+  async topngraphquery(target: AppResponseQuery, start: number, end: number, granularity: number) {
+    let dataDef_groupBy;
+    let dataDef_topBy: any = [];
+    let dataDef_columns: any = [];
+
+    dataDef_topBy = [{
+      "direction": "desc",
+      "id": target.currentTopMetric.value,
+    }];
+
+    if (target.sourceGroup === SourceGroup.application) {
+      dataDef_columns = [
+        "app.id",
+        "app.name",
+      ];
+      dataDef_groupBy = ["start_time", "app.id"];
+    } else if (target.sourceGroup === SourceGroup.hostGroup) {
+      dataDef_columns = [
+        "host_group.id",
+        "host_group.name",
+      ];
+      dataDef_groupBy = ["start_time", "host_group.id"];
+    } else if (target.sourceGroup === SourceGroup.webApp) {
+      dataDef_columns = [
+        "app.id",
+        "app.name",
+      ];
+      dataDef_groupBy = ["start_time", "app.id"];
+    } else if (target.sourceGroup === SourceGroup.ip) {
+      dataDef_columns = [
+        "tcp.ip",
+        "tcp.dns",
+      ];
+      dataDef_groupBy = ["start_time", "tcp.ip"];
+    } else {
+      throw new Error("Unknown source group");
+    }
+
+    dataDef_columns.push(target.currentTopMetric.value);
+
+    let tops: any = [];
+    let filterIN = "";
+
+    await this.doRequest({
+      method: "POST",
+      url: this.urls.instanceCreationSync,
+      data: {
+        "data_defs": [
+          {
+            "source": { "name": "aggregates" },
+            "time": {
+              "start": start.toString(),
+              "end": end.toString(),
+              "granularity": granularity.toString(),
+            },
+            "top_by": dataDef_topBy,
+            "columns": dataDef_columns,
+            "limit": target.topN || 10,
+          },
+        ]
+      },
+    }).then(
+      (response: any) => {
+        let topNResponse;
+        if (response.data.data_defs[0].hasOwnProperty("data")) {
+          topNResponse = response.data.data_defs[0].data;
+        } else {
+          topNResponse = [];
+        }
+        for (let index = 0; index < topNResponse.length; index++) {
+          tops.push(topNResponse[index][1]);
+          if (index === topNResponse.length - 1) {
+            filterIN += `'${topNResponse[index][0]}'`;
+          } else {
+            filterIN += `'${topNResponse[index][0]}', `;
+          }
+        }
+        return filterIN;
+      }
+    );
+
+    // Insert 'start_time' into first index of columns.
+    dataDef_columns.unshift("start_time");
+
+    const result = await this.doRequest({
+      method: 'POST',
+      url: this.urls.instanceCreationSync,
+      data: {
+        "data_defs": [
+          {
+            "source": { "name": "aggregates" },
+            "time": {
+              "start": start.toString(),
+              "end": end.toString(),
+              "granularity": granularity.toString(),
+            },
+            "group_by": dataDef_groupBy,
+            "columns": dataDef_columns,
+            "filters": [
+              {
+                "type": "STEELFILTER",
+                "value": `${dataDef_columns[1]} IN (${filterIN})`,
+              }
+            ],
+          },
+        ]
+      },
+    }).then(
+      (response: any) => {
+        if (response.data.data_defs[0].hasOwnProperty("data")) {
+          return response.data;
+        } else {
+          return [];
+        }
+      }
+    );
+
+    return {
+      tops: tops,
+      result: result,
+    };
+  }
+
+  async query(options: DataQueryRequest<AppResponseQuery>): Promise<DataQueryResponse> {
+    const { range } = options;
+    const to = range!.to.valueOf();
+    const from = range!.from.valueOf();
+
+    let end: number;
+    let start: number;
+    let granularity;
+    let dataDef_source = {};
+    let dataDef_groupBy = {};
+    let dataDef_columns: string[] = [];
+    let currentMetric: SelectableValue;
+    let dataDef_filters: Array<{ type: string; value: string; }> = [];
+
+    const promises = options.targets.map((target) => {
+      const query = defaults(target, defaultQuery);
+
+      end = ((new Date(to)).getTime()) / 1000;
+      start = ((new Date(from)).getTime()) / 1000;
+
+      granularity = query.granularity;
+
+      if (granularity?.value === 0) { // Means Auto
+        const timeDiff = (end - start) / 60; // In minutes 
+
+        if (timeDiff < 60) {
+          granularity = granularities[1];
+        } else if (timeDiff < 60 * 6) {
+          granularity = granularities[2];
+        } else if (timeDiff < 60 * 24 * 5) {
+          granularity = granularities[3];
+        } else if (timeDiff < 60 * 24 * 60) {
+          granularity = granularities[4];
+        } else {
+          granularity = granularities[5];
+        }
+      }
+
+      dataDef_source = { "name": "aggregates" };
+      if (query.sourceGroup === SourceGroup.alerts) {
+        console.log(`Current Alerts Columns: ${query.currentAlertsColumns.map(c => c.value)}`);
+
+        return this.getAlerts(query.currentAlertsColumns, start, end, granularity?.value, query.alertLimit).then(
+          (items) => {
+            let frame;
+            let fields: any = [];
+
+            for (let index = 0; index < query.currentAlertsColumns.length; index++) {
+              fields.push({
+                type: query.currentAlertsColumns[index].type,
+                name: query.currentAlertsColumns[index].label,
+                value: query.currentAlertsColumns[index].value,
+              });
+            }
+
+            frame = new MutableDataFrame({
+              fields: fields,
+              name: 'Alerts',
+              refId: query.refId,
+            });
+
+            for (let i = 0; i < items.length; i++) {
+              let row = [];
+              let item = items[i];
+              for (let index = 0; index < fields.length; index++) {
+                row.push(item[fields[index].value]);
+              }
+              frame.appendRow(row);
+            }
+            return frame;
+          }
+        );
+      }
+      else if (query.sourceGroup === SourceGroup.ssl) {
+        return this.getSSLKeys().then(
+          (items) => {
+            let frame;
+            let fields: any = [];
+
+            for (let index = 0; index < query.currentSSLKeyColumns.length; index++) {
+              fields.push({
+                type: query.currentSSLKeyColumns[index].type,
+                name: query.currentSSLKeyColumns[index].label,
+                value: query.currentSSLKeyColumns[index].value,
+              });
+            }
+
+            frame = new MutableDataFrame({
+              fields: fields,
+              name: 'SSL Keys',
+              refId: query.refId,
+            });
+
+
+            for (let i = 0; i < items.length; i++) {
+              let row = [];
+              let item = items[i];
+
+              if (item["valid_from"] >= new Date(start * 1000) && item["valid_to"] <= new Date(end * 1000)) {
+                item["expiration_time"] = parseInt(((item["valid_to"].getTime() - new Date().getTime()) / (1000 * 3600 * 24)).toString(), 10);
+                if (query.expirationTime > -1) {
+                  if (item["expiration_time"] < query.expirationTime) {
+                    for (let index = 0; index < fields.length; index++) {
+                      row.push(item[fields[index].value]);
+                    }
+                    frame.appendRow(row);
+                  }
+                } else {
+                  for (let index = 0; index < fields.length; index++) {
+                    row.push(item[fields[index].value]);
+                  }
+                  frame.appendRow(row);
+                }
+              }
+            }
+
+            return frame;
+          }
+        );
+      }
+      else if (query.sourceGroup === SourceGroup.hostGroup) {
+        // For each datapoint, data are grouped by timestamp and id of hostgroup
+        dataDef_groupBy = ["start_time", "host_group.id"];
+        // Columns are fields queried, some are fixed value (host_group.id, host_group.name...) and some are metrics
+        dataDef_columns = ["start_time", "host_group.id", "host_group.name"];
+        // Metric request is filtered by hortgroup selected
+        dataDef_filters.push(
+          {
+            "type": "STEELFILTER",
+            "value": "host_group.id == " + query.currentHostGroup?.value
+          },
+        );
+        dataDef_columns.push(query.currentHostGroupMetric?.value);
+        currentMetric = query.currentHostGroupMetric;
+      } else if (query.sourceGroup === SourceGroup.application) {
+        dataDef_groupBy = ["start_time", "app.id"];
+        dataDef_columns = ["start_time", "app.id", "app.name"];
+        dataDef_filters.push(
+          {
+            "type": "STEELFILTER",
+            "value": "app.id == " + query.currentApplication?.value
+          },
+        );
+        dataDef_columns.push(query.currentApplicationMetric?.value);
+        currentMetric = query.currentApplicationMetric;
+      } else if (query.sourceGroup === SourceGroup.ip) {
+        dataDef_source = { "name": "aggregates" };
+        dataDef_groupBy = ["start_time"];
+        dataDef_columns = ["start_time", "tcp.ip", "tcp.dns"];
+        dataDef_filters.push(
+          {
+            "type": "STEELFILTER",
+            "value": "tcp.ip == " + query.currentIP
+          },
+        );
+        dataDef_columns.push(query.currentIPMetric?.value);
+        currentMetric = query.currentIPMetric;
+      } else if (query.sourceGroup === SourceGroup.webApp) {
+        dataDef_groupBy = ["start_time", "app.id"]
+        dataDef_columns = ["start_time", "app.id", "app.name"]
+        dataDef_filters.push(
+          {
+            "type": "STEELFILTER",
+            "value": "app.id == " + query.currentWebApp?.value
+          },
+        );
+        dataDef_columns.push(query.currentWebAppMetric?.value);
+        currentMetric = query.currentWebAppMetric;
+      } else {
+        throw new Error("Unknown source group");
+      }
+
+      let dataDef: any = {
+        'source': dataDef_source,
+        "time": {
+          "end": end.toString(),
+          "start": start.toString(),
+          'granularity': granularity?.value.toString(),
+        },
+        "group_by": dataDef_groupBy,
+        "columns": dataDef_columns,
+      };
+
+      if (query.top) {
+        dataDef.limit = query.topN || 10;
+        dataDef.top_by = [{ "id": currentMetric?.value, "direction": 'desc' }];
+        dataDef.group_by = {};  // Remove start time.
+        dataDef.columns = dataDef.columns.slice(1);  // Remove start time.
+
+        if (query.topGraph) {
+          return this.topngraphquery(query, start, end, 0).then(
+            (data: any) => {
+              let name;
+              const tops = data.tops;
+              const result = data.result;
+              let dataDef = result.data_defs[0];
+
+              if (!dataDef.hasOwnProperty('data')) { dataDef.data = []; }
+
+              if (query.alias !== undefined && query.alias.trim() !== '') {
+                name = query.alias;
+              } else {
+                name = query.currentTopMetric?.label;
+              }
+
+              let fields = [{ name: "Time", type: FieldType.time, values: [] }];
+              for (let index = 0; index < tops.length; index++) {
+                fields.push({ name: tops[index], type: FieldType.number, values: [] });
+              }
+
+              let frame = new MutableDataFrame({
+                name: name,
+                fields: fields,
+                refId: query.refId,
+              });
+
+              for (let i = 0; i < dataDef.data.length; i++) {
+                let row = [];
+                let datum = dataDef.data[i];
+
+                row.push(new Date(datum[0] * 1000));
+
+                for (let index = 0; index < tops.length; index++) {
+                  if (tops[index] === datum[2]) {
+                    row.push(datum[datum.length - 1]);
+                  } else {
+                    row.push(null);
+                  }
+                }
+
+                frame.appendRow(row);
+              }
+
+              return frame;
+            }
+          )
+        }
+
+      } else {
+        dataDef.filters = dataDef_filters;
+      }
+
+      return this.doRequest({
+        url: this.urls.instanceCreationSync,
+        data: { 'data_defs': [dataDef] },
+        method: 'POST'
+      }).then(
+        (response) => {
+          let name;
+
+          let _dataDef = response?.data.data_defs[0];
+
+          if (_dataDef.data === undefined) {
+            _dataDef.data = [];
+          }
+
+          if (query.alias !== undefined && query.alias.trim() !== '') {
+            name = query.alias;
+          }
+          else {
+            name = currentMetric?.value;
+          }
+
+          let fields: any = [];
+
+          let frame;
+
+          if (query.top) {
+            let removeIndices = [];
+            for (let index = 0; index < _dataDef.columns.length; index++) {
+              const column = _dataDef.columns[index];
+              if (column.search('id') === -1) {
+                fields.push({ name: column, type: FieldType.other });
+              } else {
+                removeIndices.push(index);
+              }
+            }
+
+            frame = new MutableDataFrame({
+              refId: query.refId,
+              name: name,
+              fields: fields,
+            });
+
+            for (let i = 0; i < _dataDef.data.length; i++) {
+              removeIndices.forEach((j) => { _dataDef.data[i].splice(j, 1); });
+              frame.appendRow(_dataDef.data[i]);
+            }
+          } else {
+            fields = [
+              { name: "Time", type: FieldType.time },
+              { name: "Value", type: FieldType.number },
+            ]
+
+            frame = new MutableDataFrame({
+              refId: query.refId,
+              name: name,
+              fields: fields,
+            });
+
+            for (let i = 0; i < _dataDef.data.length; i++) {
+              let row = _dataDef.data[i];
+              frame.appendRow([new Date(row[0] * 1000), row[row.length - 1]]);
+            }
+          }
+
+          // Push data a variable for caching.
+          this.data.push(frame);
+
+          return frame;
+        }
+      );
+    });
+
+    return Promise.all(promises).then((data) => ({ data }));
+  }
+
+  async testDatasource() {
+    return this.authRequest()
+      .then(() => ({
+        status: 'success',
+        message: 'Data source is working',
+      }))
+      .catch((error) => {
+      return {
+        status: 'error',
+        message: error?.statusText || error?.message || 'Data source is not working',
+      };
+    });
+  }
+
+  async authRequest() {
+    const response = await getBackendSrv().fetch<any>({
+      method: 'POST',
+      url: this.urls.auth,
+      headers: this.headers,
+    }).toPromise();
+    this.settings.jsonData.token = response?.data?.access_token;
+  }
+
+  async doRequest(options: any): Promise<any> {
+    console.info(`[DataSource.doRequest] ${options.method} ${options.url}`);
+
+    if (!this.settings.jsonData.token) {
+      console.info(`[DataSource.doRequest] No token.`);
+      await this.authRequest();
+    }
+
+    return getBackendSrv()
+      .fetch<any>({
+        ...options,
+        headers: {
+          ...this.headers,
+          'Authorization': 'Bearer ' + this.settings.jsonData.token
+        }
+      })
+      .toPromise()
+      .then((response: any) => ({
+        ...response,
+        ok: response.status >= 200 && response.status < 300,
+      }))
+      .catch((e: any) => {
+      if (e?.data?.message?.includes('Authentication to data source failed')) {
+        this.settings.jsonData.token = '';
+        console.info(`[DataSource.doRequest] Retrying after auth error.`);
+        return this.doRequest(options); // call doRequest recursively
+      } else {
+        throw e; // throw the error to the caller
+      }
+    });
+  }
+
+  async getHostGroups() {
+    console.info('[DataSource.getHostGroups]');
+
+    let result: Array<SelectableValue<any>> = [];
+    try {
+      if (
+        ((Date.now() - this.lastFetchHostGroups.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.hostGroups.length > 0
+      ) {
+        console.info('[DataSource.getHostGroups] Cache hit.');
+        return this.hostGroups;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.hostGroup,
+      }).then(
+        (response) => {
+          this.hostGroups = [];
+
+          if (typeof response !== 'undefined') {
+            for (let k in response.data.items) {
+              if (response.data.items[k]["enabled"]) {
+                const hostGroup = {
+                  'label': response.data.items[k]["name"],
+                  'value': response.data.items[k]["id"]
+                } as SelectableValue;
+
+                result.push(hostGroup);
+                this.hostGroups.push(hostGroup);
+              }
+            }
+          }
+
+          this.lastFetchHostGroups = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getApplications() {
+    let result: Array<SelectableValue<any>> = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchApplications.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.applications.length > 0
+      ) {
+        console.info('[DataSource.getApplications] Cache hit.');
+        return this.applications;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.application,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.applications = [];
+
+            for (let k in response.data.items) {
+              if (response.data.items[k]["enabled"]) {
+                const application = {
+                  'label': response.data.items[k]["name"],
+                  'value': response.data.items[k]["id"]
+                } as SelectableValue;
+
+                result.push(application);
+                this.applications.push(application);
+              }
+            }
+          }
+          this.lastFetchApplications = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getWebApps() {
+    let result: Array<SelectableValue<any>> = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchWebApps.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.webApps.length > 0
+      ) {
+        console.info('[DataSource.getWebApps] Cache hit.');
+        return this.webApps;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.webApp,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.webApps = [];
+
+            for (let k in response.data.items) {
+              if (response.data.items[k]["enabled"]) {
+                const webApp = {
+                  'label': response.data.items[k]["name"],
+                  'value': response.data.items[k]["id"]
+                } as SelectableValue;
+
+                result.push(webApp);
+                this.webApps.push(webApp);
+              }
+            }
+          }
+          this.lastFetchWebApps = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getTopMetrics(sourceGroup: SourceGroup) {
+    if (sourceGroup === SourceGroup.application) {
+      this.topMetrics = await this.getApplicationMetrics();
+    } else if (sourceGroup === SourceGroup.hostGroup) {
+      this.topMetrics = await this.getHostGroupMetrics();
+    } else if (sourceGroup === SourceGroup.webApp) {
+      this.topMetrics = await this.getWebAppMetrics();
+    } else if (sourceGroup === SourceGroup.ip) {
+      this.topMetrics = await this.getIPMetrics();
+    } else {
+      throw new Error('Unknown source group');
+    }
+
+    return this.topMetrics;
+  }
+
+  async getApplicationMetrics() {
+    let result: Array<SelectableValue<any>> = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchApplicationMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.applicationMetrics.length > 0
+      ) {
+        console.info('[DataSource.getApplicationMetrics] Cache hit.');
+        return this.applicationMetrics;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.metric,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.applicationMetrics = [];
+
+            for (let k in response.data.columns) {
+              const id = response.data.columns[k].id;
+              let unit = response.data.columns[k].unit;
+              const rate = response.data.columns[k].rate;
+              let label = response.data.columns[k].label;
+
+              if (
+                !id.endsWith('.id') && !id.endsWith('_id')
+                && !id.endsWith('.id') && !id.endsWith('.name')
+                && !id.endsWith('_name') && !id.endsWith('.ip')
+                && !id.endsWith('_ip') && !id.endsWith('.url')
+                && !id.endsWith('_url') && !id.endsWith('.type')
+                && !id.endsWith('_type') && !id.endsWith('.dns')
+                && !id.endsWith('_dns') && !id.endsWith('start_time')
+                && !id.endsWith('end_time') && !id.includes('rtp')
+              ) {
+                if (typeof rate !== 'undefined' && unit !== 'none') {
+                  label = `${label} (${unit}/${rate})`;
+                } else if (typeof rate !== 'undefined') {
+                  label = `${label} (${rate})`;
+                }
+
+                const metric = {
+                  'value': id,
+                  'label': label
+                } as SelectableValue;
+
+                if (
+                  !id.includes('p2m') && !id.includes('m2p')
+                  && !id.includes('web') && !id.includes('_db.')
+                  && !id.includes('cxa')
+                ) {
+                  result.push(metric);
+                  this.applicationMetrics.push(metric);
+                }
+              }
+            }
+          }
+          this.lastFetchApplicationMetrics = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getIPMetrics() {
+    let result: Array<SelectableValue<any>> = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchIPMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.ipMetrics.length > 0
+      ) {
+        console.info('[DataSource.getIPMetrics] Cache hit.');
+        return this.ipMetrics;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.metric,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.ipMetrics = [];
+
+            for (let k in response.data.columns) {
+              const id = response.data.columns[k].id;
+              let unit = response.data.columns[k].unit;
+              const rate = response.data.columns[k].rate;
+              let label = response.data.columns[k].label;
+
+              if (
+                !id.endsWith('.id') && !id.endsWith('_id')
+                && !id.endsWith('.id') && !id.endsWith('.name')
+                && !id.endsWith('_name') && !id.endsWith('.ip')
+                && !id.endsWith('_ip') && !id.endsWith('.url')
+                && !id.endsWith('_url') && !id.endsWith('.type')
+                && !id.endsWith('_type') && !id.endsWith('.dns')
+                && !id.endsWith('_dns') && !id.endsWith('start_time')
+                && !id.endsWith('end_time') && !id.includes('rtp')
+              ) {
+                if (typeof rate !== 'undefined' && unit !== 'none') {
+                  label = `${label} (${unit}/${rate})`;
+                } else if (typeof rate !== 'undefined') {
+                  label = `${label} (${rate})`;
+                }
+
+                const metric = {
+                  'value': id,
+                  'label': label
+                } as SelectableValue;
+
+                if (
+                  !id.includes('p2m') && !id.includes('m2p')
+                  && !id.includes('web') && !id.includes('_db.')
+                  && !id.includes('cxa')
+                ) {
+                  result.push(metric);
+                  this.ipMetrics.push(metric);
+                }
+              }
+            }
+          }
+          this.lastFetchIPMetrics = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getHostGroupMetrics() {
+    let result: Array<SelectableValue<any>> = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchHostGroupMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.hostGroupMetrics.length > 0
+      ) {
+        console.info('[DataSource.getHostGroupMetrics] Cache hit.');
+        return this.hostGroupMetrics;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.metric,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.hostGroupMetrics = [];
+
+            for (let k in response.data.columns) {
+              const id = response.data.columns[k].id;
+              let unit = response.data.columns[k].unit;
+              const rate = response.data.columns[k].rate;
+              let label = response.data.columns[k].label;
+
+              if (
+                !id.endsWith('.id') && !id.endsWith('_id')
+                && !id.endsWith('.id') && !id.endsWith('.name')
+                && !id.endsWith('_name') && !id.endsWith('.ip')
+                && !id.endsWith('_ip') && !id.endsWith('.url')
+                && !id.endsWith('_url') && !id.endsWith('.type')
+                && !id.endsWith('_type') && !id.endsWith('.dns')
+                && !id.endsWith('_dns') && !id.endsWith('start_time')
+                && !id.endsWith('end_time') && !id.includes('rtp')
+              ) {
+                if (typeof rate !== 'undefined' && unit !== 'none') {
+                  label = `${label} (${unit}/${rate})`;
+                } else if (typeof rate !== 'undefined') {
+                  label = `${label} (${rate})`;
+                }
+
+                const metric = {
+                  'value': id,
+                  'label': label
+                } as SelectableValue;
+
+                result.push(metric);
+                this.hostGroupMetrics.push(metric);
+              }
+            }
+          }
+          this.lastFetchHostGroupMetrics = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getWebAppMetrics() {
+    let result: Array<SelectableValue<any>> = [];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchWebAppMetrics.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.webAppMetrics.length > 0
+      ) {
+        console.info('[DataSource.getWebAppMetrics] Cache hit.');
+        return this.webAppMetrics;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.metric,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.webAppMetrics = [];
+
+            for (let k in response.data.columns) {
+              const id = response.data.columns[k].id;
+              let unit = response.data.columns[k].unit;
+              const rate = response.data.columns[k].rate;
+              let label = response.data.columns[k].label;
+
+              if (
+                !id.endsWith('.id') && !id.endsWith('_id')
+                && !id.endsWith('.id') && !id.endsWith('.name')
+                && !id.endsWith('_name') && !id.endsWith('.ip')
+                && !id.endsWith('_ip') && !id.endsWith('.url')
+                && !id.endsWith('_url') && !id.endsWith('.type')
+                && !id.endsWith('_type') && !id.endsWith('.dns')
+                && !id.endsWith('_dns') && !id.endsWith('start_time')
+                && !id.endsWith('end_time') && !id.includes('rtp')
+              ) {
+                if (typeof rate !== 'undefined' && unit !== 'none') {
+                  label = `${label} (${unit}/${rate})`;
+                } else if (typeof rate !== 'undefined') {
+                  label = `${label} (${rate})`;
+                }
+
+                const metric = {
+                  'value': id,
+                  'label': label
+                } as SelectableValue;
+
+                if (id.includes('_web.')) {
+                  result.push(metric);
+                  this.webAppMetrics.push(metric);
+                }
+              }
+            }
+          }
+          this.lastFetchWebAppMetrics = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getAlertColumns() {
+    console.log('[DataSource.getAlertColumns]');
+
+    let result = [] as any[];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchAlertColumns.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.alertColumns.length > 0
+      ) {
+        console.info('[DataSource.getAlertColumns] Cache hit.');
+        return this.alertColumns;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.alerts + '/columns',
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.alertColumns = [];
+            for (let k in response.data.items) {
+              const item = response.data.items[k];
+              let name = '';
+              if (item.unit !== 'none') {
+                name = `${item.label} (${item.unit})`;
+              } else {
+                name = item.label;
+              }
+              let alertColumn = {
+                'value': item.id,
+                'label': item.label,
+                'name': name,
+                'type': getFieldType(item.type),
+              };
+              console.log(alertColumn);
+              result.push(alertColumn);
+              this.alertColumns.push(alertColumn);
+            }
+          }
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+
+  async getAlerts(columns: any, startTime: number, endTime: number, granularity: number, limit = 10) {
+    console.log('[DataSource.getAlerts]');
+    console.log(`[DataSource.getAlerts] columns: ${columns.map((c: any) => { return c.value; }).join(', ')}`);
+    console.log(`[DataSource.getAlerts] startTime: ${startTime} endTime: ${endTime} granularity: ${granularity} limit: ${limit}`);
+
+    let result = [] as any[];
+
+    try {
+      if (
+        ((Date.now() - this.lastFetchAlerts.getTime()) / 1000) < 10  // 10 seconds
+        && this.alerts.length > 0
+      ) {
+        console.info('[DataSource.getAlerts] Cache hit.');
+        return this.alerts;
+      }
+
+      console.info('[DataSource.getAlerts] Fething data...');
+
+      await this.doRequest({
+        method: 'POST',
+        url: this.urls.instanceCreationSync,
+        data: {
+          "data_defs": [
+            {
+              "source": {
+                "name": "alert_list"
+              },
+              "limit": Number.parseInt(limit.toString(), 10),
+              "time": {
+                "start": startTime.toString(),
+                "end": endTime.toString(),
+                "granularity": granularity.toString(),
+              },
+              "columns": columns.map((e: any) => { return e.value; }),
+            }
+          ]
+        },
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            console.log('[DataSource.getAlerts] Fetched data. Response is not undefined!');
+            this.alerts = [];
+            for (let k in response.data.data_defs[0].data) {
+              const row = response.data.data_defs[0].data[k];
+              let alert = {} as any;
+              for (let i = 0; i < response.data.data_defs[0].columns.length; i++) {
+                let datum = row[i];
+                const column = response.data.data_defs[0].columns[i];
+
+                if (column.includes('time')) {
+                  datum = new Date(Number.parseFloat(datum) * 1000);
+                }
+
+                alert[column] = datum;
+              }
+              console.log(alert);
+              result.push(alert);
+              this.alerts.push(alert);
+            }
+          }
+          this.lastFetchAlerts = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    console.log('[DataSource.getAlerts] Fetched data.');
+    return result;
+  }
+
+  async getSSLKeys() {
+    let result: Array<SelectableValue<any>> = [];
+
+    try {
+      console.info('[DataSource.getSSLKeys]');
+      if (
+        ((Date.now() - this.lastFetchSSLKeys.getTime()) / 1000 / 60) < this.optionsTimeout
+        && this.sslKeys.length > 0
+      ) {
+        console.info('[DataSource.getSSLKeys] Cache hit.');
+        return this.sslKeys;
+      }
+
+      await this.doRequest({
+        method: 'GET',
+        url: this.urls.ssl,
+      }).then(
+        (response) => {
+          if (typeof response !== 'undefined') {
+            this.sslKeys = [];
+
+            for (let index = 0; index < response.data.items.length; index++) {
+              const item = response.data.items[index];
+              const sslKey = {
+                "status": item.status,
+                "subject.common_name": item.subject.common_name,
+                "subject.organization": item.subject.organization,
+                "issuer.common_name": item.issuer.common_name,
+                "issuer.organization": item.issuer.organization,
+                "serial_number": item.serial_number.toString(),
+                "valid_from": new Date(item.valid_from * 1000),
+                "valid_to": new Date(item.valid_to * 1000),
+                "first_seen": new Date(item.first_seen * 1000),
+                "last_seen": new Date(item.last_seen * 1000),
+              };
+              result.push(sslKey);
+              this.sslKeys.push(sslKey);
+            }
+          }
+          this.lastFetchSSLKeys = new Date(Date.now());
+        }
+      )
+    } catch (error) {
+      console.error(error);
+    }
+
+    return result;
+  }
+}
